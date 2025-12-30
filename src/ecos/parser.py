@@ -36,6 +36,22 @@ COLUMN_MAP: dict[str, str] = {
     "END_TIME": "end_time",
     "DATA_CNT": "data_cnt",
     "WEIGHT": "weight",
+    # StatisticTableList 추가 필드
+    "P_STAT_CODE": "p_stat_code",
+    "SRCH_YN": "srch_yn",
+    "ORG_NAME": "org_name",
+    # StatisticWord 추가 필드
+    "WORD": "word",
+    "CONTENT": "content",
+    # KeyStatisticList 추가 필드
+    "CLASS_NAME": "class_name",
+    "KEYSTAT_NAME": "keystat_name",
+    # StatisticMeta 추가 필드
+    "LVL": "lvl",
+    "P_CONT_CODE": "p_cont_code",
+    "CONT_CODE": "cont_code",
+    "CONT_NAME": "cont_name",
+    "META_DATA": "meta_data",
 }
 
 
@@ -64,7 +80,14 @@ def parse_response(response: dict[str, Any]) -> pd.DataFrame:
     data = None
 
     # 여러 서비스 응답 형식 지원
-    for key in ["StatisticSearch", "StatisticItemList", "StatisticTableList", "KeyStatisticList"]:
+    for key in [
+        "StatisticSearch",
+        "StatisticItemList",
+        "StatisticTableList",
+        "KeyStatisticList",
+        "StatisticWord",
+        "StatisticMeta",
+    ]:
         if key in response:
             data = response[key].get("row", [])
             break
@@ -111,8 +134,10 @@ def parse_time_column(df: pd.DataFrame, time_col: str = "time") -> pd.DataFrame:
     -----
     ECOS 시간 형식:
     - 연간: YYYY (예: 2024)
+    - 반년: YYYYSN (예: 2024S1)
     - 분기: YYYYQN (예: 2024Q1)
     - 월간: YYYYMM (예: 202401)
+    - 반월: YYYYMMSMN (예: 202401SM1)
     - 일간: YYYYMMDD (예: 20240101)
     """
     if time_col not in df.columns or df.empty:
@@ -130,6 +155,13 @@ def parse_time_column(df: pd.DataFrame, time_col: str = "time") -> pd.DataFrame:
         if len(time_str) == 4 and time_str.isdigit():
             return pd.Timestamp(f"{time_str}-01-01")
 
+        # 반년: YYYYSN
+        if len(time_str) == 6 and "S" in time_str and "SM" not in time_str:
+            year = time_str[:4]
+            half = int(time_str[5])
+            month = (half - 1) * 6 + 1
+            return pd.Timestamp(f"{year}-{month:02d}-01")
+
         # 분기: YYYYQN
         if len(time_str) == 6 and "Q" in time_str:
             year = time_str[:4]
@@ -140,6 +172,14 @@ def parse_time_column(df: pd.DataFrame, time_col: str = "time") -> pd.DataFrame:
         # 월간: YYYYMM
         if len(time_str) == 6 and time_str.isdigit():
             return pd.Timestamp(f"{time_str[:4]}-{time_str[4:6]}-01")
+
+        # 반월: YYYYMMSMN
+        if len(time_str) == 10 and "SM" in time_str:
+            year = time_str[:4]
+            month_str = time_str[4:6]
+            half = int(time_str[9])
+            day = 1 if half == 1 else 16
+            return pd.Timestamp(f"{year}-{month_str}-{day:02d}")
 
         # 일간: YYYYMMDD
         if len(time_str) == 8 and time_str.isdigit():

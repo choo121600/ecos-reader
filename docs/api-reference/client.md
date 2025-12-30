@@ -131,24 +131,28 @@ print(response)
 
 ### get_statistic_table_list
 
-통계 목록을 조회합니다.
+통계표 목록을 조회합니다.
 
 ```python
 def get_statistic_table_list(
     self,
-    stat_code: str
+    stat_code: str = "",
+    start: int = 1,
+    end: int = 10000
 ) -> dict:
     ...
 ```
 
 #### 매개변수
 
-- `stat_code` (str): 통계표 코드
+- `stat_code` (str, optional): 통계표 코드 (기본값: `""`)
+- `start` (int, optional): 시작 건수 (기본값: `1`)
+- `end` (int, optional): 종료 건수 (기본값: `10000`)
 
 #### 반환값
 
 - **타입**: `dict`
-- **설명**: 통계 정보
+- **설명**: 통계표 목록 정보
 
 #### 예시
 
@@ -157,8 +161,165 @@ from ecos import EcosClient
 
 client = EcosClient()
 
+# 전체 통계표 목록 조회
+tables = client.get_statistic_table_list(start=1, end=10)
+print(tables)
+
+# 특정 통계표 필터링
 info = client.get_statistic_table_list(stat_code="722Y001")
 print(info)
+```
+
+### get_statistic_item_list
+
+통계표의 세부 항목 목록을 조회합니다.
+
+```python
+def get_statistic_item_list(
+    self,
+    stat_code: str,
+    start: int = 1,
+    end: int = 10000
+) -> dict:
+    ...
+```
+
+#### 매개변수
+
+- `stat_code` (str): 통계표 코드
+- `start` (int, optional): 시작 건수 (기본값: `1`)
+- `end` (int, optional): 종료 건수 (기본값: `10000`)
+
+#### 반환값
+
+- **타입**: `dict`
+- **설명**: 통계 세부항목 목록
+
+#### 예시
+
+```python
+from ecos import EcosClient
+
+client = EcosClient()
+
+items = client.get_statistic_item_list(stat_code="200Y101", start=1, end=10)
+print(items)
+```
+
+### get_statistic_word
+
+통계용어사전을 검색합니다.
+
+```python
+def get_statistic_word(
+    self,
+    word: str,
+    start: int = 1,
+    end: int = 10
+) -> dict:
+    ...
+```
+
+#### 매개변수
+
+- `word` (str): 검색할 통계 용어
+- `start` (int, optional): 시작 건수 (기본값: `1`)
+- `end` (int, optional): 종료 건수 (기본값: `10`)
+
+#### 반환값
+
+- **타입**: `dict`
+- **설명**: 용어 검색 결과
+
+#### 예시
+
+```python
+from ecos import EcosClient
+
+client = EcosClient()
+
+# 용어 검색
+result = client.get_statistic_word(word="소비자물가지수")
+print(result)
+
+# GDP 검색
+result = client.get_statistic_word(word="GDP")
+print(result)
+```
+
+### get_key_statistic_list
+
+한국은행이 선정한 100대 통계지표를 조회합니다.
+
+```python
+def get_key_statistic_list(
+    self,
+    start: int = 1,
+    end: int = 100
+) -> dict:
+    ...
+```
+
+#### 매개변수
+
+- `start` (int, optional): 시작 건수 (기본값: `1`)
+- `end` (int, optional): 종료 건수 (기본값: `100`)
+
+#### 반환값
+
+- **타입**: `dict`
+- **설명**: 주요 통계지표 목록
+
+#### 예시
+
+```python
+from ecos import EcosClient
+
+client = EcosClient()
+
+# 처음 10개 조회
+stats = client.get_key_statistic_list(start=1, end=10)
+print(stats)
+
+# 전체 100개 조회
+all_stats = client.get_key_statistic_list(start=1, end=100)
+print(all_stats)
+```
+
+### get_statistic_meta
+
+통계 메타데이터를 조회합니다.
+
+```python
+def get_statistic_meta(
+    self,
+    data_name: str,
+    start: int = 1,
+    end: int = 10
+) -> dict:
+    ...
+```
+
+#### 매개변수
+
+- `data_name` (str): 조회할 데이터명
+- `start` (int, optional): 시작 건수 (기본값: `1`)
+- `end` (int, optional): 종료 건수 (기본값: `10`)
+
+#### 반환값
+
+- **타입**: `dict`
+- **설명**: 통계 메타데이터
+
+#### 예시
+
+```python
+from ecos import EcosClient
+
+client = EcosClient()
+
+meta = client.get_statistic_meta(data_name="경제심리지수")
+print(meta)
 ```
 
 ## 사용 예제

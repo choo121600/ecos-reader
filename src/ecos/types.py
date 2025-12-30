@@ -19,10 +19,18 @@ EcosService = Literal[
     "StatisticTableList",  # 통계표 목록
     "StatisticWord",  # 통계 용어 사전
     "KeyStatisticList",  # 주요 통계 지표
+    "StatisticMeta",  # 통계 메타데이터
 ]
 
 # 데이터 주기
-Period = Literal["D", "M", "Q", "A"]  # Daily, Monthly, Quarterly, Annual
+Period = Literal[
+    "D",  # Daily (일간)
+    "M",  # Monthly (월간)
+    "SM",  # Semi-Monthly (반월)
+    "Q",  # Quarterly (분기)
+    "S",  # Semi-Annual (반년)
+    "A",  # Annual (연간)
+]
 
 # 응답 포맷
 ResponseFormat = Literal["json", "xml"]

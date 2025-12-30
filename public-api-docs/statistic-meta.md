@@ -1,0 +1,246 @@
+# 통계메타DB 개발 명세서
+
+## 개요
+
+한국은행 경제통계 Open API의 통계 메타데이터를 조회하는 서비스입니다. 특정 통계 데이터의 메타 정보(작성 연도, 시계열 제공 기간, 작성 방법 등)를 확인할 수 있습니다.
+
+## 상세주소
+
+* [https://ecos.bok.or.kr/api/](https://ecos.bok.or.kr/api/)
+* HTTP와 HTTPS 모두 사용 가능합니다.
+
+## 요청인자
+
+| 항목명(국문) | 필수여부 | 샘플데이터 | 항목설명 |
+|---------|------|--------|--------|
+| 서비스명 | Y | StatisticMeta | API 서비스명 |
+| 인증키 | Y | sample | 한국은행에서 발급받은 오픈API 인증키 |
+| 요청유형 | Y | xml | 결과값의 파일 형식 - xml, json |
+| 언어구분 | Y | kr | 결과값의 언어 - kr(국문), en(영문) |
+| 요청시작건수 | Y | 1 | 전체 결과값 중 시작 번호 |
+| 요청종료건수 | Y | 10 | 전체 결과값 중 끝 번호 |
+| 데이터명 | Y | 경제심리지수 | 검색할 데이터명 |
+
+### 요청인자 설명
+
+- **서비스명**: 고정값 `StatisticMeta`
+- **인증키**: 한국은행 Open API에서 발급받은 인증키
+- **요청유형**: 응답 형식 (`xml` 또는 `json`)
+- **언어구분**: 응답 언어 (`kr`: 국문, `en`: 영문)
+- **요청시작건수**: 페이징을 위한 시작 번호 (1부터 시작)
+- **요청종료건수**: 페이징을 위한 종료 번호
+- **데이터명**: 조회할 통계 데이터의 이름 (필수, 예: `경제심리지수`)
+
+## 출력값
+
+| 항목명(국문) | 항목명(영문) | 항목크기 | 샘플데이터 | 항목설명 |
+|---------|----------|------|--------|--------|
+| 레벨 | LVL | 2 | 2 | 레벨 |
+| 상위통계항목코드 | P_CONT_CODE | 8 | 1 | 부모통계항목코드 |
+| 통계항목코드 | CONT_CODE | 8 | 0000000003 | 통계항목코드 |
+| 통계항목명 | CONT_NAME | 200 | 최초작성연도 | 통계항목명 |
+| 메타데이터 | META_DATA | 200 | 2012.6월 최초 작성(과거 시계열은 2003.1월부터 제공) | 메타데이터 |
+
+### 출력값 설명
+
+- **레벨**: 메타데이터의 계층 구조 레벨
+- **상위통계항목코드**: 계층 구조에서 상위 항목의 코드
+- **통계항목코드**: 통계항목을 식별하는 고유 코드
+- **통계항목명**: 통계항목의 이름 (예: 최초작성연도, 작성기관 등)
+- **메타데이터**: 해당 항목의 실제 메타데이터 값 (예: 작성 연도, 시계열 제공 기간 등)
+
+## 샘플 URL
+
+```
+https://ecos.bok.or.kr/api/StatisticMeta/{인증키}/xml/kr/1/10/경제심리지수
+```
+
+### URL 구성 요소
+
+1. 기본 URL: `https://ecos.bok.or.kr/api/`
+2. 서비스명: `StatisticMeta`
+3. 인증키: `{인증키}` (실제 인증키로 대체)
+4. 요청유형: `xml` 또는 `json`
+5. 언어구분: `kr` 또는 `en`
+6. 요청시작건수: `1`
+7. 요청종료건수: `10`
+8. 데이터명: 조회할 데이터명 (예: `경제심리지수`)
+
+## 메시지 설명
+
+### 정보 메시지
+
+| 코드 | 설명 |
+|----|----|
+| 100 | 인증키가 유효하지 않습니다. 인증키를 확인하십시오! 인증키가 없는 경우 인증키를 신청하십시오! |
+| 200 | 해당하는 데이터가 없습니다. |
+
+### 에러 메시지
+
+| 코드 | 설명 |
+|----|----|
+| 100 | 필수 값이 누락되어 있습니다. 필수 값을 확인하십시오! 필수 값이 누락되어 있으면 오류를 발생합니다. 요청 변수를 참고 하십시오! |
+| 101 | 주기와 다른 형식의 날짜 형식입니다. |
+| 200 | 파일타입 값이 누락 혹은 유효하지 않습니다. 파일타입 값을 확인하십시오! 파일타입 값이 누락 혹은 유효하지 않으면 오류를 발생합니다. 요청 변수를 참고 하십시오! |
+| 300 | 조회건수 값이 누락되어 있습니다. 조회시작건수/조회종료건수 값을 확인하십시오! 조회시작건수/조회종료건수 값이 누락되어 있으면 오류를 발생합니다. |
+| 301 | 조회건수 값의 타입이 유효하지 않습니다. 조회건수 값을 확인하십시오! 조회건수 값의 타입이 유효하지 않으면 오류를 발생합니다. 정수를 입력하세요. |
+| 400 | 검색범위가 적정범위를 초과하여 60초 TIMEOUT이 발생하였습니다. 요청조건 조정하여 다시 요청하시기 바랍니다. |
+| 500 | 서버 오류입니다. OpenAPI 호출시 서버에서 오류가 발생하였습니다. 해당 서비스를 찾을 수 없습니다. |
+| 600 | DB Connection 오류입니다. OpenAPI 호출시 서버에서 DB접속 오류가 발생했습니다. |
+| 601 | SQL 오류입니다. OpenAPI 호출시 서버에서 SQL 오류가 발생했습니다. |
+| 602 | 과도한 OpenAPI호출로 이용이 제한되었습니다. 잠시후 이용해주시기 바랍니다. |
+
+## 사용 예제
+
+### XML 형식 요청
+
+```bash
+curl "https://ecos.bok.or.kr/api/StatisticMeta/YOUR_API_KEY/xml/kr/1/10/경제심리지수"
+```
+
+### JSON 형식 요청
+
+```bash
+curl "https://ecos.bok.or.kr/api/StatisticMeta/YOUR_API_KEY/json/kr/1/10/경제심리지수"
+```
+
+### URL 인코딩이 필요한 경우
+
+데이터명에 한글이나 특수문자가 포함된 경우 URL 인코딩이 필요합니다:
+
+```bash
+# Python 예제
+import urllib.parse
+
+data_name = "경제심리지수"
+encoded_name = urllib.parse.quote(data_name)
+url = f"https://ecos.bok.or.kr/api/StatisticMeta/YOUR_API_KEY/xml/kr/1/10/{encoded_name}"
+```
+
+### 다양한 데이터명 예제
+
+```bash
+# 경제심리지수
+curl "https://ecos.bok.or.kr/api/StatisticMeta/YOUR_API_KEY/xml/kr/1/10/경제심리지수"
+
+# GDP
+curl "https://ecos.bok.or.kr/api/StatisticMeta/YOUR_API_KEY/xml/kr/1/10/GDP"
+
+# 소비자물가지수
+curl "https://ecos.bok.or.kr/api/StatisticMeta/YOUR_API_KEY/xml/kr/1/10/소비자물가지수"
+```
+
+### 페이징 처리
+
+```bash
+# 첫 10개 결과
+curl "https://ecos.bok.or.kr/api/StatisticMeta/YOUR_API_KEY/xml/kr/1/10/경제심리지수"
+
+# 다음 10개 결과
+curl "https://ecos.bok.or.kr/api/StatisticMeta/YOUR_API_KEY/xml/kr/11/20/경제심리지수"
+```
+
+### Python 예제
+
+```python
+import requests
+import urllib.parse
+
+api_key = "YOUR_API_KEY"
+data_name = "경제심리지수"
+encoded_name = urllib.parse.quote(data_name)
+
+base_url = "https://ecos.bok.or.kr/api/StatisticMeta"
+url = f"{base_url}/{api_key}/xml/kr/1/10/{encoded_name}"
+
+response = requests.get(url)
+print(response.text)
+```
+
+### Python 예제 - JSON 형식 및 파싱
+
+```python
+import requests
+import urllib.parse
+import json
+
+api_key = "YOUR_API_KEY"
+data_name = "경제심리지수"
+encoded_name = urllib.parse.quote(data_name)
+
+base_url = "https://ecos.bok.or.kr/api/StatisticMeta"
+url = f"{base_url}/{api_key}/json/kr/1/10/{encoded_name}"
+
+response = requests.get(url)
+data = response.json()
+
+# 메타데이터 출력
+for item in data.get('StatisticMeta', {}).get('row', []):
+    print(f"레벨: {item.get('LVL')}")
+    print(f"통계항목명: {item.get('CONT_NAME')}")
+    print(f"메타데이터: {item.get('META_DATA')}")
+    print("-" * 50)
+```
+
+### Python 예제 - XML 파싱
+
+```python
+import requests
+import urllib.parse
+import xml.etree.ElementTree as ET
+
+api_key = "YOUR_API_KEY"
+data_name = "경제심리지수"
+encoded_name = urllib.parse.quote(data_name)
+
+base_url = "https://ecos.bok.or.kr/api/StatisticMeta"
+url = f"{base_url}/{api_key}/xml/kr/1/10/{encoded_name}"
+
+response = requests.get(url)
+root = ET.fromstring(response.text)
+
+# 메타데이터 출력
+for row in root.findall('.//row'):
+    level = row.find('LVL').text
+    cont_name = row.find('CONT_NAME').text
+    meta_data = row.find('META_DATA').text
+    print(f"레벨 {level}: {cont_name} = {meta_data}")
+```
+
+## 주의사항
+
+1. **인증키**: 모든 요청에 유효한 인증키가 필요합니다.
+2. **데이터명 필수**: 데이터명 파라미터는 필수이며, 정확한 데이터명을 입력해야 합니다.
+3. **URL 인코딩**: 데이터명에 한글이나 특수문자가 포함된 경우 URL 인코딩이 필요합니다.
+4. **페이징**: 요청시작건수와 요청종료건수는 필수이며, 정수값이어야 합니다.
+5. **타임아웃**: 검색 범위가 너무 넓으면 60초 타임아웃이 발생할 수 있습니다.
+6. **호출 제한**: 과도한 호출 시 일시적으로 이용이 제한될 수 있습니다.
+7. **계층 구조**: 메타데이터는 레벨과 상위통계항목코드를 통해 계층 구조로 제공됩니다.
+8. **데이터명 확인**: 데이터명은 [서비스 통계 목록](statistic-table-list.md)이나 [통계 세부항목 목록](statistic-item-list.md) API를 통해 확인할 수 있습니다.
+
+## 사용 시나리오
+
+1. **통계 데이터 이해**: 특정 통계 데이터의 작성 배경, 작성 연도, 시계열 제공 기간 등을 확인할 때 사용합니다.
+2. **데이터 품질 확인**: 통계 데이터의 작성 방법, 수정 이력 등 메타 정보를 확인할 때 사용합니다.
+3. **문서화**: 통계 데이터를 활용하는 애플리케이션에서 메타 정보를 함께 제공할 때 사용합니다.
+
+## 메타데이터 예시
+
+메타데이터에는 다음과 같은 정보가 포함될 수 있습니다:
+
+- 최초 작성 연도
+- 시계열 제공 기간
+- 작성 기관
+- 작성 방법
+- 수정 이력
+- 참고 사항
+
+예시: `2012.6월 최초 작성(과거 시계열은 2003.1월부터 제공)`
+
+## 관련 서비스
+
+- [서비스 통계 목록](statistic-table-list.md) - 통계표 목록 조회
+- [통계 세부항목 목록](statistic-item-list.md) - 통계표의 세부 항목 조회
+- [통계 조회 조건 설정](statistic-search.md) - 실제 통계 데이터 조회
+- [통계용어사전](statistic-word.md) - 통계 용어 검색
+- [100대 통계지표](statistic-top-100.md) - 주요 통계지표 조회

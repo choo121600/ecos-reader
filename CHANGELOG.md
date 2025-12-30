@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2024-12-30
+
+### Added
+- **완전한 ECOS API 지원**: 누락되었던 3개의 API 엔드포인트 추가
+  - `get_statistic_word()` - 통계용어사전 조회
+  - `get_key_statistic_list()` - 100대 통계지표 조회
+  - `get_statistic_meta()` - 통계메타DB 조회
+- **확장된 주기 지원**: 반년(S), 반월(SM) 주기 타입 추가
+- **향상된 날짜 파싱**: 모든 ECOS 날짜 형식 지원
+  - 연간 (YYYY)
+  - 반년 (YYYYSN)
+  - 분기 (YYYYQN)
+  - 월간 (YYYYMM)
+  - 반월 (YYYYMMSMN)
+  - 일간 (YYYYMMDD)
+- **포괄적인 E2E 테스트**: 실제 API를 사용한 13개의 통합 테스트 추가
+- **완전한 API 필드 매핑**: 모든 API 응답 필드에 대한 파서 지원
+
+### Changed
+- `EcosService` 타입에 `StatisticMeta` 추가
+- `Period` 타입 확장: `D`, `M`, `Q`, `A`, `S`, `SM` 모두 지원
+- 파서 컬럼 매핑 확장: StatisticWord, KeyStatisticList, StatisticMeta, StatisticTableList의 모든 필드 포함
+
+### Fixed
+- 공식 ECOS API 가이드와 완전히 일치하도록 코드 리팩토링
+- URL 구성 및 파라미터 처리 개선
+
 ## [0.1.1] - 2024-12-30
 
 ### Added
@@ -56,5 +83,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 기본 사용법 (`examples/basic_usage.py`)
   - 거시경제 대시보드 (`examples/macro_dashboard.py`)
 
+[0.1.2]: https://github.com/choo121600/ecos-reader/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/choo121600/ecos-reader/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/choo121600/ecos-reader/releases/tag/v0.1.0

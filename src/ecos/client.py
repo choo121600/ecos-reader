@@ -356,6 +356,81 @@ class EcosClient:
         url = self._build_url("StatisticTableList", start, end, stat_code)
         return self._make_request(url)
 
+    def get_statistic_word(
+        self,
+        word: str,
+        start: int = 1,
+        end: int = 10,
+    ) -> dict[str, Any]:
+        """
+        통계용어사전 조회 (StatisticWord)
+
+        Parameters
+        ----------
+        word : str
+            검색할 통계 용어
+        start : int, optional
+            시작 건수, 기본값 1
+        end : int, optional
+            종료 건수, 기본값 10
+
+        Returns
+        -------
+        dict
+            API 응답 데이터
+        """
+        url = self._build_url("StatisticWord", start, end, word)
+        return self._make_request(url)
+
+    def get_key_statistic_list(
+        self,
+        start: int = 1,
+        end: int = 100,
+    ) -> dict[str, Any]:
+        """
+        100대 통계지표 조회 (KeyStatisticList)
+
+        Parameters
+        ----------
+        start : int, optional
+            시작 건수, 기본값 1
+        end : int, optional
+            종료 건수, 기본값 100
+
+        Returns
+        -------
+        dict
+            API 응답 데이터
+        """
+        url = self._build_url("KeyStatisticList", start, end)
+        return self._make_request(url)
+
+    def get_statistic_meta(
+        self,
+        data_name: str,
+        start: int = 1,
+        end: int = 10,
+    ) -> dict[str, Any]:
+        """
+        통계메타DB 조회 (StatisticMeta)
+
+        Parameters
+        ----------
+        data_name : str
+            조회할 데이터명
+        start : int, optional
+            시작 건수, 기본값 1
+        end : int, optional
+            종료 건수, 기본값 10
+
+        Returns
+        -------
+        dict
+            API 응답 데이터
+        """
+        url = self._build_url("StatisticMeta", start, end, data_name)
+        return self._make_request(url)
+
 
 # 전역 클라이언트 인스턴스
 _global_client: EcosClient | None = None

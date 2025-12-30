@@ -184,7 +184,7 @@ client = EcosClient(
     use_cache=True,
 )
 
-# 통계 조회
+# 통계 데이터 조회
 response = client.get_statistic_search(
     stat_code="722Y001",
     period="M",
@@ -192,6 +192,21 @@ response = client.get_statistic_search(
     end_date="202412",
     item_code1="0101000",
 )
+
+# 통계표 목록 조회
+tables = client.get_statistic_table_list(start=1, end=10)
+
+# 통계 세부항목 조회
+items = client.get_statistic_item_list(stat_code="200Y101")
+
+# 통계용어사전 검색
+word_result = client.get_statistic_word(word="소비자물가지수")
+
+# 100대 통계지표 조회
+key_stats = client.get_key_statistic_list(start=1, end=10)
+
+# 통계 메타데이터 조회
+meta = client.get_statistic_meta(data_name="경제심리지수")
 ```
 
 ### 전역 기본 클라이언트 주입(선택)
