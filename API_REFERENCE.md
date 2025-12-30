@@ -1695,53 +1695,42 @@ from ecos import (
 
 ## 지표 구현 현황
 
-### 현재 지원되는 지표 (v0.1.3)
+ecos-reader는 현재 **13개의 High-Level 지표 함수**를 제공하며, ECOS의 664개 통계표 중 약 2.0%를 구현했습니다.
 
-| 카테고리 | 지표명 | 함수명 | 상태 | 비고 |
-|---------|--------|--------|------|------|
-| **금리** | 한국은행 기준금리 | `get_base_rate()` | ✅ 구현 완료 | |
-| | 국고채 수익률 | `get_treasury_yield()` | ✅ 구현 완료 | 1Y/3Y/5Y/10Y/20Y/30Y |
-| | 장단기 금리차 | `get_yield_spread()` | ✅ 구현 완료 | |
-| **물가** | 소비자물가지수(CPI) | `get_cpi()` | ✅ 구현 완료 | |
-| | 근원 CPI | `get_core_cpi()` | ✅ 구현 완료 | |
-| | 생산자물가지수(PPI) | `get_ppi()` | ✅ 구현 완료 | |
-| **성장** | GDP | `get_gdp()` | ✅ 구현 완료 | 분기/연간, 실질/명목 |
-| | GDP 디플레이터 | `get_gdp_deflator()` | ✅ 구현 완료 | |
-| **통화** | 통화량 | `get_money_supply()` | ✅ 구현 완료 | M1/M2/Lf |
-| | 은행 대출금 | `get_bank_lending()` | ✅ 구현 완료 | 전체/가계 |
+### 구현 완료 (v0.1.3)
 
-### 향후 추가 예정 지표
+| 카테고리 | 구현 함수 | 개수 |
+|---------|----------|------|
+| **금리** | `get_base_rate()`, `get_treasury_yield()`, `get_yield_spread()` | 3개 |
+| **물가** | `get_cpi()`, `get_core_cpi()`, `get_ppi()` | 3개 |
+| **성장** | `get_gdp()`, `get_gdp_deflator()` | 2개 |
+| **통화** | `get_money_supply()`, `get_bank_lending()` | 2개 |
 
-| 카테고리 | 지표명 | 예상 함수명 | 우선순위 | ECOS 통계코드 |
-|---------|--------|------------|---------|--------------|
-| **환율** | 주요 통화 환율 | `get_exchange_rate()` | 🟡 Phase 3 | 731Y003 |
-| | 실효환율 | `get_effective_exchange_rate()` | 🟡 Phase 3 | 731Y004 |
-| **국제수지** | 경상수지 | `get_current_account()` | 🟡 Phase 3 | 301Y017 |
-| | 자본수지 | `get_capital_account()` | 🟡 Phase 3 | 301Y017 |
-| **실물경제** | 산업생산지수 | `get_industrial_production()` | 🟢 Phase 4 | 901Y033 |
-| | 설비투자지수 | `get_facility_investment()` | 🟢 Phase 4 | 901Y049 |
-| | 소매판매지수 | `get_retail_sales()` | 🟢 Phase 4 | 901Y037 |
-| **경제심리** | 기업경기실사지수(BSI) | `get_bsi()` | 🟢 Phase 4 | 512Y014 |
-| | 소비자심리지수(CSI) | `get_csi()` | 🟢 Phase 4 | 511Y002 |
+### 다음 버전 계획
 
-**우선순위 범례:**
-- 🟡 Phase 3: 환율 및 국제수지 지표 (다음 마이너 버전)
-- 🟢 Phase 4: 실물경제 및 심리 지표 (향후 버전)
+- 🔴 **v0.2.x (Phase 3)**: 환율 및 국제수지 지표
+- 🟡 **v0.3.x (Phase 4)**: 실물경제 및 심리 지표
+- 🟢 **v0.4.x (Phase 5)**: 무역 및 고용 지표
 
-### 기여하기
+### 자세한 정보
 
-위 표의 미구현 지표 중 필요한 지표가 있으시면:
-1. [GitHub Issues](https://github.com/choo121600/ecos-reader/issues)에서 요청해주세요
-2. 직접 구현하고 Pull Request를 보내주세요 (기여 가이드 참고)
+전체 구현 현황, 미구현 통계 목록, 개발 로드맵은 **[IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)**를 참조하세요.
+
+새로운 지표를 직접 구현하고 싶다면 **[CONTRIBUTING.md](CONTRIBUTING.md)**의 가이드를 따라주세요.
 
 ---
 
 ## 추가 리소스
 
+### 프로젝트 문서
+- **[구현 현황](IMPLEMENTATION_STATUS.md)**: ECOS 통계 구현 현황 및 로드맵
+- **[기여 가이드](CONTRIBUTING.md)**: 프로젝트 기여 방법
+- **[변경 이력](CHANGELOG.md)**: 버전별 변경사항
+
+### 외부 리소스
 - **ECOS Open API 공식 문서**: [https://ecos.bok.or.kr/api/](https://ecos.bok.or.kr/api/)
 - **GitHub 저장소**: [https://github.com/choo121600/ecos-reader](https://github.com/choo121600/ecos-reader)
 - **이슈 리포트**: [https://github.com/choo121600/ecos-reader/issues](https://github.com/choo121600/ecos-reader/issues)
-- **개발 로드맵**: 프로젝트 루트의 ROADMAP.md
 
 ---
 

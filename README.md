@@ -276,5 +276,20 @@ mkdocs serve
 # 브라우저에서 http://127.0.0.1:8000 열기
 ```
 
-# 라이센스
+## 프로젝트 문서
+
+- **[API Reference](API_REFERENCE.md)**: 전체 사용 가이드 및 API 레퍼런스
+- **[구현 현황](IMPLEMENTATION_STATUS.md)**: ECOS 통계 구현 현황 및 로드맵
+- **[기여 가이드](CONTRIBUTING.md)**: 프로젝트 기여 방법
+- **[변경 이력](CHANGELOG.md)**: 버전별 변경사항
+
+## 기여하기
+
+ecos-reader는 오픈소스 프로젝트입니다. 기여를 환영합니다!
+
+- 버그 리포트 및 기능 제안: [GitHub Issues](https://github.com/choo121600/ecos-reader/issues)
+- 코드 기여: [기여 가이드](CONTRIBUTING.md) 참조
+- 구현 현황: [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)에서 미구현 지표 확인
+
+## 라이센스
 MIT License - 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
