@@ -15,9 +15,10 @@ from ..client import get_client
 from ..constants import (
     BANK_LENDING_ITEMS,
     MONEY_SUPPLY_ITEMS,
+    MONEY_SUPPLY_STAT_CODES,
     PERIOD_MONTHLY,
     STAT_BANK_LENDING,
-    STAT_MONEY_SUPPLY,
+    STAT_HOUSEHOLD_LENDING,
 )
 from ..parser import normalize_stat_result, parse_response
 
@@ -93,11 +94,13 @@ def get_money_supply(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
+    # 각 지표마다 다른 stat code 사용
+    stat_code = MONEY_SUPPLY_STAT_CODES[indicator]
     item_code = MONEY_SUPPLY_ITEMS[indicator]
 
     client = get_client()
     response = client.get_statistic_search(
-        stat_code=STAT_MONEY_SUPPLY,
+        stat_code=stat_code,
         period=PERIOD_MONTHLY,
         start_date=start_date,
         end_date=end_date,
@@ -109,7 +112,7 @@ def get_money_supply(
 
 
 def get_bank_lending(
-    sector: Literal["household", "corporate", "all"] = "all",
+    sector: Literal["household", "all"] = "all",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -120,9 +123,8 @@ def get_bank_lending(
     ----------
     sector : str
         대출 부문
-        - 'all': 전체 (기본값)
-        - 'household': 가계대출
-        - 'corporate': 기업대출
+        - 'all': 예금은행 전체 대출금 (기본값)
+        - 'household': 예금취급기관 가계대출
     start_date : str, optional
         조회 시작일 (YYYYMM 형식), 기본값: 3년 전
     end_date : str, optional
@@ -133,13 +135,13 @@ def get_bank_lending(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 대출금 (조원)
+        - value: 대출금 (조원 또는 십억원)
         - unit: 단위
 
     Notes
     -----
     - 가계대출 증가: 소비 증가 및 부동산 가격 상승 요인
-    - 기업대출 증가: 설비투자 증가 신호 가능
+    - 기업대출은 별도 통계표 (산업별대출금 등) 사용 필요
 
     Examples
     --------
@@ -149,20 +151,25 @@ def get_bank_lending(
 
     >>> df = ecos.get_bank_lending(sector="household")  # 가계대출
     """
-    if sector not in BANK_LENDING_ITEMS:
-        raise ValueError(f"sector는 {list(BANK_LENDING_ITEMS.keys())} 중 하나여야 합니다.")
-
     # 기본 날짜 설정
     if start_date is None or end_date is None:
         default_start, default_end = _get_default_dates(36)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    item_code = BANK_LENDING_ITEMS[sector]
+    # sector에 따라 다른 stat code와 item code 사용
+    if sector == "all":
+        stat_code = STAT_BANK_LENDING
+        item_code = BANK_LENDING_ITEMS["all"]
+    elif sector == "household":
+        stat_code = STAT_HOUSEHOLD_LENDING
+        item_code = "1110000"  # 예금취급기관
+    else:
+        raise ValueError("sector는 'all' 또는 'household' 중 하나여야 합니다.")
 
     client = get_client()
     response = client.get_statistic_search(
-        stat_code=STAT_BANK_LENDING,
+        stat_code=stat_code,
         period=PERIOD_MONTHLY,
         start_date=start_date,
         end_date=end_date,

@@ -48,11 +48,11 @@ ITEM_CPI_TOTAL = "0"  # 총지수
 
 # 근원 소비자물가지수
 STAT_CORE_CPI = "901Y010"
-ITEM_CORE_CPI = "AA0000"  # 농산물및석유류제외
+ITEM_CORE_CPI = "00"  # 총지수 (농산물및석유류제외는 특수분류)
 
 # 생산자물가지수
 STAT_PPI = "404Y014"
-ITEM_PPI_TOTAL = "A00"  # 총지수
+ITEM_PPI_TOTAL = "*AA"  # 총지수
 
 
 # ============================================================================
@@ -60,37 +60,45 @@ ITEM_PPI_TOTAL = "A00"  # 총지수
 # ============================================================================
 
 # GDP (국내총생산)
-STAT_GDP_REAL = "200Y001"  # 실질 GDP
-STAT_GDP_NOMINAL = "200Y002"  # 명목 GDP
-ITEM_GDP = "10101"  # 국내총생산
+STAT_GDP_REAL = "200Y110"  # 실질 GDP (원계열, 분기 및 연간)
+STAT_GDP_NOMINAL = "200Y109"  # 명목 GDP (원계열, 분기 및 연간)
+ITEM_GDP = "10601"  # 국내총생산에 대한 지출
 
 # GDP 디플레이터
-STAT_GDP_DEFLATOR = "200Y004"
-ITEM_GDP_DEFLATOR = "10101"
+STAT_GDP_DEFLATOR = "200Y112"  # 국내총생산에 대한 지출 디플레이터(분기 및 연간)
+ITEM_GDP_DEFLATOR = "10601"  # 국내총생산에 대한 지출
 
 
 # ============================================================================
 # 통화 지표 (money)
 # ============================================================================
 
-# 통화량
-STAT_MONEY_SUPPLY = "101Y018"
+# 통화량 - 각 지표마다 다른 stat code 사용
+# M1: 161Y004, M2: 161Y008, Lf: 171Y002
+MONEY_SUPPLY_STAT_CODES: dict[str, str] = {
+    "M1": "161Y004",  # M1 상품별 구성내역(말잔, 원계열)
+    "M2": "161Y008",  # M2 상품별 구성내역(말잔, 원계열)
+    "Lf": "171Y002",  # Lf 상품별 구성내역(말잔, 원계열)
+}
 
 # 통화량 항목코드
 MONEY_SUPPLY_ITEMS: dict[str, str] = {
-    "M1": "BBGA00",  # 협의통화(M1)
-    "M2": "BBGS00",  # 광의통화(M2)
-    "Lf": "BBLA00",  # 금융기관유동성(Lf)
+    "M1": "BBKA00",  # M1 (말잔, 원계열)
+    "M2": "BBGA00",  # M2 (말잔, 원계열)
+    "Lf": "LE00000",  # Lf(금융기관유동성) : 상품별(말잔, 원계열)
 }
 
 # 은행 대출
-STAT_BANK_LENDING = "104Y016"
+# 참고: 가계대출은 151Y002, 기업대출은 별도 통계표 필요
+STAT_BANK_LENDING = "104Y016"  # 예금은행 대출금(말잔)
+STAT_HOUSEHOLD_LENDING = "151Y002"  # 예금취급기관 가계대출(업권별, 월)
 
 # 대출 부문별 항목코드
 BANK_LENDING_ITEMS: dict[str, str] = {
-    "all": "BDCA",  # 총대출
-    "household": "BDCB",  # 가계대출
-    "corporate": "BDCC",  # 기업대출
+    "all": "BDCA1",  # 총대출금
+    # Note: household/corporate는 단순 item_code로 구분 불가
+    # 가계대출은 151Y002 / 1110000 (예금취급기관)을 사용해야 함
+    # 기업대출은 산업별대출금 (131Y016) 등 별도 통계표 필요
 }
 
 

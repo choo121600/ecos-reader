@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2024-12-30
+
+### Fixed
+- **통계코드 및 항목코드 수정**: 실제 ECOS API와 일치하도록 모든 지표의 stat_code와 item_code 수정
+  - 근원 CPI: 항목코드 `AA0000` → `00`
+  - 생산자물가지수(PPI): 항목코드 `A00` → `*AA`
+  - 실질 GDP: 통계코드 `200Y001` → `200Y110`, 항목코드 `10101` → `10601`
+  - 명목 GDP: 통계코드 `200Y002` → `200Y109`, 항목코드 `10101` → `10601`
+  - GDP 디플레이터: 통계코드 `200Y004` → `200Y112`, 항목코드 `10101` → `10601`
+  - M1 통화량: 통계코드 `101Y018`/항목 `BBLS00` → `161Y004`/`BBKA00`
+  - M2 통화량: 별도 통계코드 `161Y008` 사용
+  - Lf 통화량: 별도 통계코드 `171Y002` 사용
+- **통화 지표 구조 개선**: 각 통화량 지표(M1, M2, Lf)가 올바른 통계코드를 사용하도록 수정
+- **은행 대출 함수 개선**: 가계대출 지원 추가, 기업대출은 별도 통계표 필요로 제거
+
+### Added
+- **E2E 테스트 확대**: 모든 High-Level 지표 함수에 대한 18개의 E2E 테스트 추가
+  - 금리 지표: 기준금리, 국고채 수익률, 장단기 금리차
+  - 물가 지표: CPI, 근원 CPI, PPI
+  - 성장 지표: GDP(분기/연간, 실질/명목), GDP 디플레이터
+  - 통화 지표: M1/M2/Lf, 은행 대출(전체/가계)
+  - 통합 워크플로우 및 캐시 기능 테스트
+
+### Changed
+- `constants.py`: 모든 통계코드와 항목코드를 실제 API 응답과 일치하도록 업데이트
+- `money.py`: 통화량 조회 시 지표별로 다른 통계코드를 사용하도록 리팩토링
+- `test_e2e_indicators.py`: 실제 API 응답에 맞춰 테스트 기대값 수정
+
 ## [0.1.2] - 2024-12-30
 
 ### Added
