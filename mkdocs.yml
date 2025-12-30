@@ -85,3 +85,4 @@ nav:
       - 거시경제 대시보드: examples/dashboard.md
   - 개발:
       - 기여하기: development/contributing.md
+      - 릴리스 가이드: development/release.md
