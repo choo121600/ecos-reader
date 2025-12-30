@@ -43,12 +43,16 @@ dev = [
     "responses>=0.23.0",
     "pre-commit>=3.0.0",
 ]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+]
 
 [project.urls]
-Homepage = "https://github.com/yeonguk/ecos-reader"
-Documentation = "https://github.com/yeonguk/ecos-reader#readme"
-Repository = "https://github.com/yeonguk/ecos-reader"
-Issues = "https://github.com/yeonguk/ecos-reader/issues"
+Homepage = "https://github.com/choo121600/ecos-reader"
+Documentation = "https://choo121600.github.io/ecos-reader/"
+Repository = "https://github.com/choo121600/ecos-reader"
+Issues = "https://github.com/choo121600/ecos-reader/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ecos"]

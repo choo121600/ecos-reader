@@ -240,8 +240,25 @@ ecos-reader/
 │       └── money.py         # 통화
 ├── tests/                   # 테스트 코드
 ├── examples/                # 예제 코드
+├── docs/                    # 문서
 ├── pyproject.toml
 └── README.md
+```
+
+## 문서
+
+전체 문서는 [ecos-reader 공식 문서](https://choo121600.github.io/ecos-reader/)에서 확인할 수 있습니다.
+
+### 로컬에서 문서 빌드
+
+```bash
+# 문서 도구 설치
+pip install -e ".[docs]"
+
+# 로컬 서버 실행
+mkdocs serve
+
+# 브라우저에서 http://127.0.0.1:8000 열기
 ```
 
 # 라이센스
