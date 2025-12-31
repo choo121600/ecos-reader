@@ -343,7 +343,6 @@ mkdocs serve
 
 ## 프로젝트 문서
 
-- **[API Reference](API_REFERENCE.md)**: 전체 사용 가이드 및 API 레퍼런스
 - **[구현 현황](ecos_implementation_status.csv)**: ECOS 통계 구현 현황 (43/664개, 6.5%)
 - **[기여 가이드](CONTRIBUTING.md)**: 프로젝트 기여 방법
 - **[변경 이력](CHANGELOG.md)**: 버전별 변경사항
