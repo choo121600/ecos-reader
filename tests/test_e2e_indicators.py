@@ -192,6 +192,370 @@ class TestE2EMoneyIndicators:
         assert len(df) > 0
 
 
+class TestE2EFiscalIndicators:
+    """재정 지표 E2E 테스트"""
+
+    def test_get_fiscal_balance(self):
+        """통합재정수지 조회"""
+        df = ecos.get_fiscal_balance(start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EStockIndicators:
+    """주식시장 지표 E2E 테스트"""
+
+    def test_get_stock_index_daily(self):
+        """주가지수 조회 (일별)"""
+        df = ecos.get_stock_index(frequency="daily", start_date="20230101", end_date="20230131")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_stock_index_monthly(self):
+        """주가지수 조회 (월별)"""
+        df = ecos.get_stock_index(frequency="monthly", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_investor_trading(self):
+        """투자자별 주식거래 조회"""
+        df = ecos.get_investor_trading(start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EBondIndicators:
+    """채권시장 지표 E2E 테스트"""
+
+    def test_get_bond_yield_type(self):
+        """채권 수익률 조회 (종류별)"""
+        df = ecos.get_bond_yield(bond_type="종류별", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_bond_yield_market(self):
+        """채권 수익률 조회 (시장별)"""
+        df = ecos.get_bond_yield(bond_type="시장별", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EBankRateIndicators:
+    """예금·대출 금리 지표 E2E 테스트"""
+
+    def test_get_bank_deposit_rate_new(self):
+        """예금은행 수신금리 (신규취급액)"""
+        df = ecos.get_bank_deposit_rate(basis="신규취급액", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_bank_deposit_rate_balance(self):
+        """예금은행 수신금리 (잔액)"""
+        df = ecos.get_bank_deposit_rate(basis="잔액", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_bank_lending_rate_new(self):
+        """예금은행 대출금리 (신규취급액)"""
+        df = ecos.get_bank_lending_rate(basis="신규취급액", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_bank_lending_rate_balance(self):
+        """예금은행 대출금리 (잔액)"""
+        df = ecos.get_bank_lending_rate(basis="잔액", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EMoneyVariantsIndicators:
+    """통화 세부 지표 E2E 테스트"""
+
+    def test_get_m1_variants_avg_seasonal(self):
+        """M1 세부 데이터 조회 (평잔_계절조정)"""
+        df = ecos.get_m1_variants(variant="평잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_m1_variants_avg_raw(self):
+        """M1 세부 데이터 조회 (평잔_원계열)"""
+        df = ecos.get_m1_variants(variant="평잔_원계열", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_m1_variants_end_seasonal(self):
+        """M1 세부 데이터 조회 (말잔_계절조정)"""
+        df = ecos.get_m1_variants(variant="말잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_variants_avg_seasonal(self):
+        """M2 세부 데이터 조회 (평잔_계절조정)"""
+        df = ecos.get_m2_variants(variant="평잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_variants_avg_raw(self):
+        """M2 세부 데이터 조회 (평잔_원계열)"""
+        df = ecos.get_m2_variants(variant="평잔_원계열", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_variants_end_seasonal(self):
+        """M2 세부 데이터 조회 (말잔_계절조정)"""
+        df = ecos.get_m2_variants(variant="말잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_by_holder_avg_seasonal(self):
+        """M2 경제주체별 조회 (평잔_계절조정)"""
+        df = ecos.get_m2_by_holder(variant="평잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_by_holder_avg_raw(self):
+        """M2 경제주체별 조회 (평잔_원계열)"""
+        df = ecos.get_m2_by_holder(variant="평잔_원계열", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EHouseholdFinanceIndicators:
+    """가계금융 지표 E2E 테스트"""
+
+    def test_get_household_credit_sector(self):
+        """가계신용 조회 (업권별)"""
+        df = ecos.get_household_credit(category="업권별", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_household_credit_purpose(self):
+        """가계신용 조회 (용도별)"""
+        df = ecos.get_household_credit(category="용도별", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_household_lending_detail(self):
+        """예금취급기관 가계대출 용도별"""
+        df = ecos.get_household_lending_detail(start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_borrower_loan_new(self):
+        """차주별 가계대출 (신규)"""
+        df = ecos.get_borrower_loan(loan_type="신규", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_borrower_loan_balance(self):
+        """차주별 가계대출 (잔액)"""
+        df = ecos.get_borrower_loan(loan_type="잔액", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EGrowthDetailIndicators:
+    """성장 세부 지표 E2E 테스트"""
+
+    def test_get_gdp_growth_rate_quarterly(self):
+        """실질 GDP 성장률 (분기)"""
+        df = ecos.get_gdp_growth_rate(frequency="Q", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_industry_real_seasonal(self):
+        """산업별 GDP (실질, 계절조정)"""
+        df = ecos.get_gdp_by_industry(
+            basis="real", seasonal_adj=True, frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_industry_nominal_seasonal(self):
+        """산업별 GDP (명목, 계절조정)"""
+        df = ecos.get_gdp_by_industry(
+            basis="nominal",
+            seasonal_adj=True,
+            frequency="Q",
+            start_date="2023Q1",
+            end_date="2023Q4",
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_industry_real_raw(self):
+        """산업별 GDP (실질, 원계열)"""
+        df = ecos.get_gdp_by_industry(
+            basis="real", seasonal_adj=False, frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_expenditure_real(self):
+        """지출항목별 GDP (실질)"""
+        df = ecos.get_gdp_by_expenditure(
+            basis="real", frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_expenditure_nominal(self):
+        """지출항목별 GDP (명목)"""
+        df = ecos.get_gdp_by_expenditure(
+            basis="nominal", frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_deflator_by_industry_quarterly(self):
+        """산업별 GDP 디플레이터 (분기)"""
+        df = ecos.get_gdp_deflator_by_industry(
+            frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_deflator_by_industry_annual(self):
+        """산업별 GDP 디플레이터 (연간)"""
+        df = ecos.get_gdp_deflator_by_industry(frequency="A", start_date="2020", end_date="2023")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EPriceDetailIndicators:
+    """물가 세부 지표 E2E 테스트"""
+
+    @pytest.mark.skip(reason="stat_code 901Y001이 ECOS API에 존재하지 않음")
+    def test_get_cpi_monthly(self):
+        """CPI 월별 원지수 (존재하지 않는 통계)"""
+        df = ecos.get_cpi_monthly(start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    @pytest.mark.skip(reason="stat_code 901Y002가 ECOS API에 존재하지 않음")
+    def test_get_cpi_by_category_goods(self):
+        """CPI 세부 항목 - 상품 (존재하지 않는 통계)"""
+        df = ecos.get_cpi_by_category(category="상품", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
 class TestE2EIntegrationWorkflow:
     """통합 워크플로우 테스트"""
 
@@ -220,6 +584,48 @@ class TestE2EIntegrationWorkflow:
         assert len(gdp) > 0
         assert len(m2) > 0
 
+    def test_financial_market_dashboard(self):
+        """금융시장 대시보드 데이터 수집"""
+
+        # 재정
+        fiscal = ecos.get_fiscal_balance(start_date="202301", end_date="202312")
+        assert not fiscal.empty
+
+        # 주식
+        stock = ecos.get_stock_index(frequency="monthly", start_date="202301", end_date="202312")
+        assert not stock.empty
+
+        # 채권
+        bond = ecos.get_bond_yield(bond_type="종류별", start_date="202301", end_date="202312")
+        assert not bond.empty
+
+        # 모든 데이터가 정상적으로 조회됨
+        assert len(fiscal) > 0
+        assert len(stock) > 0
+        assert len(bond) > 0
+
+    def test_household_finance_dashboard(self):
+        """가계금융 대시보드 데이터 수집"""
+
+        # 가계신용
+        credit = ecos.get_household_credit(
+            category="업권별", start_date="2023Q1", end_date="2023Q4"
+        )
+        assert not credit.empty
+
+        # 가계대출
+        lending = ecos.get_household_lending_detail(start_date="202301", end_date="202312")
+        assert not lending.empty
+
+        # 차주별 대출
+        borrower = ecos.get_borrower_loan(loan_type="잔액", start_date="2023Q1", end_date="2023Q4")
+        assert not borrower.empty
+
+        # 모든 데이터가 정상적으로 조회됨
+        assert len(credit) > 0
+        assert len(lending) > 0
+        assert len(borrower) > 0
+
     def test_cache_functionality(self):
         """캐시 기능 테스트"""
         # 캐시 활성화
@@ -240,3 +646,419 @@ class TestE2EIntegrationWorkflow:
 
         # 비활성화
         ecos.disable_cache()
+
+
+class TestE2EPhase1FiscalIndicators:
+    """Phase 1: 재정·금융시장 지표 E2E 테스트"""
+
+    def test_get_fiscal_balance(self):
+        """통합재정수지 조회"""
+        df = ecos.get_fiscal_balance(start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EPhase1StockIndicators:
+    """Phase 1: 주식시장 지표 E2E 테스트"""
+
+    def test_get_stock_index_daily(self):
+        """주가지수 조회 (일별)"""
+        df = ecos.get_stock_index(frequency="daily", start_date="20230101", end_date="20230131")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_stock_index_monthly(self):
+        """주가지수 조회 (월별)"""
+        df = ecos.get_stock_index(frequency="monthly", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_investor_trading(self):
+        """투자자별 주식거래 조회"""
+        df = ecos.get_investor_trading(start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EPhase1BondIndicators:
+    """Phase 1: 채권시장 지표 E2E 테스트"""
+
+    def test_get_bond_yield_type(self):
+        """채권 수익률 조회 (종류별)"""
+        df = ecos.get_bond_yield(bond_type="종류별", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_bond_yield_market(self):
+        """채권 수익률 조회 (시장별)"""
+        df = ecos.get_bond_yield(bond_type="시장별", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EPhase2MoneyIndicators:
+    """Phase 2: 통화·금융 세부 지표 E2E 테스트"""
+
+    def test_get_m1_variants_avg_seasonal(self):
+        """M1 세부 데이터 조회 (평잔_계절조정)"""
+        df = ecos.get_m1_variants(variant="평잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_m1_variants_avg_raw(self):
+        """M1 세부 데이터 조회 (평잔_원계열)"""
+        df = ecos.get_m1_variants(variant="평잔_원계열", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_m1_variants_end_seasonal(self):
+        """M1 세부 데이터 조회 (말잔_계절조정)"""
+        df = ecos.get_m1_variants(variant="말잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_variants_avg_seasonal(self):
+        """M2 세부 데이터 조회 (평잔_계절조정)"""
+        df = ecos.get_m2_variants(variant="평잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_variants_avg_raw(self):
+        """M2 세부 데이터 조회 (평잔_원계열)"""
+        df = ecos.get_m2_variants(variant="평잔_원계열", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_variants_end_seasonal(self):
+        """M2 세부 데이터 조회 (말잔_계절조정)"""
+        df = ecos.get_m2_variants(variant="말잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_by_holder_avg_seasonal(self):
+        """M2 경제주체별 조회 (평잔_계절조정)"""
+        df = ecos.get_m2_by_holder(variant="평잔_계절조정", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_m2_by_holder_avg_raw(self):
+        """M2 경제주체별 조회 (평잔_원계열)"""
+        df = ecos.get_m2_by_holder(variant="평잔_원계열", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_household_credit_sector(self):
+        """가계신용 조회 (업권별)"""
+        df = ecos.get_household_credit(category="업권별", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_household_credit_purpose(self):
+        """가계신용 조회 (용도별)"""
+        df = ecos.get_household_credit(category="용도별", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_household_lending_detail(self):
+        """예금취급기관 가계대출 용도별"""
+        df = ecos.get_household_lending_detail(start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_borrower_loan_new(self):
+        """차주별 가계대출 (신규)"""
+        df = ecos.get_borrower_loan(loan_type="신규", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_borrower_loan_balance(self):
+        """차주별 가계대출 (잔액)"""
+        df = ecos.get_borrower_loan(loan_type="잔액", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EPhase2InterestRateIndicators:
+    """Phase 2: 금리 세부 지표 E2E 테스트"""
+
+    def test_get_bank_deposit_rate_new(self):
+        """예금은행 수신금리 (신규취급액)"""
+        df = ecos.get_bank_deposit_rate(basis="신규취급액", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_bank_deposit_rate_balance(self):
+        """예금은행 수신금리 (잔액)"""
+        df = ecos.get_bank_deposit_rate(basis="잔액", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_bank_lending_rate_new(self):
+        """예금은행 대출금리 (신규취급액)"""
+        df = ecos.get_bank_lending_rate(basis="신규취급액", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_bank_lending_rate_balance(self):
+        """예금은행 대출금리 (잔액)"""
+        df = ecos.get_bank_lending_rate(basis="잔액", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EPhase3GrowthIndicators:
+    """Phase 3: 경제성장 세부 지표 E2E 테스트"""
+
+    def test_get_gdp_growth_rate_quarterly(self):
+        """실질 GDP 성장률 (분기)"""
+        df = ecos.get_gdp_growth_rate(frequency="Q", start_date="2023Q1", end_date="2023Q4")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    @pytest.mark.skip(reason="stat_code 200Y104는 분기 데이터만 제공 (연간 미지원)")
+    def test_get_gdp_growth_rate_annual(self):
+        """실질 GDP 성장률 (연간) - 미지원"""
+        df = ecos.get_gdp_growth_rate(frequency="A", start_date="2020", end_date="2023")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_industry_real_seasonal(self):
+        """산업별 GDP (실질, 계절조정)"""
+        df = ecos.get_gdp_by_industry(
+            basis="real", seasonal_adj=True, frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_industry_nominal_seasonal(self):
+        """산업별 GDP (명목, 계절조정)"""
+        df = ecos.get_gdp_by_industry(
+            basis="nominal",
+            seasonal_adj=True,
+            frequency="Q",
+            start_date="2023Q1",
+            end_date="2023Q4",
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_industry_real_raw(self):
+        """산업별 GDP (실질, 원계열)"""
+        df = ecos.get_gdp_by_industry(
+            basis="real", seasonal_adj=False, frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_expenditure_real(self):
+        """지출항목별 GDP (실질)"""
+        df = ecos.get_gdp_by_expenditure(
+            basis="real", frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_by_expenditure_nominal(self):
+        """지출항목별 GDP (명목)"""
+        df = ecos.get_gdp_by_expenditure(
+            basis="nominal", frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_deflator_by_industry_quarterly(self):
+        """산업별 GDP 디플레이터 (분기)"""
+        df = ecos.get_gdp_deflator_by_industry(
+            frequency="Q", start_date="2023Q1", end_date="2023Q4"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert len(df) > 0
+
+    def test_get_gdp_deflator_by_industry_annual(self):
+        """산업별 GDP 디플레이터 (연간)"""
+        df = ecos.get_gdp_deflator_by_industry(frequency="A", start_date="2020", end_date="2023")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EPhase4PriceIndicators:
+    """Phase 4: 물가 세부 지표 E2E 테스트"""
+
+    @pytest.mark.skip(reason="stat_code 901Y001이 ECOS API에 존재하지 않음")
+    def test_get_cpi_monthly(self):
+        """CPI 월별 원지수 (존재하지 않는 통계)"""
+        df = ecos.get_cpi_monthly(start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    @pytest.mark.skip(reason="stat_code 901Y002가 ECOS API에 존재하지 않음")
+    def test_get_cpi_by_category_goods(self):
+        """CPI 세부 항목 - 상품 (존재하지 않는 통계)"""
+        df = ecos.get_cpi_by_category(category="상품", start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+
+class TestE2EIntegrationNewIndicators:
+    """신규 지표 통합 워크플로우 테스트"""
+
+    def test_financial_market_dashboard(self):
+        """금융시장 대시보드 데이터 수집"""
+
+        # 재정
+        fiscal = ecos.get_fiscal_balance(start_date="202301", end_date="202312")
+        assert not fiscal.empty
+
+        # 주식
+        stock = ecos.get_stock_index(frequency="monthly", start_date="202301", end_date="202312")
+        assert not stock.empty
+
+        # 채권
+        bond = ecos.get_bond_yield(bond_type="종류별", start_date="202301", end_date="202312")
+        assert not bond.empty
+
+        # 모든 데이터가 정상적으로 조회됨
+        assert len(fiscal) > 0
+        assert len(stock) > 0
+        assert len(bond) > 0
+
+    def test_household_finance_dashboard(self):
+        """가계금융 대시보드 데이터 수집"""
+
+        # 가계신용
+        credit = ecos.get_household_credit(
+            category="업권별", start_date="2023Q1", end_date="2023Q4"
+        )
+        assert not credit.empty
+
+        # 가계대출
+        lending = ecos.get_household_lending_detail(start_date="202301", end_date="202312")
+        assert not lending.empty
+
+        # 차주별 대출
+        borrower = ecos.get_borrower_loan(loan_type="잔액", start_date="2023Q1", end_date="2023Q4")
+        assert not borrower.empty
+
+        # 모든 데이터가 정상적으로 조회됨
+        assert len(credit) > 0
+        assert len(lending) > 0
+        assert len(borrower) > 0

@@ -17,6 +17,10 @@ from ..constants import (
     PERIOD_DAILY,
     PERIOD_MONTHLY,
     STAT_BASE_RATE,
+    STAT_DEPOSIT_RATE_BALANCE,
+    STAT_DEPOSIT_RATE_NEW,
+    STAT_LENDING_RATE_BALANCE,
+    STAT_LENDING_RATE_NEW,
     STAT_MARKET_RATE,
     TREASURY_YIELD_ITEMS,
 )
@@ -224,3 +228,159 @@ def get_yield_spread(
     merged["unit"] = "%p"
 
     return merged.sort_values("date").reset_index(drop=True)
+
+
+def get_bank_deposit_rate(
+    basis: Literal["신규취급액", "잔액"] = "신규취급액",
+    start_date: str | None = None,
+    end_date: str | None = None,
+) -> pd.DataFrame:
+    """
+    예금은행 수신금리를 조회합니다.
+
+    신규취급액 기준 또는 잔액 기준 수신금리를 제공합니다.
+
+    Parameters
+    ----------
+    basis : str
+        금리 산정 기준
+        - '신규취급액': 신규취급액 기준 (기본값)
+        - '잔액': 잔액 기준
+    start_date : str, optional
+        조회 시작일 (YYYYMM 형식), 기본값: 1년 전
+    end_date : str, optional
+        조회 종료일 (YYYYMM 형식), 기본값: 현재
+
+    Returns
+    -------
+    pd.DataFrame
+        컬럼: date, value, unit
+        - date: 날짜 (datetime)
+        - value: 수신금리 (%)
+        - unit: 단위
+
+    Notes
+    -----
+    - 수신금리: 은행이 예금을 받을 때 지급하는 이자율
+    - 신규취급액 기준: 당월 신규로 취급된 예금의 금리
+    - 잔액 기준: 전체 예금 잔액 기준 가중평균 금리
+
+    수신금리는 기준금리의 변화를 반영하며, 예금자의 저축 수익률을
+    결정하는 중요한 지표입니다.
+
+    Examples
+    --------
+    >>> import ecos
+    >>> df = ecos.get_bank_deposit_rate()
+    >>> df.head()
+            date  value unit
+    0 2024-01-01   3.20    %
+
+    >>> df = ecos.get_bank_deposit_rate(basis="잔액")
+    """
+    if basis not in ["신규취급액", "잔액"]:
+        raise ValueError("basis는 '신규취급액' 또는 '잔액' 중 하나여야 합니다.")
+
+    # 기본 날짜 설정
+    if start_date is None or end_date is None:
+        default_start, default_end = _get_default_dates(12)
+        start_date = start_date or default_start
+        end_date = end_date or default_end
+
+    # basis에 따른 stat_code 및 item_code 선택
+    if basis == "신규취급액":
+        stat_code = STAT_DEPOSIT_RATE_NEW
+        item_code = "BEABAA2"  # 저축성수신
+    else:  # 잔액
+        stat_code = STAT_DEPOSIT_RATE_BALANCE
+        item_code = "BEABAB2"  # 총수신
+
+    client = get_client()
+    response = client.get_statistic_search(
+        stat_code=stat_code,
+        period=PERIOD_MONTHLY,
+        start_date=start_date,
+        end_date=end_date,
+        item_code1=item_code,
+    )
+
+    df = parse_response(response)
+    return normalize_stat_result(df)
+
+
+def get_bank_lending_rate(
+    basis: Literal["신규취급액", "잔액"] = "신규취급액",
+    start_date: str | None = None,
+    end_date: str | None = None,
+) -> pd.DataFrame:
+    """
+    예금은행 대출금리를 조회합니다.
+
+    신규취급액 기준 또는 잔액 기준 대출금리를 제공합니다.
+
+    Parameters
+    ----------
+    basis : str
+        금리 산정 기준
+        - '신규취급액': 신규취급액 기준 (기본값)
+        - '잔액': 잔액 기준
+    start_date : str, optional
+        조회 시작일 (YYYYMM 형식), 기본값: 1년 전
+    end_date : str, optional
+        조회 종료일 (YYYYMM 형식), 기본값: 현재
+
+    Returns
+    -------
+    pd.DataFrame
+        컬럼: date, value, unit
+        - date: 날짜 (datetime)
+        - value: 대출금리 (%)
+        - unit: 단위
+
+    Notes
+    -----
+    - 대출금리: 은행이 대출을 실행할 때 적용하는 이자율
+    - 신규취급액 기준: 당월 신규로 실행된 대출의 금리
+    - 잔액 기준: 전체 대출 잔액 기준 가중평균 금리
+
+    대출금리는 기준금리와 시장 상황을 반영하며, 기업과 가계의
+    자금 조달 비용을 결정하는 핵심 지표입니다.
+
+    Examples
+    --------
+    >>> import ecos
+    >>> df = ecos.get_bank_lending_rate()
+    >>> df.head()
+            date  value unit
+    0 2024-01-01   4.50    %
+
+    >>> df = ecos.get_bank_lending_rate(basis="잔액")
+    """
+    if basis not in ["신규취급액", "잔액"]:
+        raise ValueError("basis는 '신규취급액' 또는 '잔액' 중 하나여야 합니다.")
+
+    # 기본 날짜 설정
+    if start_date is None or end_date is None:
+        default_start, default_end = _get_default_dates(12)
+        start_date = start_date or default_start
+        end_date = end_date or default_end
+
+    # basis에 따른 stat_code 및 item_code 선택
+    if basis == "신규취급액":
+        stat_code = STAT_LENDING_RATE_NEW
+        item_code = "BECBLA01"  # 대출평균
+    else:  # 잔액
+        stat_code = STAT_LENDING_RATE_BALANCE
+        item_code = "BECBLB01"  # 총대출
+
+    client = get_client()
+    response = client.get_statistic_search(
+        stat_code=stat_code,
+        period=PERIOD_MONTHLY,
+        start_date=start_date,
+        end_date=end_date,
+        item_code1=item_code,
+    )
+
+    df = parse_response(response)
+    return normalize_stat_result(df)

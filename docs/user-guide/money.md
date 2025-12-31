@@ -209,6 +209,228 @@ merged['household_ratio'] = (merged['가계'] / merged['total']) * 100
 print(f"\n가계대출 비중: {merged.iloc[-1]['household_ratio']:.1f}%")
 ```
 
+## M1 세부 데이터
+
+M1 통화량의 평잔/말잔, 계절조정/원계열 세부 데이터를 조회합니다.
+
+### 지원 유형
+
+- `평잔_계절조정` - 평균잔액, 계절조정 계열 (기본값)
+- `평잔_원계열` - 평균잔액, 원계열
+- `말잔_계절조정` - 말일잔액, 계절조정 계열
+
+### 기본 사용법
+
+```python
+import ecos
+
+# M1 평잔 계절조정
+df = ecos.get_m1_variants(variant="평잔_계절조정")
+print(df.tail())
+
+# M1 말잔 계절조정
+df = ecos.get_m1_variants(variant="말잔_계절조정")
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+df = ecos.get_m1_variants(
+    variant="평잔_계절조정",
+    start_date="202001",
+    end_date="202412"
+)
+```
+
+## M2 세부 데이터
+
+M2 통화량의 평잔/말잔, 계절조정/원계열 세부 데이터를 조회합니다.
+
+### 지원 유형
+
+- `평잔_계절조정` - 평균잔액, 계절조정 계열 (기본값)
+- `평잔_원계열` - 평균잔액, 원계열
+- `말잔_계절조정` - 말일잔액, 계절조정 계열
+
+### 기본 사용법
+
+```python
+import ecos
+
+# M2 평잔 계절조정
+df = ecos.get_m2_variants(variant="평잔_계절조정")
+print(df.tail())
+
+# M2 말잔 계절조정
+df = ecos.get_m2_variants(variant="말잔_계절조정")
+print(df.tail())
+```
+
+### M2 경제주체별
+
+M2를 경제주체(가계, 기업 등)별로 분류한 데이터를 조회합니다.
+
+```python
+import ecos
+
+# M2 경제주체별 (평잔 계절조정)
+df = ecos.get_m2_by_holder(variant="평잔_계절조정")
+print(df.tail())
+
+# M2 경제주체별 (평잔 원계열)
+df = ecos.get_m2_by_holder(variant="평잔_원계열")
+print(df.tail())
+```
+
+### 지원 유형
+
+- `평잔_계절조정` - 평균잔액, 계절조정 계열 (기본값)
+- `평잔_원계열` - 평균잔액, 원계열
+- `말잔_계절조정` - 말일잔액, 계절조정 계열
+- `말잔_원계열` - 말일잔액, 원계열
+
+## 가계신용
+
+가계신용 데이터를 업권별 또는 용도별로 조회합니다.
+
+### 지원 카테고리
+
+- `업권별` - 예금은행, 비은행예금취급기관 등 업권별 분류 (기본값)
+- `용도별` - 주택구입, 생활비 등 용도별 분류
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 가계신용 (업권별)
+df = ecos.get_household_credit(category="업권별")
+print(df.tail())
+
+# 가계신용 (용도별)
+df = ecos.get_household_credit(category="용도별")
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+# 2023년 데이터 (분기별)
+df = ecos.get_household_credit(
+    category="업권별",
+    start_date="2023Q1",
+    end_date="2023Q4"
+)
+```
+
+!!! info "날짜 형식"
+    가계신용은 분기 데이터이므로 `YYYYQN` 형식을 사용합니다.
+
+### 반환 데이터 구조
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `date` | datetime | 조회 분기 |
+| `value` | float | 가계신용 (10억원) |
+| `unit` | str | 단위 (십억원) |
+
+## 가계대출 세부 데이터
+
+예금취급기관의 가계대출을 용도별로 상세 조회합니다.
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 예금취급기관 가계대출 용도별
+df = ecos.get_household_lending_detail()
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+df = ecos.get_household_lending_detail(
+    start_date="202001",
+    end_date="202412"
+)
+```
+
+## 차주별 가계대출
+
+차주 유형별(주택담보대출 등) 가계대출을 신규 또는 잔액 기준으로 조회합니다.
+
+### 지원 유형
+
+- `신규` - 신규 취급액 기준 (기본값)
+- `잔액` - 대출 잔액 기준
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 차주별 신규 대출
+df = ecos.get_borrower_loan(loan_type="신규")
+print(df.tail())
+
+# 차주별 대출 잔액
+df = ecos.get_borrower_loan(loan_type="잔액")
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+# 2023년 데이터 (분기별)
+df = ecos.get_borrower_loan(
+    loan_type="잔액",
+    start_date="2023Q1",
+    end_date="2023Q4"
+)
+```
+
+!!! info "날짜 형식"
+    차주별 대출은 분기 데이터이므로 `YYYYQN` 형식을 사용합니다.
+
+### 반환 데이터 구조
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `date` | datetime | 조회 분기 |
+| `value` | float | 대출액 (10억원) |
+| `unit` | str | 단위 (십억원) |
+
+### 차주별 대출 구조 분석
+
+```python
+import ecos
+import matplotlib.pyplot as plt
+
+# 차주별 대출 잔액 조회
+df = ecos.get_borrower_loan(
+    loan_type="잔액",
+    start_date="2020Q1"
+)
+
+# 조원 단위로 변환
+df['value_trillion'] = df['value'] / 1000
+
+# 시각화
+df.set_index('date')['value_trillion'].plot(
+    kind='bar',
+    title='차주별 가계대출 잔액',
+    ylabel='대출 잔액 (조원)',
+    figsize=(14, 6),
+    grid=True
+)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+```
+
 ## 실전 활용 예제
 
 ### 통화량 증가율 계산

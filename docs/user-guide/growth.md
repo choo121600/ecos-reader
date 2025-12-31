@@ -351,6 +351,151 @@ min_date = df[df['value'] == min_covid]['date'].iloc[0]
 print(f"\n최대 충격: {min_covid:.2f}% ({min_date.strftime('%Y-Q%q')})")
 ```
 
+## GDP 성장률
+
+실질 GDP의 전기대비 성장률을 조회합니다.
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 분기별 GDP 성장률
+df = ecos.get_gdp_growth_rate(frequency="Q")
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+# 2020년 1분기부터 2024년 4분기까지
+df = ecos.get_gdp_growth_rate(
+    frequency="Q",
+    start_date="2020Q1",
+    end_date="2024Q4"
+)
+```
+
+## 산업별 GDP
+
+산업별로 분류된 GDP 데이터를 조회합니다.
+
+### 매개변수
+
+- `basis`: 기준
+    - `"real"` - 실질 GDP (기본값)
+    - `"nominal"` - 명목 GDP
+- `seasonal_adj`: 계절조정 여부
+    - `True` - 계절조정 계열 (기본값)
+    - `False` - 원계열
+- `frequency`: 조회 빈도
+    - `"Q"` - 분기별 (기본값)
+    - `"A"` - 연간
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 산업별 실질 GDP (계절조정, 분기)
+df = ecos.get_gdp_by_industry(
+    basis="real",
+    seasonal_adj=True,
+    frequency="Q"
+)
+print(df.tail())
+
+# 산업별 명목 GDP (원계열, 분기)
+df = ecos.get_gdp_by_industry(
+    basis="nominal",
+    seasonal_adj=False,
+    frequency="Q"
+)
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+df = ecos.get_gdp_by_industry(
+    basis="real",
+    seasonal_adj=True,
+    frequency="Q",
+    start_date="2020Q1",
+    end_date="2024Q4"
+)
+```
+
+## 지출항목별 GDP
+
+지출항목(소비, 투자, 수출 등)별로 분류된 GDP 데이터를 조회합니다.
+
+### 매개변수
+
+- `basis`: 기준
+    - `"real"` - 실질 GDP (기본값)
+    - `"nominal"` - 명목 GDP
+- `frequency`: 조회 빈도
+    - `"Q"` - 분기별 (기본값)
+    - `"A"` - 연간
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 지출항목별 실질 GDP
+df = ecos.get_gdp_by_expenditure(basis="real", frequency="Q")
+print(df.tail())
+
+# 지출항목별 명목 GDP
+df = ecos.get_gdp_by_expenditure(basis="nominal", frequency="Q")
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+df = ecos.get_gdp_by_expenditure(
+    basis="real",
+    frequency="Q",
+    start_date="2020Q1",
+    end_date="2024Q4"
+)
+```
+
+## 산업별 GDP 디플레이터
+
+산업별 GDP 디플레이터를 조회합니다.
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 산업별 GDP 디플레이터
+df = ecos.get_gdp_deflator_by_industry(frequency="Q")
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+df = ecos.get_gdp_deflator_by_industry(
+    frequency="Q",
+    start_date="2020Q1",
+    end_date="2024Q4"
+)
+```
+
+### 반환 데이터 구조
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `date` | datetime | 조회 분기 |
+| `value` | float | 디플레이터 지수 |
+| `unit` | str | 단위 |
+
 ## 다음 단계
 
 - [물가 지표](prices.md) - CPI, PPI 등

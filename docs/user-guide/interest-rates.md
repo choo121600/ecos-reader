@@ -297,6 +297,249 @@ print(f"최저점: {trough_value}% ({trough_date.strftime('%Y-%m-%d')})")
 print(f"사이클 범위: {peak_value - trough_value}%p")
 ```
 
+## 예금은행 수신금리
+
+예금은행의 수신금리(예금금리)를 신규취급액 기준 또는 잔액 기준으로 조회합니다.
+
+### 지원 기준
+
+- `신규취급액` - 신규 예금에 적용되는 금리 (기본값)
+- `잔액` - 기존 예금 잔액 전체의 평균 금리
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 신규취급액 기준 수신금리
+df = ecos.get_bank_deposit_rate(basis="신규취급액")
+print(df.tail())
+
+# 잔액 기준 수신금리
+df = ecos.get_bank_deposit_rate(basis="잔액")
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+# 2024년 데이터
+df = ecos.get_bank_deposit_rate(
+    basis="신규취급액",
+    start_date="202401",
+    end_date="202412"
+)
+```
+
+!!! info "날짜 형식"
+    수신금리는 월간 데이터이므로 `YYYYMM` 형식을 사용합니다.
+
+### 반환 데이터 구조
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `date` | datetime | 조회 월 |
+| `value` | float | 수신금리 (%) |
+| `unit` | str | 단위 (%) |
+
+### 신규 vs 잔액 금리 비교
+
+```python
+import ecos
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 두 기준 조회
+new_rate = ecos.get_bank_deposit_rate(basis="신규취급액", start_date="202001")
+balance_rate = ecos.get_bank_deposit_rate(basis="잔액", start_date="202001")
+
+# 데이터 병합
+merged = pd.merge(
+    new_rate[['date', 'value']].rename(columns={'value': '신규'}),
+    balance_rate[['date', 'value']].rename(columns={'value': '잔액'}),
+    on='date'
+)
+
+# 금리차 계산
+merged['spread'] = merged['신규'] - merged['잔액']
+
+# 시각화
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
+
+# 금리 수준
+merged.set_index('date')[['신규', '잔액']].plot(
+    ax=ax1,
+    title='예금금리: 신규 vs 잔액',
+    ylabel='금리 (%)',
+    grid=True
+)
+ax1.legend(['신규취급액', '잔액'])
+
+# 금리차
+merged.set_index('date')['spread'].plot(
+    ax=ax2,
+    title='신규-잔액 금리차',
+    ylabel='금리차 (%p)',
+    grid=True,
+    color='purple'
+)
+ax2.axhline(y=0, color='black', linestyle='-', linewidth=0.5)
+
+plt.tight_layout()
+plt.show()
+
+print(f"평균 금리차: {merged['spread'].mean():.3f}%p")
+```
+
+## 예금은행 대출금리
+
+예금은행의 대출금리를 신규취급액 기준 또는 잔액 기준으로 조회합니다.
+
+### 지원 기준
+
+- `신규취급액` - 신규 대출에 적용되는 금리 (기본값)
+- `잔액` - 기존 대출 잔액 전체의 평균 금리
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 신규취급액 기준 대출금리
+df = ecos.get_bank_lending_rate(basis="신규취급액")
+print(df.tail())
+
+# 잔액 기준 대출금리
+df = ecos.get_bank_lending_rate(basis="잔액")
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+# 2024년 데이터
+df = ecos.get_bank_lending_rate(
+    basis="신규취급액",
+    start_date="202401",
+    end_date="202412"
+)
+```
+
+### 반환 데이터 구조
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `date` | datetime | 조회 월 |
+| `value` | float | 대출금리 (%) |
+| `unit` | str | 단위 (%) |
+
+### 예대금리차 분석
+
+```python
+import ecos
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 예금금리와 대출금리 조회
+deposit = ecos.get_bank_deposit_rate(basis="신규취급액", start_date="202001")
+lending = ecos.get_bank_lending_rate(basis="신규취급액", start_date="202001")
+
+# 데이터 병합
+merged = pd.merge(
+    deposit[['date', 'value']].rename(columns={'value': '예금금리'}),
+    lending[['date', 'value']].rename(columns={'value': '대출금리'}),
+    on='date'
+)
+
+# 예대금리차 계산
+merged['spread'] = merged['대출금리'] - merged['예금금리']
+
+# 시각화
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
+
+# 금리 수준
+merged.set_index('date')[['예금금리', '대출금리']].plot(
+    ax=ax1,
+    title='예금금리 vs 대출금리',
+    ylabel='금리 (%)',
+    grid=True
+)
+
+# 예대금리차
+merged.set_index('date')['spread'].plot(
+    ax=ax2,
+    title='예대금리차 (Net Interest Margin)',
+    ylabel='금리차 (%p)',
+    grid=True,
+    color='green'
+)
+ax2.axhline(y=merged['spread'].mean(), color='red', linestyle='--',
+            linewidth=1, label=f'평균: {merged["spread"].mean():.2f}%p')
+ax2.legend()
+
+plt.tight_layout()
+plt.show()
+
+# 통계
+print("예대금리차 통계:")
+print(f"평균: {merged['spread'].mean():.2f}%p")
+print(f"최대: {merged['spread'].max():.2f}%p")
+print(f"최소: {merged['spread'].min():.2f}%p")
+print(f"현재: {merged.iloc[-1]['spread']:.2f}%p")
+```
+
+### 기준금리와 시장금리 관계
+
+```python
+import ecos
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 데이터 조회
+base_rate = ecos.get_base_rate(start_date="202001")
+lending_rate = ecos.get_bank_lending_rate(basis="신규취급액", start_date="202001")
+
+# 데이터 병합
+merged = pd.merge(
+    base_rate[['date', 'value']].rename(columns={'value': '기준금리'}),
+    lending_rate[['date', 'value']].rename(columns={'value': '대출금리'}),
+    on='date'
+)
+
+# 가산금리 계산
+merged['spread'] = merged['대출금리'] - merged['기준금리']
+
+# 시각화
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
+
+# 금리 수준
+merged.set_index('date')[['기준금리', '대출금리']].plot(
+    ax=ax1,
+    title='기준금리 vs 대출금리',
+    ylabel='금리 (%)',
+    grid=True
+)
+
+# 가산금리 (스프레드)
+merged.set_index('date')['spread'].plot(
+    ax=ax2,
+    title='대출 가산금리',
+    ylabel='가산금리 (%p)',
+    grid=True,
+    color='orange'
+)
+ax2.axhline(y=merged['spread'].mean(), color='blue', linestyle='--',
+            linewidth=1, label=f'평균: {merged["spread"].mean():.2f}%p')
+ax2.legend()
+
+plt.tight_layout()
+plt.show()
+
+print("대출 가산금리 분석:")
+print(f"평균 가산금리: {merged['spread'].mean():.2f}%p")
+print(f"현재 가산금리: {merged.iloc[-1]['spread']:.2f}%p")
+```
+
 ## 다음 단계
 
 - [물가 지표](prices.md) - CPI, PPI 등 물가 지표 활용

@@ -74,6 +74,8 @@ nav:
       - 물가 지표: user-guide/prices.md
       - 성장 지표: user-guide/growth.md
       - 통화 지표: user-guide/money.md
+      - 재정 지표: user-guide/fiscal.md
+      - 금융시장 지표: user-guide/financial-markets.md
       - 고급 기능: user-guide/advanced.md
   - API 레퍼런스:
       - 개요: api-reference/overview.md

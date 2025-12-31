@@ -5,7 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.3] - 2024-12-30
+## [0.1.4] - 2025-12-31
+
+### Added - 30개 신규 함수
+
+**재정 지표 (1개)**
+- `get_fiscal_balance()` - 통합재정수지
+
+**금융시장 지표 (5개)**
+- `get_stock_index(frequency)` - 주가지수 KOSPI (일별/월별)
+- `get_investor_trading()` - 투자자별 주식거래
+- `get_bond_yield(bond_type)` - 채권 수익률 (종류별/시장별)
+
+**금리 지표 (2개)**
+- `get_bank_deposit_rate(basis)` - 예금은행 수신금리 (신규/잔액)
+- `get_bank_lending_rate(basis)` - 예금은행 대출금리 (신규/잔액)
+
+**통화·금융 지표 (13개)**
+- `get_m1_variants(variant)` - M1 평잔/말잔, 계절조정/원계열
+- `get_m2_variants(variant)` - M2 평잔/말잔, 계절조정/원계열
+- `get_m2_by_holder(variant)` - M2 경제주체별
+- `get_household_credit(category)` - 가계신용 업권별/용도별
+- `get_household_lending_detail()` - 예금취급기관 가계대출 용도별
+- `get_borrower_loan(loan_type)` - 차주별 가계대출 신규/잔액
+
+**성장 지표 (9개)**
+- `get_gdp_growth_rate(frequency)` - 실질 GDP 성장률
+- `get_gdp_by_industry(basis, seasonal_adj, frequency)` - 산업별 GDP
+- `get_gdp_by_expenditure(basis, frequency)` - 지출항목별 GDP
+- `get_gdp_deflator_by_industry(frequency)` - 산업별 GDP 디플레이터
+
+### Changed
+- 모든 stat_code의 item_code를 ECOS API와 검증하여 수정
+- Constants 모듈 확장 (30개 새 stat_code 및 매핑 추가)
+
+### Fixed
+- 조건부 item_code 선택 구현 (일별/월별, 신규/잔액 등)
+
+## [0.1.3] - 2025-12-30
 
 ### Fixed
 - **통계코드 및 항목코드 수정**: 실제 ECOS API와 일치하도록 모든 지표의 stat_code와 item_code 수정
@@ -33,7 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `money.py`: 통화량 조회 시 지표별로 다른 통계코드를 사용하도록 리팩토링
 - `test_e2e_indicators.py`: 실제 API 응답에 맞춰 테스트 기대값 수정
 
-## [0.1.2] - 2024-12-30
+## [0.1.2] - 2025-12-30
 
 ### Added
 - **완전한 ECOS API 지원**: 누락되었던 3개의 API 엔드포인트 추가
@@ -60,7 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 공식 ECOS API 가이드와 완전히 일치하도록 코드 리팩토링
 - URL 구성 및 파라미터 처리 개선
 
-## [0.1.1] - 2024-12-30
+## [0.1.1] - 2025-12-30
 
 ### Added
 - 완전한 MkDocs 문서 사이트
@@ -76,7 +113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README에 문서 링크 추가
 - pyproject.toml의 Documentation URL을 GitHub Pages로 업데이트
 
-## [0.1.0] - 2024-12-30
+## [0.1.0] - 2025-12-30
 
 ### Added
 - 초기 릴리스
