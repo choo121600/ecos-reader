@@ -27,6 +27,7 @@ from ..constants import (
     STAT_GDP_REAL,
 )
 from ..parser import normalize_stat_result, parse_response
+from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 
 
 def _get_default_dates_quarterly(years_back: int = 5) -> tuple[str, str]:
@@ -299,6 +300,14 @@ def get_gdp_by_industry(
         - value: 산업별 GDP (조원)
         - unit: 단위
 
+    Warnings
+    --------
+    DeprecationWarning
+        현재 단일 항목(`item_code1="1101"`, 농림어업)만 반환하며 함수명이 시사하는
+        전체 산업 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
+        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
+        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     - 계절조정: 계절적 요인 제거
@@ -321,6 +330,8 @@ def get_gdp_by_industry(
 
     if variant_key not in GDP_BY_INDUSTRY_VARIANTS:
         raise ValueError(f"지원하지 않는 조합입니다: basis={basis}, seasonal_adj={seasonal_adj}")
+
+    _warn_partial_coverage("get_gdp_by_industry", "1101", "농림어업")
 
     stat_code = GDP_BY_INDUSTRY_VARIANTS[variant_key]
 
@@ -383,6 +394,14 @@ def get_gdp_by_expenditure(
         - value: 지출항목별 GDP (조원)
         - unit: 단위
 
+    Warnings
+    --------
+    DeprecationWarning
+        현재 단일 항목(`item_code1="10601"`, 지출항목별 전체(미확인))만 반환하며 함수명이
+        시사하는 전체 지출 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
+        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
+        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     GDP 지출항목:
@@ -406,6 +425,8 @@ def get_gdp_by_expenditure(
 
     if variant_key not in GDP_BY_EXPENDITURE_VARIANTS:
         raise ValueError(f"지원하지 않는 조합입니다: basis={basis}")
+
+    _warn_partial_coverage("get_gdp_by_expenditure", "10601", "지출항목별 전체(미확인)")
 
     stat_code = GDP_BY_EXPENDITURE_VARIANTS[variant_key]
 
@@ -463,6 +484,14 @@ def get_gdp_deflator_by_industry(
         - value: GDP 디플레이터
         - unit: 단위
 
+    Warnings
+    --------
+    DeprecationWarning
+        현재 단일 항목(`item_code1="1101"`, 농림어업)만 반환하며 함수명이 시사하는
+        전체 산업 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
+        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
+        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     - GDP 디플레이터 = (명목 GDP / 실질 GDP) × 100
@@ -480,6 +509,8 @@ def get_gdp_deflator_by_industry(
     """
     # 주기 코드
     period = PERIOD_QUARTERLY if frequency == "Q" else PERIOD_ANNUAL
+
+    _warn_partial_coverage("get_gdp_deflator_by_industry", "1101", "농림어업")
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:

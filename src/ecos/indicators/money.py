@@ -33,6 +33,7 @@ from ..constants import (
     STAT_HOUSEHOLD_LENDING_PURPOSE,
 )
 from ..parser import normalize_stat_result, parse_response
+from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 
 
 def _get_default_dates(months_back: int = 36) -> tuple[str, str]:
@@ -507,6 +508,14 @@ def get_household_lending_detail(
         - value: 가계대출 (조원)
         - unit: 단위
 
+    Warnings
+    --------
+    DeprecationWarning
+        현재 단일 항목(`item_code1="1110000"`, 예금취급기관(미확인))만 반환하며 함수명이
+        시사하는 전체 용도별 대출 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될
+        예정이며, 현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접
+        item_code1을 전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     예금취급기관 = 은행 + 비은행 예금취급기관
@@ -527,6 +536,8 @@ def get_household_lending_detail(
         default_start, default_end = _get_default_dates(36)
         start_date = start_date or default_start
         end_date = end_date or default_end
+
+    _warn_partial_coverage("get_household_lending_detail", "1110000", "예금취급기관(미확인)")
 
     client = get_client()
     response = client.get_statistic_search(
@@ -579,6 +590,14 @@ def get_borrower_loan(
         - value: 대출액 (조원)
         - unit: 단위
 
+    Warnings
+    --------
+    DeprecationWarning
+        현재 단일 항목(`item_code1="F001"`, 주택담보대출)만 반환하며 함수명이 시사하는
+        전체 차주별 대출 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
+        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
+        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     차주별 가계대출 통계는 가계부채의 질적 구조를 파악하는 데
@@ -618,6 +637,8 @@ def get_borrower_loan(
         raise ValueError(f"category는 {list(stat_codes.keys())} 중 하나여야 합니다.")
 
     stat_code = stat_codes[category]
+
+    _warn_partial_coverage("get_borrower_loan", "F001", "주택담보대출")
 
     client = get_client()
     response = client.get_statistic_search(
