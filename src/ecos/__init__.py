@@ -79,6 +79,9 @@ from .indicators import (
     get_yield_spread,
 )
 
+# Warnings
+from .indicators._deprecations import EcosPartialCoverageWarning
+
 # Logging API
 from .logging import setup_logging
 
@@ -108,6 +111,8 @@ __all__ = [
     "EcosConfigError",
     "EcosNetworkError",
     "EcosRateLimitError",
+    # Warnings
+    "EcosPartialCoverageWarning",
     # 재정 지표
     "get_fiscal_balance",
     # 주식시장 지표

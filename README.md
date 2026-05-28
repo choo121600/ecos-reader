@@ -137,12 +137,19 @@ print(df)
 | `get_investor_trading()` | 투자자별 주식거래 | 월 |
 | `get_bond_yield(bond_type)` | 채권 수익률 (종류별/시장별) | 월 |
 
-> ⚠️ 다음 함수들은 v0.1.6 기준 단일 ECOS item만 반환하며 호출 시 `DeprecationWarning`이
+> ⚠️ 다음 함수들은 v0.1.6 기준 단일 ECOS item만 반환하며 호출 시
+> `ecos.EcosPartialCoverageWarning`(`UserWarning` 서브클래스, 기본 필터로도 표시)이
 > 발생합니다. v0.3.0에서 시그니처가 변경됩니다: `get_gdp_by_industry`,
 > `get_gdp_by_expenditure`, `get_gdp_deflator_by_industry`,
 > `get_stock_index(monthly)`, `get_investor_trading`, `get_bond_yield`,
 > `get_household_lending_detail`, `get_borrower_loan`, `get_cpi_monthly`,
 > `get_cpi_by_category`. 자세한 내용은 이슈 #8.
+>
+> 경고를 끄려면:
+> ```python
+> import warnings, ecos
+> warnings.simplefilter("ignore", ecos.EcosPartialCoverageWarning)
+> ```
 
 ## 상세 사용법
 

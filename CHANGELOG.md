@@ -13,8 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `get_household_lending_detail`, `get_borrower_loan`, `get_cpi_monthly`,
   `get_cpi_by_category` currently return a single ECOS `item_code1` value rather
   than the full series implied by their docstrings. Each emits a
-  `DeprecationWarning` at call time. The signature/behavior will be redesigned
-  in v0.3.0; see issue #8 and the v0.3.0 epic #3.
+  `ecos.EcosPartialCoverageWarning` (a `UserWarning` subclass, so visible under
+  Python's default filter) at call time. The signature/behavior will be
+  redesigned in v0.3.0; see issue #8 and the v0.3.0 epic #3.
+  Silence with:
+  ```python
+  import warnings, ecos
+  warnings.simplefilter("ignore", ecos.EcosPartialCoverageWarning)
+  ```
 
 ## [0.1.5] - 2025-12-31
 
