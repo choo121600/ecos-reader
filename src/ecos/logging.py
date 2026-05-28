@@ -7,12 +7,18 @@ ecos-reader 로깅 설정
 from __future__ import annotations
 
 import logging
+import re
 import time
 from collections.abc import Callable
 from functools import wraps
 from typing import ParamSpec, TypeVar
 
 from .metrics import record_api_request
+
+# ECOS URL 패턴에서 API 키를 ***으로 대체.
+# 예) /api/StatisticSearch/ABC123DEF/json/kr/... -> /api/StatisticSearch/***/json/kr/...
+# 후행 path 세그먼트가 없는 경우(예: /api/Svc/KEY)도 마스킹하도록 (/.*)?로 처리.
+_API_KEY_URL_PATTERN = re.compile(r"(/api/[^/]+/)([^/]+)(/.*)?")
 
 # 타입 변수 정의
 P = ParamSpec("P")
@@ -188,7 +194,7 @@ def log_retry_attempt(attempt: int, max_retries: int, error: Exception) -> None:
 
 def mask_api_key(url: str) -> str:
     """
-    URL에서 API 키를 마스킹합니다.
+    URL에서 API 키를 ``***``로 마스킹합니다.
 
     Parameters
     ----------
@@ -198,13 +204,11 @@ def mask_api_key(url: str) -> str:
     Returns
     -------
     str
-        API 키가 마스킹된 URL
+        API 키가 마스킹된 URL. 패턴이 일치하지 않으면 원본을 그대로 반환.
     """
-    import re
 
-    # ECOS URL 패턴에서 API 키 부분을 ***으로 대체
-    # 예: /api/StatisticSearch/ABC123DEF/json/kr/... -> /api/StatisticSearch/***/json/kr/...
-    pattern = r"(/api/[^/]+/)([^/]+)(/.*)"
-    replacement = r"\1***\3"
+    def _sub(match: re.Match[str]) -> str:
+        prefix, _key, suffix = match.group(1), match.group(2), match.group(3) or ""
+        return f"{prefix}***{suffix}"
 
-    return re.sub(pattern, replacement, url)
+    return _API_KEY_URL_PATTERN.sub(_sub, url)

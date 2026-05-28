@@ -235,6 +235,19 @@ class TestEcosClient:
             set_api_key not in all_logs
         ), f"API key leaked into WARNING/ERROR logs via HTTPError str():\n{all_logs}"
 
+    def test_mask_api_key_handles_trailing_segments(self):
+        """mask_api_key는 후행 path 유무와 무관하게 키를 가린다 (#23 review)."""
+        from ecos.logging import mask_api_key
+
+        # 정상 ECOS URL — 후행 path 있음
+        full = "https://x/api/StatisticSearch/MYKEY/json/kr/1/100"
+        assert mask_api_key(full) == "https://x/api/StatisticSearch/***/json/kr/1/100"
+        # 후행 path 없음 — 이전 정규식은 이 경우를 노-옵으로 남겼음
+        bare = "https://x/api/StatisticSearch/MYKEY"
+        assert mask_api_key(bare) == "https://x/api/StatisticSearch/***"
+        # 패턴 불일치는 그대로
+        assert mask_api_key("https://x/other") == "https://x/other"
+
     def test_caching(self):
         """캐싱 테스트 - Cache 클래스 직접 테스트"""
         from ecos.cache import Cache
