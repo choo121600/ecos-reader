@@ -9,8 +9,21 @@ permissions:
   contents: read
 
 jobs:
+  ci:
+    name: CI gate
+    uses: ./.github/workflows/ci.yml
+    # 재사용 워크플로우는 caller의 top-level permissions를 상속한다.
+    # publish.yml의 top-level은 `contents: read`로 최소화되어 있어 ci.yml의
+    # 체크아웃에 충분하며, 향후 top-level 권한이 올라가더라도 ci 잡에는
+    # 의도하지 않은 권한이 흘러가지 않도록 여기서 명시한다.
+    permissions:
+      contents: read
+    # secrets는 의도적으로 상속하지 않음 — ci.yml은 외부 시크릿이 필요 없음.
+
   build:
     name: Build distribution
+    needs:
+      - ci
     runs-on: ubuntu-latest
 
     steps:
@@ -80,9 +93,22 @@ jobs:
       - name: Extract changelog for this version
         id: changelog
         run: |
-          # CHANGELOG.md에서 현재 버전의 내용만 추출
-          VERSION=${{ steps.version.outputs.version }}
-          sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' > release_notes.md
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          # CHANGELOG.md에서 ## [<VERSION>] 헤더 다음 줄부터 다음 ## [ 헤더
+          # (없으면 EOF) 직전까지 추출. awk를 쓰는 이유: 과거의 `sed | sed '$d'`
+          # 패턴은 대상 버전이 CHANGELOG의 마지막 섹션일 때 본문 마지막 줄을
+          # 잘라먹어 release notes가 조용히 잘려 게시됨.
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" {flag=1; next}
+            flag && /^## \[/        {exit}
+            flag                    {print}
+          ' CHANGELOG.md > release_notes.md
+          # 비어 있거나 공백뿐이면 실패
+          if [ ! -s release_notes.md ] || ! grep -q '[^[:space:]]' release_notes.md; then
+            echo "::error::CHANGELOG.md에서 버전 ${VERSION} 섹션을 찾지 못했거나 비어 있습니다."
+            exit 1
+          fi
 
       - name: Create GitHub Release
         env:
