@@ -292,6 +292,14 @@ class EcosClient:
         # 캐시 확인 — 키 구성에 페이지 범위(start/end), API 키(인스턴스 단위로
         # 고정된 값), 언어, format을 포함해 페이지·키·언어가 다른 요청이
         # 서로 충돌하지 않도록 한다.
+        #
+        # 참고: 현재 Settings.DEFAULT_LANG / DEFAULT_FORMAT은 정적이지만 키에 포함하는
+        # 이유는 두 가지다.
+        # 1) 향후 lang/format이 클라이언트 단위 옵션으로 승격되면 자동으로
+        #    캐시 격리가 동작하도록 미리 차원을 확보한다.
+        # 2) 사용자가 `Settings.DEFAULT_LANG = "en"`처럼 monkey-patch하면 _build_url과
+        #    캐시 키가 동시에 새 값을 사용해 새 엔트리를 만들도록 한다 (구 lang 엔트리는
+        #    그대로 남지만, 새 요청이 잘못된 lang 응답을 받는 일은 없다).
         if self._cache is not None and self.use_cache:
             cache_key = self._cache._make_key(
                 "StatisticSearch",
