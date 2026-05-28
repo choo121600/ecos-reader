@@ -88,10 +88,17 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="${{ steps.version.outputs.version }}"
-          # CHANGELOG.md에서 현재 버전 헤더 다음부터 다음 ## [ 헤더 직전까지 추출
-          sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' > release_notes.md
-          # 비어 있거나 헤더 한 줄만 있으면 실패
-          if [ ! -s release_notes.md ] || [ "$(grep -cv '^[[:space:]]*$' release_notes.md)" -le 1 ]; then
+          # CHANGELOG.md에서 ## [<VERSION>] 헤더 다음 줄부터 다음 ## [ 헤더
+          # (없으면 EOF) 직전까지 추출. awk를 쓰는 이유: 과거의 `sed | sed '$d'`
+          # 패턴은 대상 버전이 CHANGELOG의 마지막 섹션일 때 본문 마지막 줄을
+          # 잘라먹어 release notes가 조용히 잘려 게시됨.
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" {flag=1; next}
+            flag && /^## \[/        {exit}
+            flag                    {print}
+          ' CHANGELOG.md > release_notes.md
+          # 비어 있거나 공백뿐이면 실패
+          if [ ! -s release_notes.md ] || ! grep -q '[^[:space:]]' release_notes.md; then
             echo "::error::CHANGELOG.md에서 버전 ${VERSION} 섹션을 찾지 못했거나 비어 있습니다."
             exit 1
           fi
