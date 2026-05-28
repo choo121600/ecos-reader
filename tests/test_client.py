@@ -210,6 +210,62 @@ class TestEcosClient:
         cached_result2 = cache.get(cache_key)
         assert cached_result2 == test_data
 
+    @responses.activate
+    def test_cache_key_isolates_page_range(self):
+        """서로 다른 start/end는 별도 캐시 엔트리를 가져야 한다 (#7)."""
+        page1 = {"StatisticSearch": {"row": [{"TIME": "202401", "DATA_VALUE": "1"}]}}
+        page2 = {"StatisticSearch": {"row": [{"TIME": "202501", "DATA_VALUE": "2"}]}}
+        responses.add(responses.GET, url=re.compile(r".*/1/100/.*"), json=page1, status=200)
+        responses.add(responses.GET, url=re.compile(r".*/101/200/.*"), json=page2, status=200)
+
+        client = EcosClient(api_key="key-A", use_cache=True)
+        r1 = client.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+            start=1,
+            end=100,
+        )
+        r2 = client.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+            start=101,
+            end=200,
+        )
+
+        assert r1 == page1
+        assert r2 == page2, "second page must not be served from page1 cache entry"
+
+    @responses.activate
+    def test_cache_key_isolates_api_key(self):
+        """서로 다른 API 키는 캐시를 공유하지 않아야 한다 (#7)."""
+        resp_a = {"StatisticSearch": {"row": [{"DATA_VALUE": "from-A"}]}}
+        resp_b = {"StatisticSearch": {"row": [{"DATA_VALUE": "from-B"}]}}
+        responses.add(responses.GET, url=re.compile(r".*/key-A/.*"), json=resp_a, status=200)
+        responses.add(responses.GET, url=re.compile(r".*/key-B/.*"), json=resp_b, status=200)
+
+        client_a = EcosClient(api_key="key-A", use_cache=True)
+        client_b = EcosClient(api_key="key-B", use_cache=True)
+
+        r_a = client_a.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+        )
+        r_b = client_b.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+        )
+
+        assert r_a == resp_a
+        assert r_b == resp_b, "key-B request must not return cached key-A response"
+
 
 @pytest.mark.usefixtures("set_api_key")
 class TestGlobalClient:

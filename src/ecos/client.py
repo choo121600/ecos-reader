@@ -265,10 +265,16 @@ class EcosClient:
         dict
             API 응답 데이터
         """
-        # 캐시 확인
+        # 캐시 확인 — 키 구성에 페이지 범위(start/end), API 키, 언어, format을 포함해
+        # 페이지·키·언어가 다른 요청이 서로 충돌하지 않도록 한다.
         if self._cache and self.use_cache:
             cache_key = self._cache._make_key(
                 "StatisticSearch",
+                self._get_api_key(),
+                Settings.DEFAULT_LANG,
+                Settings.DEFAULT_FORMAT,
+                start,
+                end,
                 stat_code,
                 period,
                 start_date,
