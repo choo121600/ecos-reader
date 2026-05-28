@@ -320,19 +320,13 @@ def get_cpi_by_category(
         - value: CPI 카테고리별 지수
         - unit: 단위
 
-    Warnings
-    --------
-    DeprecationWarning
-        현재 단일 항목(`item_code1="0"`, 전체(미확인))만 반환하며 함수명이 시사하는
-        전체 카테고리별 CPI 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될
-        예정이며, 현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접
-        item_code1을 전달하는 방식으로 마이그레이션하세요. (이슈 #8)
-
     Notes
     -----
     - 각 카테고리별로 물가 변동을 세부적으로 파악 가능
     - '식품_에너지제외'는 근원 물가와 유사한 개념
     - 상품과 서비스 물가의 괴리는 수요 구조 변화를 반영
+    - 특수분류(전체/상품/서비스/제외 시리즈)는 stat_code 901Y010,
+      COICOP 1단계(식료품/주거/교통 등)는 stat_code 901Y009를 사용
 
     Examples
     --------
@@ -354,9 +348,7 @@ def get_cpi_by_category(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    stat_code = CPI_CATEGORY_CODES[category]
-
-    _warn_partial_coverage("get_cpi_by_category", "0", "전체(미확인)")
+    stat_code, item_code = CPI_CATEGORY_CODES[category]
 
     client = get_client()
     response = client.get_statistic_search(
@@ -364,7 +356,7 @@ def get_cpi_by_category(
         period=PERIOD_MONTHLY,
         start_date=start_date,
         end_date=end_date,
-        item_code1="0",  # 전체 (StatisticItemList로 확인 필요)
+        item_code1=item_code,
     )
 
     df = parse_response(response)
