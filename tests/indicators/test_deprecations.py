@@ -48,7 +48,8 @@ _PARTIAL_COVERAGE_CASES = [
     ),
     ("get_borrower_loan", lambda: ecos.get_borrower_loan()),
     ("get_cpi_monthly", lambda: ecos.get_cpi_monthly()),
-    ("get_cpi_by_category", lambda: ecos.get_cpi_by_category()),
+    # get_cpi_by_category는 v0.1.6에서 (stat_code, item_code) 매핑이 수정되어
+    # 정상 데이터를 반환하므로 partial-coverage 목록에서 제외 (PR #27).
 ]
 
 

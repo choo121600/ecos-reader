@@ -142,8 +142,8 @@ print(df)
 > 발생합니다. v0.3.0에서 시그니처가 변경됩니다: `get_gdp_by_industry`,
 > `get_gdp_by_expenditure`, `get_gdp_deflator_by_industry`,
 > `get_stock_index(monthly)`, `get_investor_trading`, `get_bond_yield`,
-> `get_household_lending_detail`, `get_borrower_loan`, `get_cpi_monthly`,
-> `get_cpi_by_category`. 자세한 내용은 이슈 #8.
+> `get_household_lending_detail`, `get_borrower_loan`, `get_cpi_monthly`.
+> 자세한 내용은 이슈 #8.
 >
 > 경고를 끄려면:
 > ```python

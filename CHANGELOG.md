@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `get_cpi_by_category`: prior `stat_code` mapping (`901Y001~008`) did not exist
+  on the ECOS API and returned empty DataFrames for every category. Re-mapped
+  to the real stat codes (`901Y010` for 특수분류, `901Y009` for COICOP categories)
+  with verified `item_code1` values.
+- `get_bond_yield(bond_type="종류별")`: the prior call omitted `item_code2`,
+  so the response mixed four different measures (상장종목수 / 상장잔액 / 거래량
+  / 거래대금) under one `value` column. Now pins `item_code2="2040000"` (거래대금)
+  so the returned series is internally consistent.
+
 ### Known Limitations
 - `get_gdp_by_industry`, `get_gdp_by_expenditure`, `get_gdp_deflator_by_industry`,
   `get_stock_index(frequency="monthly")`, `get_investor_trading`, `get_bond_yield`,
-  `get_household_lending_detail`, `get_borrower_loan`, `get_cpi_monthly`,
-  `get_cpi_by_category` currently return a single ECOS `item_code1` value rather
+  `get_household_lending_detail`, `get_borrower_loan`, `get_cpi_monthly`
+  currently return a single ECOS `item_code1` value rather
   than the full series implied by their docstrings. Each emits a
   `ecos.EcosPartialCoverageWarning` (a `UserWarning` subclass, so visible under
   Python's default filter) at call time. The signature/behavior will be
