@@ -12,6 +12,13 @@ jobs:
   ci:
     name: CI gate
     uses: ./.github/workflows/ci.yml
+    # 재사용 워크플로우는 caller의 top-level permissions를 상속한다.
+    # publish.yml의 top-level은 `contents: read`로 최소화되어 있어 ci.yml의
+    # 체크아웃에 충분하며, 향후 top-level 권한이 올라가더라도 ci 잡에는
+    # 의도하지 않은 권한이 흘러가지 않도록 여기서 명시한다.
+    permissions:
+      contents: read
+    # secrets는 의도적으로 상속하지 않음 — ci.yml은 외부 시크릿이 필요 없음.
 
   build:
     name: Build distribution
