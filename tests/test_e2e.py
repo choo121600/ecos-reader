@@ -14,6 +14,8 @@ import pytest
 from ecos.client import EcosClient
 from ecos.parser import parse_response
 
+pytestmark = pytest.mark.e2e
+
 
 @pytest.fixture
 def e2e_client():

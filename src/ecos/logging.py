@@ -102,7 +102,7 @@ def log_api_request(func: Callable[P, R]) -> Callable[P, R]:
             # 성능 메트릭 기록
             record_api_request(func_name, success=True, response_time=elapsed_time)
 
-            logger.info(f"API 요청 성공: {func_name} " f"(응답시간: {elapsed_time:.2f}초)")
+            logger.info(f"API 요청 성공: {func_name} (응답시간: {elapsed_time:.2f}초)")
 
             return result
 
@@ -162,7 +162,7 @@ def log_error_response(error_code: str, error_message: str, url: str) -> None:
     # URL에서 API 키 마스킹
     masked_url = mask_api_key(url)
 
-    logger.warning(f"ECOS API 에러: [{error_code}] {error_message} " f"(URL: {masked_url})")
+    logger.warning(f"ECOS API 에러: [{error_code}] {error_message} (URL: {masked_url})")
 
 
 def log_retry_attempt(attempt: int, max_retries: int, error: Exception) -> None:
@@ -178,7 +178,7 @@ def log_retry_attempt(attempt: int, max_retries: int, error: Exception) -> None:
     error : Exception
         발생한 에러
     """
-    logger.warning(f"API 요청 재시도 {attempt}/{max_retries}: " f"{type(error).__name__}: {error}")
+    logger.warning(f"API 요청 재시도 {attempt}/{max_retries}: {type(error).__name__}: {error}")
 
 
 def mask_api_key(url: str) -> str:
