@@ -281,6 +281,102 @@ class TestEcosClient:
         cached_result2 = cache.get(cache_key)
         assert cached_result2 == test_data
 
+    @responses.activate
+    def test_cache_key_isolates_page_range(self):
+        """서로 다른 start/end는 별도 캐시 엔트리를 가져야 한다 (#7)."""
+        page1 = {"StatisticSearch": {"row": [{"TIME": "202401", "DATA_VALUE": "1"}]}}
+        page2 = {"StatisticSearch": {"row": [{"TIME": "202501", "DATA_VALUE": "2"}]}}
+        responses.add(responses.GET, url=re.compile(r".*/1/100/.*"), json=page1, status=200)
+        responses.add(responses.GET, url=re.compile(r".*/101/200/.*"), json=page2, status=200)
+
+        client = EcosClient(api_key="key-A", use_cache=True)
+        r1 = client.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+            start=1,
+            end=100,
+        )
+        r2 = client.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+            start=101,
+            end=200,
+        )
+
+        assert r1 == page1
+        assert r2 == page2, "second page must not be served from page1 cache entry"
+
+    @responses.activate
+    def test_cache_key_isolates_api_key(self):
+        """서로 다른 API 키는 캐시를 공유하지 않아야 한다 (#7)."""
+        resp_a = {"StatisticSearch": {"row": [{"DATA_VALUE": "from-A"}]}}
+        resp_b = {"StatisticSearch": {"row": [{"DATA_VALUE": "from-B"}]}}
+        responses.add(responses.GET, url=re.compile(r".*/key-A/.*"), json=resp_a, status=200)
+        responses.add(responses.GET, url=re.compile(r".*/key-B/.*"), json=resp_b, status=200)
+
+        client_a = EcosClient(api_key="key-A", use_cache=True)
+        client_b = EcosClient(api_key="key-B", use_cache=True)
+
+        r_a = client_a.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+        )
+        r_b = client_b.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+        )
+
+        assert r_a == resp_a
+        assert r_b == resp_b, "key-B request must not return cached key-A response"
+
+    @responses.activate
+    def test_cache_key_pinned_against_global_key_rotation(self):
+        """클라이언트가 api_key 없이 만들어진 뒤 전역 키가 바뀌어도
+        같은 응답을 캐시에서 가져와야 한다 (#24 review).
+
+        과거 _get_api_key()는 매 호출마다 전역 키를 재조회했기 때문에,
+        같은 클라이언트로 두 번 호출하는 사이에 set_api_key()가 다른
+        값으로 바뀌면 캐시 키가 달라져 적중 실패했다.
+        """
+        import ecos
+
+        resp = {"StatisticSearch": {"row": [{"DATA_VALUE": "pinned"}]}}
+        responses.add(responses.GET, url=re.compile(r".*"), json=resp, status=200)
+
+        # 전역 키 A로 시작 — 클라이언트 인스턴스는 키를 받지 않음
+        ecos.set_api_key("global-key-A")
+        client = EcosClient(use_cache=True)
+        first = client.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+        )
+
+        # 전역 키가 B로 바뀌어도, 캐시 키는 첫 호출 시점의 키(A)에 고정되어야 함
+        ecos.set_api_key("global-key-B")
+        second = client.get_statistic_search(
+            stat_code="722Y001",
+            period="M",
+            start_date="202401",
+            end_date="202412",
+        )
+
+        assert first == resp
+        assert second == resp
+        # 전역 키 회전 후에도 캐시 적중 → 네트워크 호출은 한 번만
+        assert (
+            len(responses.calls) == 1
+        ), f"expected single network call due to cache hit, got {len(responses.calls)}"
+
 
 @pytest.mark.usefixtures("set_api_key")
 class TestGlobalClient:
