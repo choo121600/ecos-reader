@@ -13,8 +13,11 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # github.workflow는 이미 워크플로우 단위로 격리되므로 추가 ci- 접두사는 중복.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # PR에서만 in-flight를 취소. main push / 향후 tag-driven 호출(release gate)에서는
+  # 진행 중인 검증을 끊지 않도록 한다.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   lint-type:
@@ -32,7 +35,8 @@ jobs:
         run: uv python install 3.12
 
       - name: Sync dev dependencies
-        run: uv sync --extra dev
+        # --python 3.12 명시 — 러너에 다른 Python이 있을 때도 일관된 환경 유지
+        run: uv sync --extra dev --python 3.12
 
       - name: Ruff check
         run: uv run ruff check src tests
