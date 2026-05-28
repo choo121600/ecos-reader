@@ -5,9 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.6] - 2026-05-29
+
+### Security
+- DEBUG/WARNING/ERROR 로그에서 raw API 키 노출을 차단 (`mask_api_key` 적용 +
+  `urllib3` 디버그 로거 가드). PR #23.
+
+### Added
+- CI 워크플로우 신설 (`.github/workflows/ci.yml`): Python 3.10/3.11/3.12 매트릭스,
+  ruff/mypy/pytest 강제. PR #21.
+- `publish.yml`에 `needs: [ci]` 게이트 추가 — 테스트/lint/type 통과 후에만
+  PyPI 배포. PR #26.
+- `ecos.EcosPartialCoverageWarning` (`UserWarning` 서브클래스) — 단일
+  `item_code1`만 반환하는 7개 indicator helper가 기본 필터에서도 보이는
+  경고를 발화. PR #25.
+- CHANGELOG 추출 로직 강화 (`awk` 기반) — 마지막 버전 섹션 잘림 버그 해결. PR #26.
 
 ### Fixed
+- `Cache` was effectively a no-op since the initial release because
+  `if self._cache and self.use_cache:` evaluated to `False` whenever the cache
+  was empty (`Cache` defines `__len__` but not `__bool__`). Switched to
+  `is not None`; the in-memory cache now actually works (~10× speedup on
+  repeated `get_statistic_search` calls). PR #24.
+- `EcosClient.get_statistic_search` cache key now includes the page range
+  (`start`/`end`), the resolved API key, language and format. Prior key
+  collided across pages and across tenants. PR #24.
 - `get_cpi_by_category`: prior `stat_code` mapping (`901Y001~008`) did not exist
   on the ECOS API and returned empty DataFrames for every category. Re-mapped
   to the real stat codes (`901Y010` for 특수분류, `901Y009` for COICOP categories)
