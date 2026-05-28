@@ -15,6 +15,7 @@ from ecos.config import Settings
 from ecos.exceptions import (
     EcosAPIError,
     EcosConfigError,
+    EcosNetworkError,
     EcosRateLimitError,
 )
 
@@ -198,10 +199,41 @@ class TestEcosClient:
             )
 
         all_logs = "\n".join(record.getMessage() for record in caplog.records)
+        # caplog가 실제로 잡았는지 먼저 확인 — 0건이면 마스킹 검사가 vacuously 통과
+        assert any(
+            "API 요청 전송" in r.getMessage() for r in caplog.records
+        ), f"request log not captured by caplog (records={len(caplog.records)})"
         assert set_api_key not in all_logs, f"API key leaked into DEBUG logs:\n{all_logs}"
         assert (
             "/***/" in all_logs
         ), f"Expected masked API key marker '/***/' in request log:\n{all_logs}"
+
+    @responses.activate
+    def test_http_error_log_masks_api_key(self, caplog, set_api_key):
+        """500 응답 경로(WARNING/ERROR 로그)에도 raw API 키가 노출되지 않아야 한다 (#6)."""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            body="Internal Server Error",
+            status=500,
+        )
+
+        client = EcosClient(use_cache=False, max_retries=1)
+        with (
+            caplog.at_level(logging.DEBUG, logger="ecos"),
+            pytest.raises(EcosNetworkError),
+        ):
+            client.get_statistic_search(
+                stat_code="722Y001",
+                period="M",
+                start_date="202401",
+                end_date="202412",
+            )
+
+        all_logs = "\n".join(record.getMessage() for record in caplog.records)
+        assert (
+            set_api_key not in all_logs
+        ), f"API key leaked into WARNING/ERROR logs via HTTPError str():\n{all_logs}"
 
     def test_caching(self):
         """캐싱 테스트 - Cache 클래스 직접 테스트"""

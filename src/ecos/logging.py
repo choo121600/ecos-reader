@@ -71,6 +71,11 @@ def setup_logging(level: int = DEFAULT_LOG_LEVEL) -> None:
     # 부모 로거로의 전파 방지 (중복 로그 방지)
     logger.propagate = False
 
+    # 사용자가 ecos 로거를 DEBUG로 켜더라도 urllib3가 raw URL(api_key 포함)을
+    # DEBUG로 출력해 마스킹을 우회하는 것을 방지한다. 사용자가 명시적으로
+    # urllib3 디버그를 원하면 setup_logging 호출 후 직접 조정 가능.
+    logging.getLogger("urllib3").setLevel(max(level, logging.WARNING))
+
 
 def log_api_request(func: Callable[P, R]) -> Callable[P, R]:
     """
@@ -102,7 +107,7 @@ def log_api_request(func: Callable[P, R]) -> Callable[P, R]:
             # 성능 메트릭 기록
             record_api_request(func_name, success=True, response_time=elapsed_time)
 
-            logger.info(f"API 요청 성공: {func_name} " f"(응답시간: {elapsed_time:.2f}초)")
+            logger.info(f"API 요청 성공: {func_name} (응답시간: {elapsed_time:.2f}초)")
 
             return result
 
@@ -162,7 +167,7 @@ def log_error_response(error_code: str, error_message: str, url: str) -> None:
     # URL에서 API 키 마스킹
     masked_url = mask_api_key(url)
 
-    logger.warning(f"ECOS API 에러: [{error_code}] {error_message} " f"(URL: {masked_url})")
+    logger.warning(f"ECOS API 에러: [{error_code}] {error_message} (URL: {masked_url})")
 
 
 def log_retry_attempt(attempt: int, max_retries: int, error: Exception) -> None:
@@ -178,7 +183,7 @@ def log_retry_attempt(attempt: int, max_retries: int, error: Exception) -> None:
     error : Exception
         발생한 에러
     """
-    logger.warning(f"API 요청 재시도 {attempt}/{max_retries}: " f"{type(error).__name__}: {error}")
+    logger.warning(f"API 요청 재시도 {attempt}/{max_retries}: {type(error).__name__}: {error}")
 
 
 def mask_api_key(url: str) -> str:

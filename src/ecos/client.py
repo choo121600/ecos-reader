@@ -152,12 +152,14 @@ class EcosClient:
                     log_retry_attempt(attempt + 1, self.max_retries, last_exception)
 
             except requests.exceptions.ConnectionError as e:
-                last_exception = EcosNetworkError(f"네트워크 연결 오류: {e}")
+                # urllib3가 에러 메시지에 raw URL(api_key 포함)을 끼워넣는 경우가 있어 마스킹
+                last_exception = EcosNetworkError(f"네트워크 연결 오류: {mask_api_key(str(e))}")
                 if attempt < self.max_retries - 1:
                     log_retry_attempt(attempt + 1, self.max_retries, last_exception)
 
             except requests.exceptions.HTTPError as e:
-                last_exception = EcosNetworkError(f"HTTP 오류: {e}")
+                # requests의 HTTPError는 "... for url: <full URL with key>" 형식이므로 마스킹 필수
+                last_exception = EcosNetworkError(f"HTTP 오류: {mask_api_key(str(e))}")
                 if attempt < self.max_retries - 1:
                     log_retry_attempt(attempt + 1, self.max_retries, last_exception)
 
