@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_call:
 
 permissions:
   contents: read
@@ -19,6 +20,9 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # 주의: 본 워크플로우는 publish.yml에서 `needs: [ci]` 게이트로 호출됨 (PR #22).
+  # 각 잡에 `continue-on-error: true`를 추가하면 게이트가 무효화되므로 사용 금지.
+
   lint-type:
     name: Lint & type-check
     runs-on: ubuntu-latest
