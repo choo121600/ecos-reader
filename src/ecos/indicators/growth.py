@@ -23,6 +23,7 @@ from ..constants import (
     STAT_GDP_DEFLATOR,
     STAT_GDP_DEFLATOR_BY_INDUSTRY,
     STAT_GDP_GROWTH_RATE,
+    STAT_GDP_GROWTH_RATE_ANNUAL,
     STAT_GDP_NOMINAL,
     STAT_GDP_REAL,
 )
@@ -250,9 +251,12 @@ def get_gdp_growth_rate(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
+    # 계절조정 시리즈(200Y104)는 분기만 — 연간 조회 시 원계열(200Y106)로 fallback.
+    stat_code = STAT_GDP_GROWTH_RATE if frequency == "Q" else STAT_GDP_GROWTH_RATE_ANNUAL
+
     client = get_client()
     response = client.get_statistic_search(
-        stat_code=STAT_GDP_GROWTH_RATE,
+        stat_code=stat_code,
         period=period,
         start_date=start_date,
         end_date=end_date,
@@ -323,6 +327,13 @@ def get_gdp_by_industry(
 
     >>> df = ecos.get_gdp_by_industry(basis="nominal", seasonal_adj=False)
     """
+    # 계절조정 시리즈는 ECOS에서 분기만 제공 — 연간 조회는 데이터 없음.
+    if seasonal_adj and frequency == "A":
+        raise ValueError(
+            "seasonal_adj=True와 frequency='A' 조합은 ECOS에서 제공되지 않습니다. "
+            "연간 데이터가 필요하면 seasonal_adj=False(원계열)로 호출하세요."
+        )
+
     # basis와 seasonal_adj 조합으로 stat_code 선택
     variant_key = (
         f"{'계절조정' if seasonal_adj else '원계열'}_{'실질' if basis == 'real' else '명목'}"
@@ -420,8 +431,9 @@ def get_gdp_by_expenditure(
 
     >>> df = ecos.get_gdp_by_expenditure(basis="nominal")
     """
-    # basis에 따른 stat_code 선택 (계절조정 기준)
-    variant_key = f"계절조정_{'실질' if basis == 'real' else '명목'}"
+    # 계절조정 시리즈(200Y107/108)는 분기만 — 연간 조회 시 원계열(200Y109/110)로 fallback.
+    season = "계절조정" if frequency == "Q" else "원계열"
+    variant_key = f"{season}_{'실질' if basis == 'real' else '명목'}"
 
     if variant_key not in GDP_BY_EXPENDITURE_VARIANTS:
         raise ValueError(f"지원하지 않는 조합입니다: basis={basis}")

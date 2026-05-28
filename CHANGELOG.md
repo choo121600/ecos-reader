@@ -16,6 +16,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   so the response mixed four different measures (상장종목수 / 상장잔액 / 거래량
   / 거래대금) under one `value` column. Now pins `item_code2="2040000"` (거래대금)
   so the returned series is internally consistent.
+- `get_gdp_by_expenditure(frequency="A")`: previously mapped only to 계절조정
+  stat codes (`200Y107/108`) which are quarterly-only, returning empty for
+  annual. Now falls back to 원계열 codes (`200Y109/110`) when `frequency="A"`.
+- `get_gdp_growth_rate(frequency="A")`: same issue — `200Y104` is 계절조정+분기
+  only. Now uses `200Y106` (원계열, 분기/연간) for annual.
+- `get_m2_by_holder(variant="말잔_계절조정"|"말잔_원계열")`: prior item codes
+  (`BBHB00S` / `BBHB00`) did not exist on stat `161Y011` / `161Y012`. Re-mapped
+  to the real codes `BBGS00` / `BBGA00` discovered via `get_statistic_item_list`.
+
+### Changed
+- `get_gdp_by_industry(seasonal_adj=True, frequency="A")`: now raises
+  `ValueError` instead of silently returning empty. ECOS does not publish
+  계절조정 GDP for annual frequency.
+- `get_borrower_loan`: 7 `(loan_type, category)` combinations
+  (`{신규,잔액} × {연령별, 지역별, 업권별}` + `신규 × 담보유형별`) previously
+  returned empty DataFrames because the function assumed each category had
+  its own stat code while ECOS uses a single stat (`181Y001`/`181Y002`) with
+  category-as-item_code1. These combinations now raise `ValueError` with a
+  message pointing at the direct `EcosClient.get_statistic_search` call.
+  The full function will be redesigned in v0.2.0.
 
 ### Known Limitations
 - `get_gdp_by_industry`, `get_gdp_by_expenditure`, `get_gdp_deflator_by_industry`,

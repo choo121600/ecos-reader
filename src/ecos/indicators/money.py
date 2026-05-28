@@ -618,6 +618,30 @@ def get_borrower_loan(
     if loan_type not in ["신규", "잔액"]:
         raise ValueError("loan_type은 '신규' 또는 '잔액' 중 하나여야 합니다.")
 
+    # v0.1.6 한계: 아래 (loan_type, category) 조합은 stat_code 매핑이 ECOS API와
+    # 일치하지 않아 빈 응답을 반환한다. 실제 ECOS는 181Y001(신규)/181Y002(잔액)에
+    # 모든 분류를 item_code1로 담는 구조이므로 이 함수의 분류축별 매핑 자체가
+    # 재설계 대상. 정확한 분류축 시계열이 필요하면
+    # EcosClient.get_statistic_search('181Y001'|'181Y002', item_code1=...)을
+    # 직접 호출하라.
+    _BROKEN_BORROWER_COMBINATIONS = {
+        ("신규", "연령별"),
+        ("신규", "지역별"),
+        ("신규", "담보유형별"),
+        ("신규", "업권별"),
+        ("잔액", "연령별"),
+        ("잔액", "지역별"),
+        ("잔액", "업권별"),
+    }
+    if (loan_type, category) in _BROKEN_BORROWER_COMBINATIONS:
+        raise ValueError(
+            f"loan_type='{loan_type}', category='{category}' 조합은 v0.1.6에서 "
+            "stat_code 매핑이 ECOS API와 일치하지 않아 지원되지 않습니다. "
+            "EcosClient.get_statistic_search('181Y001' 또는 '181Y002', "
+            "item_code1=...)을 직접 호출해 원하는 분류를 받으세요. "
+            "(v0.2.0에서 재설계 예정 — 이슈 #28)"
+        )
+
     # 기본 날짜 설정 (분기)
     if start_date is None or end_date is None:
         end_date_obj = datetime.now()
