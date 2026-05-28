@@ -22,7 +22,7 @@ from .exceptions import (
     EcosNetworkError,
     EcosRateLimitError,
 )
-from .logging import log_api_request, log_error_response, log_retry_attempt, logger
+from .logging import log_api_request, log_error_response, log_retry_attempt, logger, mask_api_key
 from .types import EcosService
 
 
@@ -135,7 +135,7 @@ class EcosClient:
 
         for attempt in range(self.max_retries):
             try:
-                logger.debug(f"API 요청 전송: {url}")
+                logger.debug(f"API 요청 전송: {mask_api_key(url)}")
                 response = self.session.get(url, timeout=self.timeout)
                 response.raise_for_status()
                 data = cast(dict[str, Any], response.json())

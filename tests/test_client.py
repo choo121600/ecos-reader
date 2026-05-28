@@ -4,6 +4,7 @@ client 모듈 테스트
 
 from __future__ import annotations
 
+import logging
 import re
 
 import pytest
@@ -176,6 +177,31 @@ class TestEcosClient:
 
         # 에러가 발생하지 않고 정상 응답
         assert "RESULT" in result
+
+    @responses.activate
+    def test_debug_log_masks_api_key(self, caplog, set_api_key):
+        """DEBUG 로그에 raw API 키가 노출되지 않아야 한다 (#6)."""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json={"StatisticSearch": {"row": []}},
+            status=200,
+        )
+
+        client = EcosClient(use_cache=False)
+        with caplog.at_level(logging.DEBUG, logger="ecos"):
+            client.get_statistic_search(
+                stat_code="722Y001",
+                period="M",
+                start_date="202401",
+                end_date="202412",
+            )
+
+        all_logs = "\n".join(record.getMessage() for record in caplog.records)
+        assert set_api_key not in all_logs, f"API key leaked into DEBUG logs:\n{all_logs}"
+        assert (
+            "/***/" in all_logs
+        ), f"Expected masked API key marker '/***/' in request log:\n{all_logs}"
 
     def test_caching(self):
         """캐싱 테스트 - Cache 클래스 직접 테스트"""
