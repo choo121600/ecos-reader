@@ -12,6 +12,8 @@ import pytest
 
 import ecos
 
+pytestmark = pytest.mark.e2e
+
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_api_key():
