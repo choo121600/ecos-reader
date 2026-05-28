@@ -72,10 +72,34 @@ class EcosClient:
         self._cache: Cache | None = get_cache() if use_cache else None
 
     def _get_api_key(self) -> str:
-        """API Key를 반환합니다."""
+        """
+        요청 시점의 API Key를 반환합니다.
+
+        주의: 캐시 키 구성에는 이 메서드를 직접 쓰지 말고
+        ``_resolve_cache_key_api_key``를 사용하세요. 이 메서드는 매 호출마다
+        전역 키를 재조회하므로, 같은 클라이언트라도 도중에 ``set_api_key()``가
+        바뀌면 캐시 키도 함께 바뀌어 이전에 저장한 응답을 찾지 못합니다 (#24).
+        """
         if self.api_key:
             return self.api_key
         return get_api_key()
+
+    def _resolve_cache_key_api_key(self) -> str:
+        """
+        캐시 키 구성용 API Key를 안정적으로 반환합니다 (#24).
+
+        ``self.api_key``가 명시되어 있으면 그 값, 아니면 처음 호출된 시점의
+        전역 키를 인스턴스에 한 번만 고정해 이후 전역 키 로테이션과
+        무관하게 동일 키를 반환합니다. 이를 통해 멀티 테넌트 환경에서
+        한 클라이언트가 자기 응답만 캐시에서 가져오도록 보장합니다.
+        """
+        if self.api_key:
+            return self.api_key
+        cached = getattr(self, "_resolved_cache_api_key", None)
+        if cached is None:
+            cached = get_api_key()
+            self._resolved_cache_api_key = cached
+        return cached
 
     def _build_url(
         self,
@@ -265,16 +289,17 @@ class EcosClient:
         dict
             API 응답 데이터
         """
-        # 캐시 확인 — 키 구성에 페이지 범위(start/end), API 키, 언어, format을 포함해
-        # 페이지·키·언어가 다른 요청이 서로 충돌하지 않도록 한다.
-        if self._cache and self.use_cache:
+        # 캐시 확인 — 키 구성에 페이지 범위(start/end), API 키(인스턴스 단위로
+        # 고정된 값), 언어, format을 포함해 페이지·키·언어가 다른 요청이
+        # 서로 충돌하지 않도록 한다.
+        if self._cache is not None and self.use_cache:
             cache_key = self._cache._make_key(
                 "StatisticSearch",
-                self._get_api_key(),
+                self._resolve_cache_key_api_key(),
                 Settings.DEFAULT_LANG,
                 Settings.DEFAULT_FORMAT,
-                start,
-                end,
+                int(start),
+                int(end),
                 stat_code,
                 period,
                 start_date,
@@ -305,7 +330,7 @@ class EcosClient:
         result = self._make_request(url)
 
         # 캐시 저장
-        if self._cache and self.use_cache:
+        if self._cache is not None and self.use_cache:
             self._cache.set(cache_key, result)
 
         return result
