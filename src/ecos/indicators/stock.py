@@ -20,6 +20,7 @@ from ..constants import (
     STAT_STOCK_MONTHLY,
 )
 from ..parser import normalize_stat_result, parse_response
+from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 
 
 def _get_default_dates_daily(days_back: int = 365) -> tuple[str, str]:
@@ -83,6 +84,14 @@ def get_stock_index(
         - value: 주가지수
         - unit: 단위 (포인트)
 
+    Warnings
+    --------
+    DeprecationWarning
+        `frequency="monthly"` 시 단일 항목(`item_code1="1010000"`, KOSPI 회사수)만
+        반환하며 KOSPI 지수를 반환하지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
+        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
+        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     - KOSPI(Korea Composite Stock Price Index)는 한국거래소 유가증권시장의 대표 지수
@@ -119,6 +128,7 @@ def get_stock_index(
         stat_code = STAT_STOCK_MONTHLY
         period = PERIOD_MONTHLY
         item_code = "1010000"  # KOSPI 회사수 (월별)
+        _warn_partial_coverage("get_stock_index(monthly)", "1010000", "KOSPI 회사수")
         # 기본 날짜 설정 (월별)
         if start_date is None or end_date is None:
             default_start, default_end = _get_default_dates_monthly(24)
@@ -162,6 +172,14 @@ def get_investor_trading(
         - value: 거래금액
         - unit: 단위
 
+    Warnings
+    --------
+    DeprecationWarning
+        현재 단일 항목(`item_code1="S22AF"`, 기타법인 매도)만 반환하며 함수명이 시사하는
+        전체 투자자별 거래 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
+        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
+        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     - 외국인 순매수: 외국인 투자자의 매수 - 매도
@@ -186,6 +204,8 @@ def get_investor_trading(
         default_start, default_end = _get_default_dates_monthly(24)
         start_date = start_date or default_start
         end_date = end_date or default_end
+
+    _warn_partial_coverage("get_investor_trading", "S22AF", "기타법인 매도")
 
     client = get_client()
     response = client.get_statistic_search(

@@ -24,6 +24,7 @@ from ..constants import (
     STAT_PPI,
 )
 from ..parser import normalize_stat_result, parse_response
+from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 
 
 def _get_default_dates(months_back: int = 24) -> tuple[str, str]:
@@ -233,6 +234,14 @@ def get_cpi_monthly(
         - value: CPI 원지수
         - unit: 단위
 
+    Warnings
+    --------
+    DeprecationWarning
+        현재 단일 항목(`item_code1="0"`, 전체(미확인))만 반환하며 함수명이 시사하는
+        전체 CPI 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
+        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
+        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     - 원지수는 기준년도(2020=100)를 100으로 한 지수값
@@ -251,6 +260,8 @@ def get_cpi_monthly(
         default_start, default_end = _get_default_dates(24)
         start_date = start_date or default_start
         end_date = end_date or default_end
+
+    _warn_partial_coverage("get_cpi_monthly", "0", "전체(미확인)")
 
     client = get_client()
     response = client.get_statistic_search(
@@ -309,6 +320,14 @@ def get_cpi_by_category(
         - value: CPI 카테고리별 지수
         - unit: 단위
 
+    Warnings
+    --------
+    DeprecationWarning
+        현재 단일 항목(`item_code1="0"`, 전체(미확인))만 반환하며 함수명이 시사하는
+        전체 카테고리별 CPI 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될
+        예정이며, 현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접
+        item_code1을 전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     - 각 카테고리별로 물가 변동을 세부적으로 파악 가능
@@ -336,6 +355,8 @@ def get_cpi_by_category(
         end_date = end_date or default_end
 
     stat_code = CPI_CATEGORY_CODES[category]
+
+    _warn_partial_coverage("get_cpi_by_category", "0", "전체(미확인)")
 
     client = get_client()
     response = client.get_statistic_search(

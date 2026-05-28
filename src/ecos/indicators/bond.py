@@ -18,6 +18,7 @@ from ..constants import (
     STAT_BOND_YIELD_TYPE,
 )
 from ..parser import normalize_stat_result, parse_response
+from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 
 
 def _get_default_dates(months_back: int = 24) -> tuple[str, str]:
@@ -67,6 +68,16 @@ def get_bond_yield(
         - value: 채권 거래액 또는 수익률
         - unit: 단위
 
+    Warnings
+    --------
+    DeprecationWarning
+        두 분기 모두 단일 항목만 반환합니다.
+        - `bond_type="종류별"`: `item_code1="1"` (합계)만 반환
+        - `bond_type="시장별"`: `item_code1="AMT"` (거래대금)만 반환
+        함수명이 시사하는 전체 채권 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가
+        변경될 예정이며, 현재 동작에 의존한다면 `EcosClient.get_statistic_search`로
+        직접 item_code1을 전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+
     Notes
     -----
     - 국채: 정부가 발행하는 채권, 가장 안전한 자산
@@ -100,9 +111,11 @@ def get_bond_yield(
     if bond_type == "종류별":
         stat_code = STAT_BOND_YIELD_TYPE
         item_code = "1"  # 합계
+        _warn_partial_coverage("get_bond_yield(종류별)", "1", "합계")
     else:  # 시장별
         stat_code = STAT_BOND_MARKET
         item_code = "AMT"  # 거래대금
+        _warn_partial_coverage("get_bond_yield(시장별)", "AMT", "거래대금")
 
     client = get_client()
     response = client.get_statistic_search(
