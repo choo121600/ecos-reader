@@ -9,8 +9,14 @@ permissions:
   contents: read
 
 jobs:
+  ci:
+    name: CI gate
+    uses: ./.github/workflows/ci.yml
+
   build:
     name: Build distribution
+    needs:
+      - ci
     runs-on: ubuntu-latest
 
     steps:
@@ -80,9 +86,15 @@ jobs:
       - name: Extract changelog for this version
         id: changelog
         run: |
-          # CHANGELOG.md에서 현재 버전의 내용만 추출
-          VERSION=${{ steps.version.outputs.version }}
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          # CHANGELOG.md에서 현재 버전 헤더 다음부터 다음 ## [ 헤더 직전까지 추출
           sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' > release_notes.md
+          # 비어 있거나 헤더 한 줄만 있으면 실패
+          if [ ! -s release_notes.md ] || [ "$(grep -cv '^[[:space:]]*$' release_notes.md)" -le 1 ]; then
+            echo "::error::CHANGELOG.md에서 버전 ${VERSION} 섹션을 찾지 못했거나 비어 있습니다."
+            exit 1
+          fi
 
       - name: Create GitHub Release
         env:
