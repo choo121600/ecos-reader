@@ -379,6 +379,68 @@ class TestEcosClient:
 
 
 @pytest.mark.usefixtures("set_api_key")
+class TestExtendedEndpointCache:
+    """get_statistic_search 외 5개 엔드포인트 캐시 확장 (#31)."""
+
+    @pytest.mark.parametrize(
+        ("method", "kwargs", "service"),
+        [
+            ("get_statistic_item_list", {"stat_code": "722Y001"}, "StatisticItemList"),
+            ("get_statistic_table_list", {"stat_code": "722Y001"}, "StatisticTableList"),
+            ("get_statistic_word", {"word": "기준금리"}, "StatisticWord"),
+            ("get_key_statistic_list", {}, "KeyStatisticList"),
+            ("get_statistic_meta", {"data_name": "경제심리지수"}, "StatisticMeta"),
+        ],
+    )
+    @responses.activate
+    def test_endpoint_uses_cache_on_second_call(self, method, kwargs, service):
+        """두 번째 동일 호출은 캐시 적중으로 네트워크를 타지 않아야 한다."""
+        resp = {service: {"row": [{"DATA_VALUE": "x"}]}}
+        responses.add(responses.GET, url=re.compile(r".*"), json=resp, status=200)
+
+        client = EcosClient(api_key="key-A", use_cache=True)
+        first = getattr(client, method)(**kwargs)
+        second = getattr(client, method)(**kwargs)
+
+        assert first == resp
+        assert second == resp
+        assert len(responses.calls) == 1, (
+            f"{method}: expected single network call due to cache hit, got {len(responses.calls)}"
+        )
+
+    @responses.activate
+    def test_different_services_do_not_collide(self):
+        """같은 stat_code라도 서비스가 다르면 캐시 키가 분리되어야 한다."""
+        item_resp = {"StatisticItemList": {"row": [{"DATA_VALUE": "item"}]}}
+        table_resp = {"StatisticTableList": {"row": [{"DATA_VALUE": "table"}]}}
+        responses.add(
+            responses.GET, url=re.compile(r".*/StatisticItemList/.*"), json=item_resp, status=200
+        )
+        responses.add(
+            responses.GET, url=re.compile(r".*/StatisticTableList/.*"), json=table_resp, status=200
+        )
+
+        client = EcosClient(api_key="key-A", use_cache=True)
+        item = client.get_statistic_item_list(stat_code="722Y001")
+        table = client.get_statistic_table_list(stat_code="722Y001")
+
+        assert item == item_resp
+        assert table == table_resp, "table 요청이 item 캐시 엔트리에서 잘못 반환되면 안 된다"
+
+    @responses.activate
+    def test_cache_disabled_bypasses_cache(self):
+        """use_cache=False면 매 호출이 네트워크를 타야 한다."""
+        resp = {"KeyStatisticList": {"row": [{"DATA_VALUE": "x"}]}}
+        responses.add(responses.GET, url=re.compile(r".*"), json=resp, status=200)
+
+        client = EcosClient(api_key="key-A", use_cache=False)
+        client.get_key_statistic_list()
+        client.get_key_statistic_list()
+
+        assert len(responses.calls) == 2
+
+
+@pytest.mark.usefixtures("set_api_key")
 class TestGlobalClient:
     """전역 클라이언트 테스트"""
 
