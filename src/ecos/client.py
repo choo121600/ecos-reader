@@ -247,6 +247,54 @@ class EcosClient:
 
             raise EcosAPIError(error_num, message)
 
+    def _cached_request(
+        self,
+        service: EcosService,
+        start: int,
+        end: int,
+        *path_params: str,
+    ) -> dict[str, Any]:
+        """
+        캐시를 적용한 공통 요청 헬퍼 (#31).
+
+        6개 client 엔드포인트가 동일한 캐시 키 규칙을 공유하도록 한다.
+        키 구성에 페이지 범위(start/end), API 키(인스턴스 단위로 고정된 값,
+        ``_resolve_cache_key_api_key``), 언어, format, 그리고 서비스별
+        path 파라미터를 포함해 페이지·키·언어·서비스·인자가 다른 요청이
+        서로 충돌하지 않도록 한다.
+
+        참고: ``path_params``는 ``_build_url``과 캐시 키에 동일하게 전달된다.
+        ``_build_url``은 빈 문자열 인자를 URL에서 제외하지만 캐시 키에는
+        그대로 포함해, 서비스별 인자 개수가 달라도 키가 안정적으로 구분된다.
+
+        ``Settings.DEFAULT_LANG`` / ``DEFAULT_FORMAT``은 현재 정적이지만 키에
+        포함하는 이유는 두 가지다. (1) 향후 client 단위 옵션으로 승격되면
+        자동으로 캐시 격리가 동작하도록 차원을 미리 확보한다. (2) 사용자가
+        monkey-patch하면 _build_url과 캐시 키가 동시에 새 값을 사용하도록 한다.
+        """
+        cache_key: str | None = None
+        if self._cache is not None and self.use_cache:
+            cache_key = self._cache._make_key(
+                service,
+                self._resolve_cache_key_api_key(),
+                Settings.DEFAULT_LANG,
+                Settings.DEFAULT_FORMAT,
+                int(start),
+                int(end),
+                *path_params,
+            )
+            cached = self._cache.get(cache_key)
+            if cached is not None:
+                return cast(dict[str, Any], cached)
+
+        url = self._build_url(service, start, end, *path_params)
+        result = self._make_request(url)
+
+        if cache_key is not None and self._cache is not None:
+            self._cache.set(cache_key, result)
+
+        return result
+
     def get_statistic_search(
         self,
         stat_code: str,
@@ -291,39 +339,7 @@ class EcosClient:
         dict
             API 응답 데이터
         """
-        # 캐시 확인 — 키 구성에 페이지 범위(start/end), API 키(인스턴스 단위로
-        # 고정된 값), 언어, format을 포함해 페이지·키·언어가 다른 요청이
-        # 서로 충돌하지 않도록 한다.
-        #
-        # 참고: 현재 Settings.DEFAULT_LANG / DEFAULT_FORMAT은 정적이지만 키에 포함하는
-        # 이유는 두 가지다.
-        # 1) 향후 lang/format이 클라이언트 단위 옵션으로 승격되면 자동으로
-        #    캐시 격리가 동작하도록 미리 차원을 확보한다.
-        # 2) 사용자가 `Settings.DEFAULT_LANG = "en"`처럼 monkey-patch하면 _build_url과
-        #    캐시 키가 동시에 새 값을 사용해 새 엔트리를 만들도록 한다 (구 lang 엔트리는
-        #    그대로 남지만, 새 요청이 잘못된 lang 응답을 받는 일은 없다).
-        if self._cache is not None and self.use_cache:
-            cache_key = self._cache._make_key(
-                "StatisticSearch",
-                self._resolve_cache_key_api_key(),
-                Settings.DEFAULT_LANG,
-                Settings.DEFAULT_FORMAT,
-                int(start),
-                int(end),
-                stat_code,
-                period,
-                start_date,
-                end_date,
-                item_code1,
-                item_code2,
-                item_code3,
-                item_code4,
-            )
-            cached = self._cache.get(cache_key)
-            if cached is not None:
-                return cast(dict[str, Any], cached)
-
-        url = self._build_url(
+        return self._cached_request(
             "StatisticSearch",
             start,
             end,
@@ -336,14 +352,6 @@ class EcosClient:
             item_code3,
             item_code4,
         )
-
-        result = self._make_request(url)
-
-        # 캐시 저장
-        if self._cache is not None and self.use_cache:
-            self._cache.set(cache_key, result)
-
-        return result
 
     def get_statistic_item_list(
         self,
@@ -368,8 +376,7 @@ class EcosClient:
         dict
             API 응답 데이터
         """
-        url = self._build_url("StatisticItemList", start, end, stat_code)
-        return self._make_request(url)
+        return self._cached_request("StatisticItemList", start, end, stat_code)
 
     def get_statistic_table_list(
         self,
@@ -394,8 +401,7 @@ class EcosClient:
         dict
             API 응답 데이터
         """
-        url = self._build_url("StatisticTableList", start, end, stat_code)
-        return self._make_request(url)
+        return self._cached_request("StatisticTableList", start, end, stat_code)
 
     def get_statistic_word(
         self,
@@ -420,8 +426,7 @@ class EcosClient:
         dict
             API 응답 데이터
         """
-        url = self._build_url("StatisticWord", start, end, word)
-        return self._make_request(url)
+        return self._cached_request("StatisticWord", start, end, word)
 
     def get_key_statistic_list(
         self,
@@ -443,8 +448,7 @@ class EcosClient:
         dict
             API 응답 데이터
         """
-        url = self._build_url("KeyStatisticList", start, end)
-        return self._make_request(url)
+        return self._cached_request("KeyStatisticList", start, end)
 
     def get_statistic_meta(
         self,
@@ -469,8 +473,7 @@ class EcosClient:
         dict
             API 응답 데이터
         """
-        url = self._build_url("StatisticMeta", start, end, data_name)
-        return self._make_request(url)
+        return self._cached_request("StatisticMeta", start, end, data_name)
 
 
 # 전역 클라이언트 인스턴스
