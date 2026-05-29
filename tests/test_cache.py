@@ -4,6 +4,7 @@ cache 모듈 테스트
 
 from __future__ import annotations
 
+import threading
 import time
 
 from ecos.cache import (
@@ -138,3 +139,48 @@ class TestGlobalCache:
         enable_cache()
         cache.set("test2", "value2")
         assert cache.get("test2") == "value2"
+
+
+class TestCacheConcurrency:
+    """스레드 안전성 테스트 (#10)"""
+
+    def test_concurrent_set_get_no_corruption(self):
+        """10개 스레드가 동시에 set/get 해도 예외/데이터 손상이 없다."""
+        cache = Cache(ttl=3600, maxsize=50)
+        errors: list[Exception] = []
+        barrier = threading.Barrier(10)
+
+        def worker(tid: int) -> None:
+            barrier.wait()  # 모든 스레드가 동시에 출발
+            try:
+                for i in range(500):
+                    key = f"t{tid}-k{i % 20}"
+                    cache.set(key, {"tid": tid, "i": i})
+                    cache.get(key)
+                    cache.get(f"t{(tid + 1) % 10}-k{i % 20}")
+                    if i % 50 == 0:
+                        cache.invalidate(key)
+                    len(cache)
+                    _ = key in cache
+            except Exception as exc:  # pragma: no cover - 실패 시 진단용
+                errors.append(exc)
+
+        threads = [threading.Thread(target=worker, args=(t,)) for t in range(10)]
+        for thr in threads:
+            thr.start()
+        for thr in threads:
+            thr.join()
+
+        assert not errors, f"동시성 예외 발생: {errors[:3]}"
+        # maxsize 불변식: 동시 부하 후에도 항목 수가 maxsize를 넘지 않는다.
+        assert len(cache) <= cache.maxsize
+
+    def test_lru_eviction_keeps_maxsize_invariant(self):
+        """대량 set 후 항목 수가 정확히 maxsize 이하로 유지된다 (O(1) 퇴출)."""
+        cache = Cache(ttl=3600, maxsize=100)
+        for i in range(1000):
+            cache.set(f"key{i}", i)
+        assert len(cache) == 100
+        # 가장 최근 100개만 남아야 한다.
+        assert "key999" in cache
+        assert "key899" not in cache
