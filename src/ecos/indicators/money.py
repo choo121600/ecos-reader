@@ -14,6 +14,8 @@ import pandas as pd
 from ..client import get_client
 from ..constants import (
     BANK_LENDING_ITEMS,
+    BORROWER_LOAN_CATEGORY_PREFIX,
+    BORROWER_LOAN_STAT_CODES,
     M1_ITEMS,
     M1_VARIANTS,
     M2_HOLDER_ITEMS,
@@ -25,8 +27,6 @@ from ..constants import (
     PERIOD_MONTHLY,
     PERIOD_QUARTERLY,
     STAT_BANK_LENDING,
-    STAT_BORROWER_LOAN_BALANCE,
-    STAT_BORROWER_LOAN_NEW,
     STAT_HOUSEHOLD_CREDIT_PURPOSE,
     STAT_HOUSEHOLD_CREDIT_SECTOR,
     STAT_HOUSEHOLD_LENDING,
@@ -554,14 +554,25 @@ def get_household_lending_detail(
 
 def get_borrower_loan(
     loan_type: Literal["신규", "잔액"] = "잔액",
-    category: Literal["차주별", "소득별", "연령별", "지역별", "담보유형별", "업권별"] = "차주별",
+    category: Literal[
+        "전체", "성별", "연령별", "지역별", "업권별", "담보유형별", "다중대출별"
+    ] = "전체",
+    sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
     차주별 가계대출을 조회합니다.
 
-    차주 특성별(소득, 연령 등) 가계대출 신규취급액 또는 잔액을 제공합니다.
+    가계대출 신규취급액(`181Y001`) 또는 잔액(`181Y002`)을 분류축별로 제공합니다.
+
+    실제 ECOS 구조는 stat_code가 신규/잔액 2개뿐이고 모든 분류축(연령·지역·업권·
+    담보유형·다중대출)은 `item_code1` prefix로 표현됩니다. 이 함수는 ``category``로
+    분류축을 선택하면 해당 축의 모든 세부 항목을 조회한 뒤,
+
+    - ``sub_category`` 미지정 시: long-format(축 전체)으로 반환하며
+      ``category_value`` 컬럼에 세부 항목명을 담습니다.
+    - ``sub_category`` 지정 시: 해당 세부 항목 단일 시계열만 반환합니다.
 
     Parameters
     ----------
@@ -570,13 +581,18 @@ def get_borrower_loan(
         - '신규': 신규취급액
         - '잔액': 잔액 (기본값)
     category : str
-        차주 분류
-        - '차주별': 차주 전체 (기본값)
-        - '소득별': 소득 구간별
-        - '연령별': 연령대별
-        - '지역별': 지역별
-        - '담보유형별': 담보 유형별
-        - '업권별': 업권별
+        분류축
+        - '전체': 차주 전체 (기본값, item_code `0000`)
+        - '성별': 성별 (남성/여성, prefix B)
+        - '연령별': 연령대별 (prefix C)
+        - '지역별': 지역별 (prefix D)
+        - '업권별': 업권별 (은행/비은행, prefix E)
+        - '담보유형별': 담보 유형별 (주담대/신용/전세 등, prefix F)
+        - '다중대출별': 다중대출 건수별 (prefix G)
+    sub_category : str, optional
+        세부 항목. 지정 시 해당 항목 단일 시계열만 반환합니다.
+        세부 항목명(`category_value`) 또는 item_code 둘 다 허용합니다.
+        미지정 시 분류축 전체를 long-format으로 반환합니다.
     start_date : str, optional
         조회 시작일 (YYYYQN 형식, 예: 2024Q1), 기본값: 5년 전
     end_date : str, optional
@@ -585,61 +601,43 @@ def get_borrower_loan(
     Returns
     -------
     pd.DataFrame
-        컬럼: date, value, unit
-        - date: 날짜 (datetime)
-        - value: 대출액 (조원)
-        - unit: 단위
+        - ``sub_category`` 미지정: 컬럼 ``date, category_value, value, unit``
+          (분류축의 각 세부 항목이 행으로 포함된 long-format)
+        - ``sub_category`` 지정: 컬럼 ``date, value, unit`` (단일 시계열)
 
-    Warnings
-    --------
-    DeprecationWarning
-        현재 단일 항목(`item_code1="F001"`, 주택담보대출)만 반환하며 함수명이 시사하는
-        전체 차주별 대출 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
-        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
-        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+    Raises
+    ------
+    ValueError
+        loan_type/category가 허용 값이 아니거나, 지정한 sub_category가
+        해당 분류축에 존재하지 않는 경우 (사용 가능한 항목을 함께 안내).
 
     Notes
     -----
-    차주별 가계대출 통계는 가계부채의 질적 구조를 파악하는 데
-    중요한 지표입니다.
+    차주별 가계대출 통계는 가계부채의 질적 구조를 파악하는 데 중요한 지표입니다.
 
-    - 저소득층/고소득층 대출 비중
-    - 청년층/고령층 대출 비중
-    - 수도권/지방 대출 비중
+    - 청년층/고령층 대출 비중 (연령별)
+    - 수도권/지방 대출 비중 (지역별)
+    - 은행/비은행 대출 비중 (업권별)
 
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_borrower_loan()
+    >>> # 연령별 잔액 전체 (long-format)
+    >>> df = ecos.get_borrower_loan(loan_type="잔액", category="연령별")
     >>> df.head()
+            date category_value      value unit
 
-    >>> df = ecos.get_borrower_loan(loan_type="신규", category="소득별")
+    >>> # 연령별 중 30대 단일 시계열
+    >>> df = ecos.get_borrower_loan(
+    ...     loan_type="잔액", category="연령별", sub_category="30대"
+    ... )
     """
-    if loan_type not in ["신규", "잔액"]:
-        raise ValueError("loan_type은 '신규' 또는 '잔액' 중 하나여야 합니다.")
+    if loan_type not in BORROWER_LOAN_STAT_CODES:
+        raise ValueError(f"loan_type은 {list(BORROWER_LOAN_STAT_CODES.keys())} 중 하나여야 합니다.")
 
-    # v0.1.6 한계: 아래 (loan_type, category) 조합은 stat_code 매핑이 ECOS API와
-    # 일치하지 않아 빈 응답을 반환한다. 실제 ECOS는 181Y001(신규)/181Y002(잔액)에
-    # 모든 분류를 item_code1로 담는 구조이므로 이 함수의 분류축별 매핑 자체가
-    # 재설계 대상. 정확한 분류축 시계열이 필요하면
-    # EcosClient.get_statistic_search('181Y001'|'181Y002', item_code1=...)을
-    # 직접 호출하라.
-    _BROKEN_BORROWER_COMBINATIONS = {
-        ("신규", "연령별"),
-        ("신규", "지역별"),
-        ("신규", "담보유형별"),
-        ("신규", "업권별"),
-        ("잔액", "연령별"),
-        ("잔액", "지역별"),
-        ("잔액", "업권별"),
-    }
-    if (loan_type, category) in _BROKEN_BORROWER_COMBINATIONS:
+    if category not in BORROWER_LOAN_CATEGORY_PREFIX:
         raise ValueError(
-            f"loan_type='{loan_type}', category='{category}' 조합은 v0.1.6에서 "
-            "stat_code 매핑이 ECOS API와 일치하지 않아 지원되지 않습니다. "
-            "EcosClient.get_statistic_search('181Y001' 또는 '181Y002', "
-            "item_code1=...)을 직접 호출해 원하는 분류를 받으세요. "
-            "(v0.2.0에서 재설계 예정 — 이슈 #28)"
+            f"category는 {list(BORROWER_LOAN_CATEGORY_PREFIX.keys())} 중 하나여야 합니다."
         )
 
     # 기본 날짜 설정 (분기)
@@ -648,30 +646,49 @@ def get_borrower_loan(
         start_year = end_date_obj.year - 5
         current_quarter = (end_date_obj.month - 1) // 3 + 1
 
-        start_str = f"{start_year}Q1"
-        end_str = f"{end_date_obj.year}Q{current_quarter}"
+        start_date = start_date or f"{start_year}Q1"
+        end_date = end_date or f"{end_date_obj.year}Q{current_quarter}"
 
-        start_date = start_date or start_str
-        end_date = end_date or end_str
+    stat_code = BORROWER_LOAN_STAT_CODES[loan_type]
+    prefix = BORROWER_LOAN_CATEGORY_PREFIX[category]
 
-    # loan_type과 category에 따른 stat_code 선택
-    stat_codes = STAT_BORROWER_LOAN_NEW if loan_type == "신규" else STAT_BORROWER_LOAN_BALANCE
-
-    if category not in stat_codes:
-        raise ValueError(f"category는 {list(stat_codes.keys())} 중 하나여야 합니다.")
-
-    stat_code = stat_codes[category]
-
-    _warn_partial_coverage("get_borrower_loan", "F001", "주택담보대출")
-
+    # stat 전체 item을 받아 분류축 prefix로 client-side 필터링한다.
+    # (ECOS item_code1은 정확 일치 필터라 prefix 조회가 불가능하므로 전량 수신 후 분류)
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
         period=PERIOD_QUARTERLY,
         start_date=start_date,
         end_date=end_date,
-        item_code1="F001",  # 주택담보대출
     )
 
     df = parse_response(response)
-    return normalize_stat_result(df)
+    if df.empty or "item_code1" not in df.columns:
+        return df
+
+    # 분류축 필터: "전체"는 단일 코드, 나머지는 prefix 매칭
+    if category == "전체":
+        axis = df[df["item_code1"] == prefix].copy()
+    else:
+        axis = df[df["item_code1"].str.startswith(prefix, na=False)].copy()
+
+    if axis.empty:
+        return parse_response({})  # 빈 DataFrame
+
+    if sub_category is not None:
+        # 세부 항목명(item_name1) 또는 item_code로 단일 시계열 선택
+        match = axis[
+            (axis.get("item_name1") == sub_category) | (axis["item_code1"] == sub_category)
+        ]
+        if match.empty:
+            available = sorted(axis.get("item_name1", axis["item_code1"]).dropna().unique())
+            raise ValueError(
+                f"sub_category='{sub_category}'는 loan_type='{loan_type}', "
+                f"category='{category}' 분류축에 존재하지 않습니다. "
+                f"사용 가능한 항목: {available}"
+            )
+        return normalize_stat_result(match)
+
+    # long-format: 세부 항목명을 category_value로 노출
+    axis = axis.rename(columns={"item_name1": "category_value"})
+    return normalize_stat_result(axis, columns=["date", "category_value", "value", "unit"])
