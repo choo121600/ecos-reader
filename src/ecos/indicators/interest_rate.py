@@ -30,6 +30,7 @@ from ._dates import default_daily, default_monthly
 def get_base_rate(
     start_date: str | None = None,
     end_date: str | None = None,
+    frequency: Literal["D", "M"] = "M",
 ) -> pd.DataFrame:
     """
     한국은행 기준금리를 조회합니다.
@@ -37,9 +38,15 @@ def get_base_rate(
     Parameters
     ----------
     start_date : str, optional
-        조회 시작일 (YYYYMM 형식), 기본값: 1년 전
+        조회 시작일, 기본값: 1년 전.
+        주기에 맞춘 형식 — 'M'이면 YYYYMM, 'D'이면 YYYYMMDD.
     end_date : str, optional
-        조회 종료일 (YYYYMM 형식), 기본값: 현재
+        조회 종료일, 기본값: 현재. (형식은 ``start_date`` 와 동일)
+    frequency : str
+        조회 주기 (ECOS 통계표 ``722Y001`` 은 일별 원천)
+        - 'M': 월별 (기본값, 날짜 YYYYMM)
+        - 'D': 일별 (날짜 YYYYMMDD). 기준금리는 변경일에만 갱신되어
+          결과가 sparse 합니다 (변경이 없는 날은 행이 없음).
 
     Returns
     -------
@@ -58,17 +65,30 @@ def get_base_rate(
     0 2024-01-01   3.50    %
 
     >>> df = ecos.get_base_rate(start_date="202001", end_date="202312")
+
+    >>> # 일별 (변경일 단위) 조회
+    >>> df = ecos.get_base_rate(
+    ...     start_date="20200101", end_date="20231231", frequency="D"
+    ... )
     """
-    # 기본 날짜 설정
+    if frequency not in ("D", "M"):
+        raise ValueError("frequency는 'D' 또는 'M' 중 하나여야 합니다.")
+
+    period = PERIOD_DAILY if frequency == "D" else PERIOD_MONTHLY
+
+    # 기본 날짜 설정 (주기별 포맷)
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(12)
+        if frequency == "D":
+            default_start, default_end = default_daily(365)
+        else:
+            default_start, default_end = default_monthly(12)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_BASE_RATE,
-        period=PERIOD_MONTHLY,
+        period=period,
         start_date=start_date,
         end_date=end_date,
         item_code1=ITEM_BASE_RATE,
