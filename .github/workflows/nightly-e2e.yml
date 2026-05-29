@@ -1,0 +1,43 @@
+name: Nightly E2E
+
+# 실 ECOS Open API를 호출하는 e2e 테스트를 매일 1회 실행해 외부 API 회귀를 감시한다.
+# PR CI(ci.yml)는 `pytest -m "not e2e"`로 빠른 피드백만 담당하고, 실 API 검증은
+# 여기서 분리 실행한다. (ECOS rate limit: 3분간 300회 / 초과 시 30분 차단)
+
+on:
+  schedule:
+    # 매일 18:00 UTC (= 03:00 KST)
+    - cron: "0 18 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  e2e:
+    name: E2E (real ECOS API)
+    runs-on: ubuntu-latest
+    # fork에는 secret이 없어 의미가 없으므로 upstream 레포에서만 실행
+    if: github.repository == 'choo121600/ecos-reader'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Sync dev dependencies
+        run: uv sync --extra dev --python 3.12
+
+      - name: Run e2e tests
+        env:
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+        run: uv run pytest -m "e2e"
