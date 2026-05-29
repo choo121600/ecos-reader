@@ -456,3 +456,99 @@ class TestGlobalClient:
         reset_client()
         client2 = get_client()
         assert client1 is not client2
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestRetryPolicy:
+    """urllib3.Retry/HTTPAdapter 재시도 정책 (#11)."""
+
+    @pytest.fixture(autouse=True)
+    def _no_backoff(self, monkeypatch):
+        """테스트 속도를 위해 backoff를 제거한다 (정책 검증에는 무관)."""
+        monkeypatch.setattr(Settings, "RETRY_BACKOFF_FACTOR", 0)
+
+    def test_adapter_pool_and_retry_configured(self):
+        """세션에 풀 크기와 재시도 정책이 장착된다."""
+        client = EcosClient(use_cache=False)
+        adapter = client.session.get_adapter("https://ecos.bok.or.kr/")
+
+        assert adapter._pool_connections == Settings.POOL_CONNECTIONS
+        assert adapter._pool_maxsize == Settings.POOL_MAXSIZE
+        assert adapter.max_retries.total == client.max_retries
+        # 4xx(400)는 비재시도, 5xx/429/408은 재시도 대상
+        forcelist = adapter.max_retries.status_forcelist
+        assert 400 not in forcelist
+        assert 404 not in forcelist
+        assert 500 in forcelist
+        assert 503 in forcelist
+        assert 429 in forcelist
+        assert 408 in forcelist
+
+    @responses.activate
+    def test_4xx_not_retried(self):
+        """4xx 응답은 재시도 없이 즉시 raise 된다 (단일 네트워크 호출)."""
+        responses.add(responses.GET, url=re.compile(r".*"), body="bad request", status=400)
+
+        client = EcosClient(use_cache=False, max_retries=3)
+        with pytest.raises(EcosNetworkError):
+            client.get_statistic_search(
+                stat_code="722Y001", period="M", start_date="202401", end_date="202412"
+            )
+
+        assert len(responses.calls) == 1, "4xx는 재시도하면 안 된다"
+
+    @responses.activate
+    def test_5xx_retried_per_policy(self):
+        """5xx 응답은 max_retries 만큼 재시도 후 raise 된다."""
+        responses.add(responses.GET, url=re.compile(r".*"), body="server error", status=503)
+
+        client = EcosClient(use_cache=False, max_retries=3)
+        with pytest.raises(EcosNetworkError):
+            client.get_statistic_search(
+                stat_code="722Y001", period="M", start_date="202401", end_date="202412"
+            )
+
+        # total=3 → 최초 1회 + 재시도 3회 = 4회
+        assert len(responses.calls) == 4, f"5xx 재시도 횟수 불일치: {len(responses.calls)}"
+
+    @responses.activate
+    def test_429_retried_per_policy(self):
+        """429(rate limit) 응답도 재시도 대상이다."""
+        responses.add(responses.GET, url=re.compile(r".*"), body="too many", status=429)
+
+        client = EcosClient(use_cache=False, max_retries=2)
+        with pytest.raises(EcosNetworkError):
+            client.get_statistic_search(
+                stat_code="722Y001", period="M", start_date="202401", end_date="202412"
+            )
+
+        assert len(responses.calls) == 3, f"429 재시도 횟수 불일치: {len(responses.calls)}"
+
+    @responses.activate
+    def test_business_rate_limit_retried_at_app_level(self):
+        """HTTP 200 + ERROR-602 비즈니스 에러는 앱 루프에서 재시도된다."""
+        mock = {"RESULT": {"CODE": "ERROR-602", "MESSAGE": "이용이 제한되었습니다."}}
+        responses.add(responses.GET, url=re.compile(r".*"), json=mock, status=200)
+
+        client = EcosClient(use_cache=False, max_retries=3)
+        with pytest.raises(EcosRateLimitError):
+            client.get_statistic_search(
+                stat_code="722Y001", period="M", start_date="202401", end_date="202412"
+            )
+
+        # 비즈니스 에러는 HTTP 200이라 전송 계층이 재시도하지 않음 → 앱 루프 3회
+        assert len(responses.calls) == 3, f"비즈니스 재시도 횟수 불일치: {len(responses.calls)}"
+
+    @responses.activate
+    def test_business_client_error_not_retried(self):
+        """ERROR-100 같은 클라이언트 책임 에러는 재시도하지 않는다."""
+        mock = {"RESULT": {"CODE": "ERROR-100", "MESSAGE": "필수 값 누락"}}
+        responses.add(responses.GET, url=re.compile(r".*"), json=mock, status=200)
+
+        client = EcosClient(use_cache=False, max_retries=3)
+        with pytest.raises(EcosAPIError):
+            client.get_statistic_search(
+                stat_code="722Y001", period="M", start_date="202401", end_date="202412"
+            )
+
+        assert len(responses.calls) == 1, "클라이언트 책임 에러는 재시도하면 안 된다"

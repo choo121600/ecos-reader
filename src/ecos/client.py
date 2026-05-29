@@ -12,6 +12,8 @@ from typing import Any, cast
 from urllib.parse import quote
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 
 from .cache import Cache, get_cache
 from .config import Settings, get_api_key
@@ -68,8 +70,39 @@ class EcosClient:
         self.timeout = timeout
         self.max_retries = max_retries
         self.use_cache = use_cache
-        self.session = requests.Session()
+        self.session = self._build_session()
         self._cache: Cache | None = get_cache() if use_cache else None
+
+    def _build_session(self) -> requests.Session:
+        """재시도 정책과 커넥션 풀이 구성된 Session을 생성합니다.
+
+        전송 계층(urllib3.Retry)에서 처리하는 것:
+        - 5xx/429/408 및 연결/읽기 오류 재시도 (``status_forcelist``)
+        - 4xx(408/429 제외)는 ``status_forcelist`` 밖이므로 재시도하지 않음
+        - 429/503의 ``Retry-After`` 헤더 존중 (``respect_retry_after_header``)
+
+        ECOS 비즈니스 에러(HTTP 200 + ``RESULT.CODE``)는 이 계층에서 보이지
+        않으므로 ``_make_request``의 애플리케이션 루프에서 별도로 재시도한다.
+        """
+        session = requests.Session()
+        retry = Retry(
+            total=self.max_retries,
+            backoff_factor=Settings.RETRY_BACKOFF_FACTOR,
+            status_forcelist=Settings.RETRY_STATUS_FORCELIST,
+            allowed_methods=frozenset({"GET"}),
+            respect_retry_after_header=True,
+            # 재시도 소진 후에도 마지막 응답을 그대로 반환받아 raise_for_status로
+            # 일관되게 변환한다 (urllib3가 MaxRetryError를 던지지 않도록).
+            raise_on_status=False,
+        )
+        adapter = HTTPAdapter(
+            max_retries=retry,
+            pool_connections=Settings.POOL_CONNECTIONS,
+            pool_maxsize=Settings.POOL_MAXSIZE,
+        )
+        session.mount("https://", adapter)
+        session.mount("http://", adapter)
+        return session
 
     def _get_api_key(self) -> str:
         """
@@ -155,6 +188,9 @@ class EcosClient:
         EcosRateLimitError
             Rate Limit 초과 시
         """
+        # 전송 계층(urllib3.Retry)이 5xx/429/408·연결/읽기 오류를 이미 재시도한다.
+        # 이 루프는 HTTP 200으로 내려오는 ECOS 비즈니스 에러(ERROR-500/600/602 등
+        # RETRYABLE_ERROR_CODES)만 추가로 재시도한다.
         last_exception: Exception | None = None
 
         for attempt in range(self.max_retries):
@@ -170,38 +206,35 @@ class EcosClient:
                 logger.debug(f"API 응답 성공: {len(data)} 바이트 수신")
                 return data
 
-            except requests.exceptions.Timeout:
-                last_exception = EcosNetworkError(f"요청 타임아웃 ({self.timeout}초)")
-                if attempt < self.max_retries - 1:
-                    log_retry_attempt(attempt + 1, self.max_retries, last_exception)
+            except requests.exceptions.Timeout as e:
+                # 읽기 타임아웃: urllib3 재시도까지 소진된 상태이므로 즉시 변환
+                raise EcosNetworkError(f"요청 타임아웃 ({self.timeout}초)") from e
 
             except requests.exceptions.ConnectionError as e:
-                # urllib3가 에러 메시지에 raw URL(api_key 포함)을 끼워넣는 경우가 있어 마스킹
-                last_exception = EcosNetworkError(f"네트워크 연결 오류: {mask_api_key(str(e))}")
-                if attempt < self.max_retries - 1:
-                    log_retry_attempt(attempt + 1, self.max_retries, last_exception)
+                # 연결 오류: urllib3 재시도 소진 후 도달. raw URL(api_key)이 섞일 수
+                # 있어 마스킹.
+                raise EcosNetworkError(f"네트워크 연결 오류: {mask_api_key(str(e))}") from e
 
             except requests.exceptions.HTTPError as e:
-                # requests의 HTTPError는 "... for url: <full URL with key>" 형식이므로 마스킹 필수
-                last_exception = EcosNetworkError(f"HTTP 오류: {mask_api_key(str(e))}")
-                if attempt < self.max_retries - 1:
-                    log_retry_attempt(attempt + 1, self.max_retries, last_exception)
+                # 4xx(408/429 제외)는 status_forcelist 밖이라 재시도 없이 즉시 도달하고,
+                # 5xx/429는 어댑터가 재시도를 소진한 최종 응답이다. 어느 쪽이든 즉시 raise.
+                # requests HTTPError str()에 full URL(key 포함)이 들어가므로 마스킹 필수.
+                raise EcosNetworkError(f"HTTP 오류: {mask_api_key(str(e))}") from e
 
             except (EcosAPIError, EcosRateLimitError) as e:
-                # 재시도 가능한 에러인지 확인
+                # 비즈니스 에러: 재시도 대상이 아니면 즉시 raise
                 error_key = f"ERROR-{e.code}" if hasattr(e, "code") else ""
-                if error_key in RETRYABLE_ERROR_CODES:
-                    last_exception = e
-                    if attempt < self.max_retries - 1:
-                        log_retry_attempt(attempt + 1, self.max_retries, last_exception)
-                else:
+                if error_key not in RETRYABLE_ERROR_CODES:
                     raise
 
-            # 재시도 전 대기 (exponential backoff)
-            if attempt < self.max_retries - 1:
-                wait_time = Settings.RETRY_BACKOFF_FACTOR * (2**attempt)
-                logger.debug(f"재시도 전 대기: {wait_time:.2f}초")
-                time.sleep(wait_time)
+                last_exception = e
+                if attempt < self.max_retries - 1:
+                    log_retry_attempt(attempt + 1, self.max_retries, e)
+                    # 비즈니스 에러는 HTTP 200이라 Retry-After 헤더가 없으므로
+                    # exponential backoff 적용
+                    wait_time = Settings.RETRY_BACKOFF_FACTOR * (2**attempt)
+                    logger.debug(f"재시도 전 대기: {wait_time:.2f}초")
+                    time.sleep(wait_time)
 
         # 모든 재시도 실패
         if last_exception:

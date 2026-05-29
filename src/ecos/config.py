@@ -139,6 +139,12 @@ class Settings:
     DEFAULT_TIMEOUT: int = 30  # 초
     MAX_RETRIES: int = 3
     RETRY_BACKOFF_FACTOR: float = 1.0
+    # 재시도 대상 HTTP 상태 코드. 4xx 중에서는 408(timeout)/429(rate limit)만 포함하고
+    # 나머지 4xx(클라이언트 오류)는 재시도하지 않는다.
+    RETRY_STATUS_FORCELIST: tuple[int, ...] = (408, 429, 500, 502, 503, 504)
+    # 커넥션 풀 크기 (대량 동시 요청 시 기본값 10 병목 완화)
+    POOL_CONNECTIONS: int = 10
+    POOL_MAXSIZE: int = 20
 
     # 캐시 설정
     CACHE_TTL: int = 3600  # 1시간
