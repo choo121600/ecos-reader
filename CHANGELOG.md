@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-05-29
+
+v0.1.6 라이브 e2e 검증에서 드러난 follow-up(#2 Reliability epic)을 정리한 릴리스.
+모든 변경은 실제 ECOS API 키로 라이브 검증했습니다.
+
+### Changed
+- **BREAKING** `get_borrower_loan` 시그니처 재설계. ECOS 실제 구조(stat_code는
+  신규 `181Y001`/잔액 `181Y002` 2개뿐, 모든 분류축은 `item_code1` prefix로 표현)에
+  맞춰 다음과 같이 변경. PR #37 (#29).
+  - `category`: `전체`/`성별`/`연령별`/`지역별`/`업권별`/`담보유형별`/`다중대출별`
+    (각 축은 `item_code1` prefix `0000`/`B`/`C`/`D`/`E`/`F`/`G`로 필터링)
+  - `sub_category` 파라미터 추가 — 미지정 시 분류축 전체를 long-format
+    (`date, category_value, value, unit`)으로, 지정 시 단일 시계열로 반환
+  - 없는 `sub_category`는 사용 가능한 항목 목록과 함께 `ValueError`
+  - 구 `STAT_BORROWER_LOAN_NEW/BALANCE`(181Y001~016 가정) 매핑 제거 →
+    `BORROWER_LOAN_STAT_CODES` / `BORROWER_LOAN_CATEGORY_PREFIX`
+  - v0.1.6에서 빈 응답을 막기 위해 차단했던 7개 조합이 정상 데이터를 반환
+
+### Added
+- `Cache`를 나머지 5개 client 엔드포인트(`get_statistic_item_list`,
+  `get_statistic_table_list`, `get_statistic_word`, `get_key_statistic_list`,
+  `get_statistic_meta`)로 확장. 공통 `_cached_request` 헬퍼로 6개 메서드가
+  동일한 캐시 키 규칙(service, api_key, lang, format, 페이지 범위, path 인자)을
+  공유하며 `get_statistic_search` 동작/키는 호환 유지. PR #36 (#31).
+- v0.1.6 데이터 매핑 수정에 대한 회귀 e2e 가드(`TestE2ERegressionV016`): GDP 연간
+  fallback, m2 말잔, CPI 8개 카테고리, 채권 월별 1행, borrower 분류축 등. PR #39 (#30).
+
+### Fixed
+- `get_cpi_monthly`가 존재하지 않는 stat_code `901Y001`로 빈 응답을 반환하던 문제
+  수정 → `get_cpi`와 동일한 소비자물가지수 `901Y009` 총지수(item `0`) 사용. PR #35 (#32).
+
 ## [0.1.6] - 2026-05-29
 
 ### Security
