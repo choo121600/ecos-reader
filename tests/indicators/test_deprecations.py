@@ -70,9 +70,9 @@ def test_partial_coverage_emits_visible_warning(func_name, call, _empty_mock):
     """
     with pytest.warns(ecos.EcosPartialCoverageWarning, match=re.escape(func_name)) as rec:
         call()
-    assert (
-        len(rec) == 1
-    ), f"{func_name}: expected exactly 1 EcosPartialCoverageWarning, got {len(rec)}"
+    assert len(rec) == 1, (
+        f"{func_name}: expected exactly 1 EcosPartialCoverageWarning, got {len(rec)}"
+    )
 
 
 def test_warning_class_is_user_warning_subclass():

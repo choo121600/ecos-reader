@@ -200,13 +200,13 @@ class TestEcosClient:
 
         all_logs = "\n".join(record.getMessage() for record in caplog.records)
         # caplog가 실제로 잡았는지 먼저 확인 — 0건이면 마스킹 검사가 vacuously 통과
-        assert any(
-            "API 요청 전송" in r.getMessage() for r in caplog.records
-        ), f"request log not captured by caplog (records={len(caplog.records)})"
+        assert any("API 요청 전송" in r.getMessage() for r in caplog.records), (
+            f"request log not captured by caplog (records={len(caplog.records)})"
+        )
         assert set_api_key not in all_logs, f"API key leaked into DEBUG logs:\n{all_logs}"
-        assert (
-            "/***/" in all_logs
-        ), f"Expected masked API key marker '/***/' in request log:\n{all_logs}"
+        assert "/***/" in all_logs, (
+            f"Expected masked API key marker '/***/' in request log:\n{all_logs}"
+        )
 
     @responses.activate
     def test_http_error_log_masks_api_key(self, caplog, set_api_key):
@@ -231,9 +231,9 @@ class TestEcosClient:
             )
 
         all_logs = "\n".join(record.getMessage() for record in caplog.records)
-        assert (
-            set_api_key not in all_logs
-        ), f"API key leaked into WARNING/ERROR logs via HTTPError str():\n{all_logs}"
+        assert set_api_key not in all_logs, (
+            f"API key leaked into WARNING/ERROR logs via HTTPError str():\n{all_logs}"
+        )
 
     def test_mask_api_key_handles_trailing_segments(self):
         """mask_api_key는 후행 path 유무와 무관하게 키를 가린다 (#23 review)."""
@@ -373,9 +373,9 @@ class TestEcosClient:
         assert first == resp
         assert second == resp
         # 전역 키 회전 후에도 캐시 적중 → 네트워크 호출은 한 번만
-        assert (
-            len(responses.calls) == 1
-        ), f"expected single network call due to cache hit, got {len(responses.calls)}"
+        assert len(responses.calls) == 1, (
+            f"expected single network call due to cache hit, got {len(responses.calls)}"
+        )
 
 
 @pytest.mark.usefixtures("set_api_key")
