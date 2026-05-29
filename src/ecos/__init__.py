@@ -38,6 +38,8 @@ from .exceptions import (
     EcosError,
     EcosNetworkError,
     EcosRateLimitError,
+    EcosServerError,
+    EcosValidationError,
 )
 
 # Indicator APIs
@@ -111,6 +113,8 @@ __all__ = [
     "EcosConfigError",
     "EcosNetworkError",
     "EcosRateLimitError",
+    "EcosServerError",
+    "EcosValidationError",
     # Warnings
     "EcosPartialCoverageWarning",
     # 재정 지표
