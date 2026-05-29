@@ -10,6 +10,8 @@ import pytest
 import responses
 
 from ecos.indicators.interest_rate import (
+    get_bank_deposit_rate,
+    get_bank_lending_rate,
     get_base_rate,
     get_treasury_yield,
     get_yield_spread,
@@ -129,3 +131,147 @@ class TestGetYieldSpread:
 
         # 스프레드 계산 확인 (3.50 - 3.20 = 0.30)
         assert abs(df["spread"].iloc[0] - 0.30) < 0.01
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestGetBankDepositRate:
+    """get_bank_deposit_rate 함수 테스트"""
+
+    @responses.activate
+    def test_get_bank_deposit_rate_new(self):
+        """신규취급액 기준 수신금리 조회"""
+        mock_response = {
+            "StatisticSearch": {
+                "row": [
+                    {
+                        "STAT_CODE": "104Y015",
+                        "TIME": "202401",
+                        "DATA_VALUE": "3.20",
+                        "UNIT_NAME": "%",
+                    }
+                ]
+            }
+        }
+
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=mock_response,
+            status=200,
+        )
+
+        df = get_bank_deposit_rate(basis="신규취급액", start_date="202401", end_date="202401")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert df["value"].iloc[0] == 3.20
+
+    @responses.activate
+    def test_get_bank_deposit_rate_balance(self):
+        """잔액 기준 수신금리 조회"""
+        mock_response = {
+            "StatisticSearch": {
+                "row": [
+                    {
+                        "STAT_CODE": "104Y016",
+                        "TIME": "202401",
+                        "DATA_VALUE": "2.80",
+                        "UNIT_NAME": "%",
+                    }
+                ]
+            }
+        }
+
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=mock_response,
+            status=200,
+        )
+
+        df = get_bank_deposit_rate(basis="잔액", start_date="202401", end_date="202401")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert df["value"].iloc[0] == 2.80
+
+    def test_invalid_basis_raises(self):
+        """잘못된 basis 지정 시 에러"""
+        with pytest.raises(ValueError):
+            get_bank_deposit_rate(basis="invalid")  # type: ignore
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestGetBankLendingRate:
+    """get_bank_lending_rate 함수 테스트"""
+
+    @responses.activate
+    def test_get_bank_lending_rate_new(self):
+        """신규취급액 기준 대출금리 조회"""
+        mock_response = {
+            "StatisticSearch": {
+                "row": [
+                    {
+                        "STAT_CODE": "104Y013",
+                        "TIME": "202401",
+                        "DATA_VALUE": "4.50",
+                        "UNIT_NAME": "%",
+                    }
+                ]
+            }
+        }
+
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=mock_response,
+            status=200,
+        )
+
+        df = get_bank_lending_rate(basis="신규취급액", start_date="202401", end_date="202401")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert df["value"].iloc[0] == 4.50
+
+    @responses.activate
+    def test_get_bank_lending_rate_balance(self):
+        """잔액 기준 대출금리 조회"""
+        mock_response = {
+            "StatisticSearch": {
+                "row": [
+                    {
+                        "STAT_CODE": "104Y014",
+                        "TIME": "202401",
+                        "DATA_VALUE": "4.10",
+                        "UNIT_NAME": "%",
+                    }
+                ]
+            }
+        }
+
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=mock_response,
+            status=200,
+        )
+
+        df = get_bank_lending_rate(basis="잔액", start_date="202401", end_date="202401")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert "unit" in df.columns
+        assert df["value"].iloc[0] == 4.10
+
+    def test_invalid_basis_raises(self):
+        """잘못된 basis 지정 시 에러"""
+        with pytest.raises(ValueError):
+            get_bank_lending_rate(basis="invalid")  # type: ignore
