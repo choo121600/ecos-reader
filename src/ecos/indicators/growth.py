@@ -6,7 +6,6 @@ GDP(국내총생산), GDP 디플레이터 등 성장 관련 지표를 조회합�
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Literal
 
 import pandas as pd
@@ -28,27 +27,8 @@ from ..constants import (
     STAT_GDP_REAL,
 )
 from ..parser import normalize_stat_result, parse_response
+from ._dates import default_annual, default_quarterly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
-
-
-def _get_default_dates_quarterly(years_back: int = 5) -> tuple[str, str]:
-    """기본 조회 기간을 반환합니다 (분기)."""
-    end_date = datetime.now()
-    start_year = end_date.year - years_back
-    current_quarter = (end_date.month - 1) // 3 + 1
-
-    start_str = f"{start_year}Q1"
-    end_str = f"{end_date.year}Q{current_quarter}"
-
-    return start_str, end_str
-
-
-def _get_default_dates_annual(years_back: int = 10) -> tuple[str, str]:
-    """기본 조회 기간을 반환합니다 (연간)."""
-    end_date = datetime.now()
-    start_year = end_date.year - years_back
-
-    return str(start_year), str(end_date.year)
 
 
 def get_gdp(
@@ -107,9 +87,9 @@ def get_gdp(
     # 기본 날짜 설정
     if start_date is None or end_date is None:
         if frequency == "Q":
-            default_start, default_end = _get_default_dates_quarterly(5)
+            default_start, default_end = default_quarterly(5)
         else:
-            default_start, default_end = _get_default_dates_annual(10)
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -174,9 +154,9 @@ def get_gdp_deflator(
     # 기본 날짜 설정
     if start_date is None or end_date is None:
         if frequency == "Q":
-            default_start, default_end = _get_default_dates_quarterly(5)
+            default_start, default_end = default_quarterly(5)
         else:
-            default_start, default_end = _get_default_dates_annual(10)
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -245,9 +225,9 @@ def get_gdp_growth_rate(
     # 기본 날짜 설정
     if start_date is None or end_date is None:
         if frequency == "Q":
-            default_start, default_end = _get_default_dates_quarterly(5)
+            default_start, default_end = default_quarterly(5)
         else:
-            default_start, default_end = _get_default_dates_annual(10)
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -352,9 +332,9 @@ def get_gdp_by_industry(
     # 기본 날짜 설정
     if start_date is None or end_date is None:
         if frequency == "Q":
-            default_start, default_end = _get_default_dates_quarterly(5)
+            default_start, default_end = default_quarterly(5)
         else:
-            default_start, default_end = _get_default_dates_annual(10)
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -448,9 +428,9 @@ def get_gdp_by_expenditure(
     # 기본 날짜 설정
     if start_date is None or end_date is None:
         if frequency == "Q":
-            default_start, default_end = _get_default_dates_quarterly(5)
+            default_start, default_end = default_quarterly(5)
         else:
-            default_start, default_end = _get_default_dates_annual(10)
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -527,9 +507,9 @@ def get_gdp_deflator_by_industry(
     # 기본 날짜 설정
     if start_date is None or end_date is None:
         if frequency == "Q":
-            default_start, default_end = _get_default_dates_quarterly(5)
+            default_start, default_end = default_quarterly(5)
         else:
-            default_start, default_end = _get_default_dates_annual(10)
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 

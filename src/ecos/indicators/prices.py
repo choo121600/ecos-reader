@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Literal
 
 import pandas as pd
@@ -24,25 +23,8 @@ from ..constants import (
     STAT_PPI,
 )
 from ..parser import normalize_stat_result, parse_response
+from ._dates import default_monthly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
-
-
-def _get_default_dates(months_back: int = 24) -> tuple[str, str]:
-    """기본 조회 기간을 반환합니다 (기본 2년)."""
-    end_date = datetime.now()
-
-    # 총 개월 수 계산
-    total_months = end_date.year * 12 + end_date.month
-    start_total_months = total_months - months_back
-
-    # 연도와 월 계산
-    start_year = (start_total_months - 1) // 12
-    start_month = (start_total_months - 1) % 12 + 1
-
-    start_str = f"{start_year}{start_month:02d}"
-    end_str = f"{end_date.year}{end_date.month:02d}"
-
-    return start_str, end_str
 
 
 def get_cpi(
@@ -84,7 +66,7 @@ def get_cpi(
     """
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(24)
+        default_start, default_end = default_monthly(24)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -139,7 +121,7 @@ def get_core_cpi(
     """
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(24)
+        default_start, default_end = default_monthly(24)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -193,7 +175,7 @@ def get_ppi(
     """
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(24)
+        default_start, default_end = default_monthly(24)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -257,7 +239,7 @@ def get_cpi_monthly(
     """
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(24)
+        default_start, default_end = default_monthly(24)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -344,7 +326,7 @@ def get_cpi_by_category(
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(24)
+        default_start, default_end = default_monthly(24)
         start_date = start_date or default_start
         end_date = end_date or default_end
 

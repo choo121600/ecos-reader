@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
 from typing import Literal
 
 import pandas as pd
@@ -20,36 +19,8 @@ from ..constants import (
     STAT_STOCK_MONTHLY,
 )
 from ..parser import normalize_stat_result, parse_response
+from ._dates import default_daily, default_monthly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
-
-
-def _get_default_dates_daily(days_back: int = 365) -> tuple[str, str]:
-    """기본 조회 기간을 반환합니다 (일별)."""
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=days_back)
-
-    start_str = start_date.strftime("%Y%m%d")
-    end_str = end_date.strftime("%Y%m%d")
-
-    return start_str, end_str
-
-
-def _get_default_dates_monthly(months_back: int = 24) -> tuple[str, str]:
-    """기본 조회 기간을 반환합니다 (월별)."""
-    end_date = datetime.now()
-
-    # 총 개월 수 계산
-    total_months = end_date.year * 12 + end_date.month
-    start_total_months = total_months - months_back
-
-    # 연도와 월 계산
-    start_year = (start_total_months - 1) // 12
-    start_month = (start_total_months - 1) % 12 + 1
-
-    start_str = f"{start_year}{start_month:02d}"
-    end_str = f"{end_date.year}{end_date.month:02d}"
-
-    return start_str, end_str
 
 
 def get_stock_index(
@@ -121,7 +92,7 @@ def get_stock_index(
         item_code = "0001000"  # KOSPI지수 (일별)
         # 기본 날짜 설정 (일별)
         if start_date is None or end_date is None:
-            default_start, default_end = _get_default_dates_daily(365)
+            default_start, default_end = default_daily(365)
             start_date = start_date or default_start
             end_date = end_date or default_end
     else:  # monthly
@@ -131,7 +102,7 @@ def get_stock_index(
         _warn_partial_coverage("get_stock_index(monthly)", "1010000", "KOSPI 회사수")
         # 기본 날짜 설정 (월별)
         if start_date is None or end_date is None:
-            default_start, default_end = _get_default_dates_monthly(24)
+            default_start, default_end = default_monthly(24)
             start_date = start_date or default_start
             end_date = end_date or default_end
 
@@ -201,7 +172,7 @@ def get_investor_trading(
     """
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates_monthly(24)
+        default_start, default_end = default_monthly(24)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
