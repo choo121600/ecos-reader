@@ -537,9 +537,8 @@ class TestE2EGrowthDetailIndicators:
 class TestE2EPriceDetailIndicators:
     """물가 세부 지표 E2E 테스트"""
 
-    @pytest.mark.skip(reason="stat_code 901Y001이 ECOS API에 존재하지 않음")
     def test_get_cpi_monthly(self):
-        """CPI 월별 원지수 (존재하지 않는 통계)"""
+        """CPI 월별 원지수 (901Y009 총지수)"""
         df = ecos.get_cpi_monthly(start_date="202301", end_date="202312")
 
         assert not df.empty
@@ -999,9 +998,8 @@ class TestE2EPhase3GrowthIndicators:
 class TestE2EPhase4PriceIndicators:
     """Phase 4: 물가 세부 지표 E2E 테스트"""
 
-    @pytest.mark.skip(reason="stat_code 901Y001이 ECOS API에 존재하지 않음")
     def test_get_cpi_monthly(self):
-        """CPI 월별 원지수 (존재하지 않는 통계)"""
+        """CPI 월별 원지수 (901Y009 총지수)"""
         df = ecos.get_cpi_monthly(start_date="202301", end_date="202312")
 
         assert not df.empty
