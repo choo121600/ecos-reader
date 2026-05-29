@@ -9,7 +9,17 @@ import re
 import pytest
 import responses
 
-from ecos.indicators.money import get_bank_lending, get_borrower_loan, get_money_supply
+from ecos.indicators._deprecations import EcosPartialCoverageWarning
+from ecos.indicators.money import (
+    get_bank_lending,
+    get_borrower_loan,
+    get_household_credit,
+    get_household_lending_detail,
+    get_m1_variants,
+    get_m2_by_holder,
+    get_m2_variants,
+    get_money_supply,
+)
 
 
 def _borrower_loan_mock() -> dict:
@@ -286,3 +296,349 @@ class TestGetBankLending:
         """잘못된 부문 지정 시 에러"""
         with pytest.raises(ValueError):
             get_bank_lending(sector="government")  # type: ignore
+
+
+# ---------------------------------------------------------------------------
+# 새로 추가된 6개 함수 테스트
+# ---------------------------------------------------------------------------
+
+
+def _simple_monthly_mock(data_value: str = "500000", time: str = "202401") -> dict:
+    return {
+        "StatisticSearch": {
+            "row": [
+                {
+                    "STAT_CODE": "dummy",
+                    "ITEM_CODE1": "BBLA00",
+                    "ITEM_NAME1": "M1",
+                    "TIME": time,
+                    "DATA_VALUE": data_value,
+                    "UNIT_NAME": "십억원",
+                }
+            ]
+        }
+    }
+
+
+def _simple_quarterly_mock(data_value: str = "200000", time: str = "2024Q1") -> dict:
+    return {
+        "StatisticSearch": {
+            "row": [
+                {
+                    "STAT_CODE": "dummy",
+                    "ITEM_CODE1": "1110000",
+                    "ITEM_NAME1": "예금취급기관",
+                    "TIME": time,
+                    "DATA_VALUE": data_value,
+                    "UNIT_NAME": "조원",
+                }
+            ]
+        }
+    }
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestGetM1Variants:
+    """get_m1_variants 함수 테스트"""
+
+    @responses.activate
+    def test_default_variant_returns_dataframe(self):
+        """기본 variant(말잔_계절조정)로 데이터 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("450000", "202401"),
+            status=200,
+        )
+        df = get_m1_variants(variant="말잔_계절조정", start_date="202401", end_date="202401")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+        assert df["value"].iloc[0] == 450000.0
+
+    @responses.activate
+    def test_variant_평잔_원계열(self):
+        """평잔_원계열 variant 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("430000", "202401"),
+            status=200,
+        )
+        df = get_m1_variants(variant="평잔_원계열", start_date="202401", end_date="202401")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+
+    @responses.activate
+    def test_variant_평잔_계절조정(self):
+        """평잔_계절조정 variant 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("440000", "202401"),
+            status=200,
+        )
+        df = get_m1_variants(variant="평잔_계절조정", start_date="202401", end_date="202401")
+        assert not df.empty
+
+    def test_invalid_variant_raises(self):
+        """잘못된 variant 지정 시 ValueError"""
+        with pytest.raises(ValueError, match="variant"):
+            get_m1_variants(variant="없는변형")  # type: ignore[arg-type]
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestGetM2Variants:
+    """get_m2_variants 함수 테스트"""
+
+    @responses.activate
+    def test_default_variant_returns_dataframe(self):
+        """기본 variant(말잔_계절조정)로 데이터 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("3800000", "202401"),
+            status=200,
+        )
+        df = get_m2_variants(variant="말잔_계절조정", start_date="202401", end_date="202401")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+        assert df["value"].iloc[0] == 3800000.0
+
+    @responses.activate
+    def test_variant_평잔_원계열(self):
+        """평잔_원계열 variant 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("3700000", "202401"),
+            status=200,
+        )
+        df = get_m2_variants(variant="평잔_원계열", start_date="202401", end_date="202401")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+
+    def test_invalid_variant_raises(self):
+        """잘못된 variant 지정 시 ValueError"""
+        with pytest.raises(ValueError, match="variant"):
+            get_m2_variants(variant="없는변형")  # type: ignore[arg-type]
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestGetM2ByHolder:
+    """get_m2_by_holder 함수 테스트"""
+
+    @responses.activate
+    def test_default_variant_returns_dataframe(self):
+        """기본 variant(말잔_원계열)로 데이터 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("3900000", "202401"),
+            status=200,
+        )
+        df = get_m2_by_holder(variant="말잔_원계열", start_date="202401", end_date="202401")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+        assert df["value"].iloc[0] == 3900000.0
+
+    @responses.activate
+    def test_variant_말잔_계절조정(self):
+        """말잔_계절조정 variant 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("3850000", "202401"),
+            status=200,
+        )
+        df = get_m2_by_holder(variant="말잔_계절조정", start_date="202401", end_date="202401")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+
+    @responses.activate
+    def test_variant_평잔_계절조정(self):
+        """평잔_계절조정 variant 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("3820000", "202401"),
+            status=200,
+        )
+        df = get_m2_by_holder(variant="평잔_계절조정", start_date="202401", end_date="202401")
+        assert not df.empty
+
+    @responses.activate
+    def test_variant_평잔_원계열(self):
+        """평잔_원계열 variant 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("3810000", "202401"),
+            status=200,
+        )
+        df = get_m2_by_holder(variant="평잔_원계열", start_date="202401", end_date="202401")
+        assert not df.empty
+
+    def test_invalid_variant_raises(self):
+        """잘못된 variant 지정 시 ValueError"""
+        with pytest.raises(ValueError, match="variant"):
+            get_m2_by_holder(variant="없는변형")  # type: ignore[arg-type]
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestGetHouseholdCredit:
+    """get_household_credit 함수 테스트"""
+
+    @responses.activate
+    def test_sector_category_returns_dataframe(self):
+        """업권별 카테고리 조회 (기본값)"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_quarterly_mock("1900000", "2024Q1"),
+            status=200,
+        )
+        df = get_household_credit(category="업권별", start_date="2024Q1", end_date="2024Q1")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+        assert df["value"].iloc[0] == 1900000.0
+
+    @responses.activate
+    def test_purpose_category_returns_dataframe(self):
+        """용도별 카테고리 조회"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_quarterly_mock("1850000", "2024Q1"),
+            status=200,
+        )
+        df = get_household_credit(category="용도별", start_date="2024Q1", end_date="2024Q1")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+
+    def test_invalid_category_raises(self):
+        """잘못된 category 지정 시 ValueError"""
+        with pytest.raises(ValueError, match="category"):
+            get_household_credit(category="소득별")  # type: ignore[arg-type]
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestGetHouseholdLendingDetail:
+    """get_household_lending_detail 함수 테스트"""
+
+    @responses.activate
+    def test_returns_dataframe_and_emits_warning(self):
+        """데이터 조회 성공 및 EcosPartialCoverageWarning 발생"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("1100000", "202401"),
+            status=200,
+        )
+        with pytest.warns(EcosPartialCoverageWarning):
+            df = get_household_lending_detail(start_date="202401", end_date="202401")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+        assert df["value"].iloc[0] == 1100000.0
+
+    @responses.activate
+    def test_date_column_is_datetime(self):
+        """date 컬럼이 datetime 타입인지 확인"""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("1050000", "202312"),
+            status=200,
+        )
+        with pytest.warns(EcosPartialCoverageWarning):
+            df = get_household_lending_detail(start_date="202312", end_date="202312")
+        import pandas as pd
+
+        assert pd.api.types.is_datetime64_any_dtype(df["date"])
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestGetBorrowerLoanExtra:
+    """get_borrower_loan 추가 테스트 (담보유형별, 다중대출별 분류축)."""
+
+    def _mock_with_prefixes(self) -> dict:
+        """F(담보유형별), G(다중대출별) prefix를 포함한 mock."""
+        rows = []
+        for time in ["2024Q1"]:
+            rows += [
+                {
+                    "ITEM_CODE1": "0000",
+                    "ITEM_NAME1": "전체",
+                    "TIME": time,
+                    "DATA_VALUE": "100",
+                    "UNIT_NAME": "조원",
+                },
+                {
+                    "ITEM_CODE1": "F001",
+                    "ITEM_NAME1": "주택담보",
+                    "TIME": time,
+                    "DATA_VALUE": "60",
+                    "UNIT_NAME": "조원",
+                },
+                {
+                    "ITEM_CODE1": "F002",
+                    "ITEM_NAME1": "신용대출",
+                    "TIME": time,
+                    "DATA_VALUE": "30",
+                    "UNIT_NAME": "조원",
+                },
+                {
+                    "ITEM_CODE1": "G001",
+                    "ITEM_NAME1": "1건",
+                    "TIME": time,
+                    "DATA_VALUE": "70",
+                    "UNIT_NAME": "조원",
+                },
+                {
+                    "ITEM_CODE1": "G002",
+                    "ITEM_NAME1": "2건이상",
+                    "TIME": time,
+                    "DATA_VALUE": "30",
+                    "UNIT_NAME": "조원",
+                },
+            ]
+        return {"StatisticSearch": {"row": rows}}
+
+    @responses.activate
+    def test_담보유형별_long_format(self):
+        """담보유형별(prefix F) 분류축이 long-format으로 반환된다."""
+        responses.add(
+            responses.GET, url=re.compile(r".*"), json=self._mock_with_prefixes(), status=200
+        )
+        df = get_borrower_loan(
+            loan_type="잔액", category="담보유형별", start_date="2024Q1", end_date="2024Q1"
+        )
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        assert set(df["category_value"]) == {"주택담보", "신용대출"}
+
+    @responses.activate
+    def test_다중대출별_long_format(self):
+        """다중대출별(prefix G) 분류축이 long-format으로 반환된다."""
+        responses.add(
+            responses.GET, url=re.compile(r".*"), json=self._mock_with_prefixes(), status=200
+        )
+        df = get_borrower_loan(
+            loan_type="신규", category="다중대출별", start_date="2024Q1", end_date="2024Q1"
+        )
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        assert set(df["category_value"]) == {"1건", "2건이상"}
+
+    @responses.activate
+    def test_sub_category_by_item_name(self):
+        """sub_category로 ITEM_NAME1을 지정해 단일 시계열 반환."""
+        responses.add(
+            responses.GET, url=re.compile(r".*"), json=self._mock_with_prefixes(), status=200
+        )
+        df = get_borrower_loan(
+            loan_type="잔액",
+            category="담보유형별",
+            sub_category="주택담보",
+            start_date="2024Q1",
+            end_date="2024Q1",
+        )
+        assert list(df.columns) == ["date", "value", "unit"]
+        assert df["value"].iloc[0] == 60.0
