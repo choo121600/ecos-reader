@@ -8,14 +8,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from ..client import get_client
-from ..constants import (
-    ITEM_FISCAL_BALANCE,
-    PERIOD_MONTHLY,
-    STAT_FISCAL_BALANCE,
-)
-from ..parser import normalize_stat_result, parse_response
-from ._dates import default_monthly
+from ._registry import get_indicator
 
 
 def get_fiscal_balance(
@@ -63,20 +56,5 @@ def get_fiscal_balance(
 
     >>> df = ecos.get_fiscal_balance(start_date="202301", end_date="202312")
     """
-    # 기본 날짜 설정
-    if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(24)
-        start_date = start_date or default_start
-        end_date = end_date or default_end
-
-    client = get_client()
-    response = client.get_statistic_search(
-        stat_code=STAT_FISCAL_BALANCE,
-        period=PERIOD_MONTHLY,
-        start_date=start_date,
-        end_date=end_date,
-        item_code1=ITEM_FISCAL_BALANCE,
-    )
-
-    df = parse_response(response)
-    return normalize_stat_result(df)
+    # 선언적 레지스트리(#16)에 위임하는 얇은 alias. 동작·기본값은 spec이 보존합니다.
+    return get_indicator("fiscal_balance", start_date=start_date, end_date=end_date)

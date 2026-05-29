@@ -25,6 +25,7 @@ from ..constants import (
 )
 from ..parser import normalize_stat_result, parse_response
 from ._dates import default_daily, default_monthly
+from ._registry import get_indicator
 
 
 def get_base_rate(
@@ -74,21 +75,20 @@ def get_base_rate(
     if frequency not in ("D", "M"):
         raise ValueError("frequency는 'D' 또는 'M' 중 하나여야 합니다.")
 
-    period = PERIOD_DAILY if frequency == "D" else PERIOD_MONTHLY
+    # 월별(기본)은 선언적 레지스트리(#16)에 위임 — base_rate의 단일 진실원천.
+    if frequency == "M":
+        return get_indicator("base_rate", start_date=start_date, end_date=end_date)
 
-    # 기본 날짜 설정 (주기별 포맷)
+    # 일별(변경일 단위, sparse)은 별도 포맷이라 직접 조회.
     if start_date is None or end_date is None:
-        if frequency == "D":
-            default_start, default_end = default_daily(365)
-        else:
-            default_start, default_end = default_monthly(12)
+        default_start, default_end = default_daily(365)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_BASE_RATE,
-        period=period,
+        period=PERIOD_DAILY,
         start_date=start_date,
         end_date=end_date,
         item_code1=ITEM_BASE_RATE,
