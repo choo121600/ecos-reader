@@ -261,7 +261,7 @@ def get_cpi_monthly(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    _warn_partial_coverage("get_cpi_monthly", "0", "전체(미확인)")
+    _warn_partial_coverage("get_cpi_monthly", "0", "총지수")
 
     client = get_client()
     response = client.get_statistic_search(
@@ -269,7 +269,7 @@ def get_cpi_monthly(
         period=PERIOD_MONTHLY,
         start_date=start_date,
         end_date=end_date,
-        item_code1="0",  # 전체 (StatisticItemList로 확인 필요)
+        item_code1=ITEM_CPI_TOTAL,  # 0: 총지수
     )
 
     df = parse_response(response)
