@@ -10,14 +10,18 @@ repos:
       - id: check-added-large-files
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.6
+    # CI는 pyproject의 dev extras로 ruff>=0.1.0(현재 0.14.x)을 설치한다.
+    # pre-commit이 v0.1.6 같은 구버전을 쓰면 로컬에서 통과한 포맷을 CI ruff
+    # 0.14.x가 재포맷 대상으로 잡아 publish.yml의 ci gate가 실패한다.
+    # rev를 venv/CI와 같은 메이저 시리즈로 고정.
+    rev: v0.14.9
     hooks:
       - id: ruff
         args: [--fix]
       - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.1
+    rev: v1.13.0
     hooks:
       - id: mypy
         additional_dependencies: [types-requests]
