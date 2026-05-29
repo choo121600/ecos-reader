@@ -44,6 +44,8 @@ from .exceptions import (
 
 # Indicator APIs
 from .indicators import (
+    INDICATORS,
+    IndicatorSpec,
     get_bank_deposit_rate,
     get_bank_lending,
     get_bank_lending_rate,
@@ -68,6 +70,8 @@ from .indicators import (
     get_gdp_growth_rate,
     get_household_credit,
     get_household_lending_detail,
+    # 선언적 레지스트리 (#16)
+    get_indicator,
     get_investor_trading,
     get_m1_variants,
     get_m2_by_holder,
@@ -79,6 +83,7 @@ from .indicators import (
     get_stock_index,
     get_treasury_yield,
     get_yield_spread,
+    list_indicators,
 )
 
 # Warnings
@@ -152,6 +157,11 @@ __all__ = [
     "get_household_credit",
     "get_household_lending_detail",
     "get_borrower_loan",
+    # 선언적 레지스트리 (#16)
+    "get_indicator",
+    "list_indicators",
+    "INDICATORS",
+    "IndicatorSpec",
     # Metrics
     "get_metrics_summary",
     "reset_metrics",

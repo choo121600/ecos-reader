@@ -13,18 +13,12 @@ import pandas as pd
 from ..client import get_client
 from ..constants import (
     CPI_CATEGORY_CODES,
-    ITEM_CORE_CPI,
-    ITEM_CPI_TOTAL,
-    ITEM_PPI_TOTAL,
     PERIOD_MONTHLY,
-    STAT_CORE_CPI,
-    STAT_CPI,
-    STAT_CPI_MONTHLY,
-    STAT_PPI,
 )
 from ..parser import normalize_stat_result, parse_response
 from ._dates import default_monthly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
+from ._registry import get_indicator
 
 
 def get_cpi(
@@ -64,23 +58,8 @@ def get_cpi(
             date  value unit
     0 2023-01-01   5.20    %
     """
-    # 기본 날짜 설정
-    if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(24)
-        start_date = start_date or default_start
-        end_date = end_date or default_end
-
-    client = get_client()
-    response = client.get_statistic_search(
-        stat_code=STAT_CPI,
-        period=PERIOD_MONTHLY,
-        start_date=start_date,
-        end_date=end_date,
-        item_code1=ITEM_CPI_TOTAL,
-    )
-
-    df = parse_response(response)
-    return normalize_stat_result(df)
+    # 선언적 레지스트리(#16)에 위임하는 얇은 alias.
+    return get_indicator("cpi", start_date=start_date, end_date=end_date)
 
 
 def get_core_cpi(
@@ -119,23 +98,8 @@ def get_core_cpi(
     >>> df = ecos.get_core_cpi()
     >>> df.head()
     """
-    # 기본 날짜 설정
-    if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(24)
-        start_date = start_date or default_start
-        end_date = end_date or default_end
-
-    client = get_client()
-    response = client.get_statistic_search(
-        stat_code=STAT_CORE_CPI,
-        period=PERIOD_MONTHLY,
-        start_date=start_date,
-        end_date=end_date,
-        item_code1=ITEM_CORE_CPI,
-    )
-
-    df = parse_response(response)
-    return normalize_stat_result(df)
+    # 선언적 레지스트리(#16)에 위임하는 얇은 alias.
+    return get_indicator("core_cpi", start_date=start_date, end_date=end_date)
 
 
 def get_ppi(
@@ -173,23 +137,8 @@ def get_ppi(
     >>> df = ecos.get_ppi()
     >>> df.head()
     """
-    # 기본 날짜 설정
-    if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(24)
-        start_date = start_date or default_start
-        end_date = end_date or default_end
-
-    client = get_client()
-    response = client.get_statistic_search(
-        stat_code=STAT_PPI,
-        period=PERIOD_MONTHLY,
-        start_date=start_date,
-        end_date=end_date,
-        item_code1=ITEM_PPI_TOTAL,
-    )
-
-    df = parse_response(response)
-    return normalize_stat_result(df)
+    # 선언적 레지스트리(#16)에 위임하는 얇은 alias.
+    return get_indicator("ppi", start_date=start_date, end_date=end_date)
 
 
 def get_cpi_monthly(
@@ -237,25 +186,11 @@ def get_cpi_monthly(
             date   value  unit
     0 2023-01-01  105.20  지수
     """
-    # 기본 날짜 설정
-    if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(24)
-        start_date = start_date or default_start
-        end_date = end_date or default_end
-
+    # 부분 커버리지 경고는 이 함수의 고유 동작이므로 alias 위임 전에 유지.
     _warn_partial_coverage("get_cpi_monthly", "0", "총지수")
 
-    client = get_client()
-    response = client.get_statistic_search(
-        stat_code=STAT_CPI_MONTHLY,
-        period=PERIOD_MONTHLY,
-        start_date=start_date,
-        end_date=end_date,
-        item_code1=ITEM_CPI_TOTAL,  # 0: 총지수
-    )
-
-    df = parse_response(response)
-    return normalize_stat_result(df)
+    # 선언적 레지스트리(#16)에 위임하는 얇은 alias.
+    return get_indicator("cpi_monthly", start_date=start_date, end_date=end_date)
 
 
 def get_cpi_by_category(
