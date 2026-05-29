@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Literal
 
 import pandas as pd
@@ -33,25 +32,8 @@ from ..constants import (
     STAT_HOUSEHOLD_LENDING_PURPOSE,
 )
 from ..parser import normalize_stat_result, parse_response
+from ._dates import default_monthly, default_quarterly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
-
-
-def _get_default_dates(months_back: int = 36) -> tuple[str, str]:
-    """기본 조회 기간을 반환합니다 (기본 3년)."""
-    end_date = datetime.now()
-
-    # 총 개월 수 계산
-    total_months = end_date.year * 12 + end_date.month
-    start_total_months = total_months - months_back
-
-    # 연도와 월 계산
-    start_year = (start_total_months - 1) // 12
-    start_month = (start_total_months - 1) % 12 + 1
-
-    start_str = f"{start_year}{start_month:02d}"
-    end_str = f"{end_date.year}{end_date.month:02d}"
-
-    return start_str, end_str
 
 
 def get_money_supply(
@@ -103,7 +85,7 @@ def get_money_supply(
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(36)
+        default_start, default_end = default_monthly(36)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -166,7 +148,7 @@ def get_bank_lending(
     """
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(36)
+        default_start, default_end = default_monthly(36)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -242,7 +224,7 @@ def get_m1_variants(
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(36)
+        default_start, default_end = default_monthly(36)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -313,7 +295,7 @@ def get_m2_variants(
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(36)
+        default_start, default_end = default_monthly(36)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -384,7 +366,7 @@ def get_m2_by_holder(
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(36)
+        default_start, default_end = default_monthly(36)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -453,15 +435,9 @@ def get_household_credit(
 
     # 기본 날짜 설정 (분기)
     if start_date is None or end_date is None:
-        end_date_obj = datetime.now()
-        start_year = end_date_obj.year - 5
-        current_quarter = (end_date_obj.month - 1) // 3 + 1
-
-        start_str = f"{start_year}Q1"
-        end_str = f"{end_date_obj.year}Q{current_quarter}"
-
-        start_date = start_date or start_str
-        end_date = end_date or end_str
+        default_start, default_end = default_quarterly(5)
+        start_date = start_date or default_start
+        end_date = end_date or default_end
 
     # 카테고리에 따른 stat_code 및 item_code 선택
     if category == "업권별":
@@ -533,7 +509,7 @@ def get_household_lending_detail(
     """
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = _get_default_dates(36)
+        default_start, default_end = default_monthly(36)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -642,12 +618,9 @@ def get_borrower_loan(
 
     # 기본 날짜 설정 (분기)
     if start_date is None or end_date is None:
-        end_date_obj = datetime.now()
-        start_year = end_date_obj.year - 5
-        current_quarter = (end_date_obj.month - 1) // 3 + 1
-
-        start_date = start_date or f"{start_year}Q1"
-        end_date = end_date or f"{end_date_obj.year}Q{current_quarter}"
+        default_start, default_end = default_quarterly(5)
+        start_date = start_date or default_start
+        end_date = end_date or default_end
 
     stat_code = BORROWER_LOAN_STAT_CODES[loan_type]
     prefix = BORROWER_LOAN_CATEGORY_PREFIX[category]
