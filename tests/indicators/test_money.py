@@ -232,7 +232,7 @@ class TestGetMoneySupply:
 
     def test_invalid_indicator_raises(self):
         """잘못된 지표 지정 시 에러"""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="indicator"):
             get_money_supply(indicator="M3")  # type: ignore
 
 
@@ -294,7 +294,7 @@ class TestGetBankLending:
 
     def test_invalid_sector_raises(self):
         """잘못된 부문 지정 시 에러"""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="sector"):
             get_bank_lending(sector="government")  # type: ignore
 
 

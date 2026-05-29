@@ -6,9 +6,12 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from typing import TYPE_CHECKING
 
 from ._registry import get_indicator
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
 def get_fiscal_balance(
