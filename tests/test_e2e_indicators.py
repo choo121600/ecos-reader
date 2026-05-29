@@ -11,6 +11,7 @@ import os
 import pytest
 
 import ecos
+from ecos.constants import CPI_CATEGORY_CODES
 
 pytestmark = pytest.mark.e2e
 
@@ -1062,3 +1063,111 @@ class TestE2EIntegrationNewIndicators:
         assert len(credit) > 0
         assert len(lending) > 0
         assert len(borrower) > 0
+
+
+class TestE2ERegressionV016:
+    """v0.1.6(#27, #28)에서 수정한 stat_code/item_code 매핑 회귀 가드 (#30).
+
+    빈 응답·잘못된 데이터를 돌려주던 변종들이 다시 깨지면 즉시 감지하기 위한
+    회귀 케이스 모음. 각 케이스는 수정 당시의 의도(연간 fallback, 측정 기준,
+    지원되지 않는 조합 차단 등)를 명시적으로 검증한다.
+    """
+
+    # ---- GDP 연간 fallback (#28) ----
+
+    def test_gdp_growth_rate_annual_fallback(self):
+        """frequency='A'는 계절조정(분기 전용) 대신 원계열 200Y106으로 fallback해야 함."""
+        df = ecos.get_gdp_growth_rate(frequency="A", start_date="2020", end_date="2023")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    @pytest.mark.parametrize("basis", ["real", "nominal"])
+    def test_gdp_by_expenditure_annual_fallback(self, basis):
+        """frequency='A'는 원계열(real→200Y110 / nominal→200Y109)로 fallback해야 함."""
+        df = ecos.get_gdp_by_expenditure(
+            basis=basis, frequency="A", start_date="2020", end_date="2023"
+        )
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    def test_gdp_by_industry_seasonal_annual_raises(self):
+        """계절조정 시리즈는 ECOS에서 분기만 제공 → seasonal_adj=True+연간은 차단."""
+        with pytest.raises(ValueError):
+            ecos.get_gdp_by_industry(
+                seasonal_adj=True, frequency="A", start_date="2020", end_date="2023"
+            )
+
+    # ---- M2 보유주체별 말잔 (#28) ----
+
+    @pytest.mark.parametrize("variant", ["말잔_계절조정", "말잔_원계열"])
+    def test_m2_by_holder_eop_variants(self, variant):
+        """말잔_계절조정(BBGS00)/말잔_원계열(BBGA00) 모두 데이터를 반환해야 함."""
+        df = ecos.get_m2_by_holder(variant=variant, start_date="202301", end_date="202312")
+
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    # ---- CPI 세부 카테고리 (#27) ----
+
+    @pytest.mark.parametrize("category", list(CPI_CATEGORY_CODES.keys()))
+    def test_cpi_by_category_all(self, category):
+        """8개 CPI 카테고리 전부 (stat_code, item_code) 매핑이 살아있어야 함."""
+        df = ecos.get_cpi_by_category(category=category, start_date="202301", end_date="202312")
+
+        assert not df.empty, f"category='{category}' returned empty"
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert len(df) > 0
+
+    # ---- 채권 수익률 월별 1행 (#28) ----
+
+    @pytest.mark.parametrize("bond_type", ["종류별", "시장별"])
+    def test_bond_yield_one_row_per_month(self, bond_type):
+        """혼합 measure 버그 회귀: 결과는 월별 1행이어야 함 (한 달에 여러 행 금지)."""
+        df = ecos.get_bond_yield(bond_type=bond_type, start_date="202301", end_date="202312")
+
+        assert not df.empty
+        # 같은 달에 여러 row가 섞이면 nunique(month) < len(df)
+        months = df["date"].dt.to_period("M")
+        assert months.nunique() == len(df), (
+            f"bond_type='{bond_type}': 월별 1행이 아님 "
+            f"(rows={len(df)}, unique_months={months.nunique()})"
+        )
+
+    # ---- 차주별 가계대출: v0.1.6 차단 조합이 #29 재설계로 정상화 ----
+
+    # v0.1.6에서 stat_code 매핑이 ECOS와 일치하지 않아 ValueError로 차단했던 7개 조합.
+    # #29 재설계(181Y001/181Y002 + item_code prefix 필터)로 이제 정상 데이터를 반환한다.
+    _PREVIOUSLY_BROKEN_BORROWER_COMBINATIONS = [
+        ("신규", "연령별"),
+        ("신규", "지역별"),
+        ("신규", "담보유형별"),
+        ("신규", "업권별"),
+        ("잔액", "연령별"),
+        ("잔액", "지역별"),
+        ("잔액", "업권별"),
+    ]
+
+    @pytest.mark.parametrize(("loan_type", "category"), _PREVIOUSLY_BROKEN_BORROWER_COMBINATIONS)
+    def test_borrower_loan_previously_broken_now_return_data(self, loan_type, category):
+        """v0.1.6 차단 7개 조합은 #29 재설계 후 long-format 실데이터를 반환해야 함."""
+        df = ecos.get_borrower_loan(
+            loan_type=loan_type,
+            category=category,
+            start_date="2023Q1",
+            end_date="2023Q4",
+        )
+
+        assert not df.empty, f"({loan_type}, {category}) returned empty"
+        assert "category_value" in df.columns
+        assert "value" in df.columns
+        # 분류축이므로 세부 항목이 2개 이상 존재해야 함
+        assert df["category_value"].nunique() >= 2
