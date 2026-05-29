@@ -18,9 +18,9 @@ from urllib3.util import Retry
 from .cache import Cache, get_cache
 from .config import Settings, get_api_key
 from .exceptions import (
+    ECOS_ERROR_CODES,
     RETRYABLE_ERROR_CODES,
     EcosAPIError,
-    EcosConfigError,
     EcosNetworkError,
     EcosRateLimitError,
 )
@@ -265,20 +265,30 @@ class EcosClient:
         if code == "INFO-200":
             return
 
-        # 정보 코드 100: 인증키 오류
-        if code == "INFO-100":
-            log_error_response(code, message, url)
-            raise EcosConfigError(message)
+        # 카탈로그(ECOS_ERROR_CODES) 단일 조회로 코드별 예외 결정
+        mapping = ECOS_ERROR_CODES.get(code)
+        if mapping is None:
+            # 카탈로그 미등록 코드: ERROR 접두는 일반 API 에러로, 그 외는 정상 처리
+            if code.startswith("ERROR"):
+                log_error_response(code, message, url)
+                raise EcosAPIError(self._error_num(code), message)
+            return
 
-        # 에러 코드
-        if code.startswith("ERROR"):
-            error_num = code.split("-")[-1] if "-" in code else code.replace("ERROR", "")
-            log_error_response(code, message, url)
+        exc_class, default_message, _retryable = mapping
+        log_error_response(code, message, url)
+        msg = message or default_message
 
-            if error_num == "602":
-                raise EcosRateLimitError(message)
+        # EcosAPIError 계열은 (code, message) 시그니처, 그 외(Config/RateLimit)는 (message)
+        if issubclass(exc_class, EcosAPIError):
+            raise exc_class(self._error_num(code), msg)
+        raise exc_class(msg)
 
-            raise EcosAPIError(error_num, message)
+    @staticmethod
+    def _error_num(code: str) -> str:
+        """``ERROR-100`` → ``100``처럼 코드에서 숫자 부분을 추출합니다."""
+        if "-" in code:
+            return code.split("-", 1)[-1]
+        return code.replace("ERROR", "")
 
     def _cached_request(
         self,
