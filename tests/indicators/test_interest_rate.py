@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import re
 
+import pandas as pd
 import pytest
 import responses
 
@@ -51,6 +52,63 @@ class TestGetBaseRate:
         # 날짜 미지정 시 기본값 사용
         df = get_base_rate()
         assert not df.empty
+
+    @responses.activate
+    def test_get_base_rate_daily_frequency(self):
+        """일별(frequency='D') 조회 — 722Y001 은 일별 원천."""
+        mock_response = {
+            "StatisticSearch": {
+                "row": [
+                    {
+                        "STAT_CODE": "722Y001",
+                        "ITEM_CODE1": "0101000",
+                        "TIME": "20240111",
+                        "DATA_VALUE": "3.50",
+                        "UNIT_NAME": "%",
+                    },
+                    {
+                        "STAT_CODE": "722Y001",
+                        "ITEM_CODE1": "0101000",
+                        "TIME": "20241011",
+                        "DATA_VALUE": "3.25",
+                        "UNIT_NAME": "%",
+                    },
+                ]
+            }
+        }
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=mock_response,
+            status=200,
+        )
+
+        df = get_base_rate(start_date="20240101", end_date="20241231", frequency="D")
+
+        assert not df.empty
+        # 일별 TIME(YYYYMMDD)이 일자 단위 date 로 파싱되는지 확인
+        assert df["date"].iloc[0] == pd.Timestamp("2024-01-11")
+        assert df["value"].iloc[0] == 3.50
+        # period=D 가 요청 URL path 에 포함되는지 확인
+        assert "/D/" in responses.calls[0].request.url
+
+    @responses.activate
+    def test_get_base_rate_default_period_is_monthly(self, mock_base_rate_response):
+        """frequency 미지정 시 월별(M) 하위호환 유지."""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=mock_base_rate_response,
+            status=200,
+        )
+
+        get_base_rate(start_date="202401", end_date="202402")
+        assert "/M/" in responses.calls[0].request.url
+
+    def test_get_base_rate_invalid_frequency_raises(self):
+        """잘못된 frequency 지정 시 에러."""
+        with pytest.raises(ValueError):
+            get_base_rate(frequency="W")  # type: ignore
 
 
 @pytest.mark.usefixtures("set_api_key")

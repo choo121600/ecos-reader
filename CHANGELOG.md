@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-05-29
+
+> 0.3.0 은 시그니처 breaking 재설계(epic #3)를 위해 예약돼 있어, 본 하위호환
+> 기능 추가는 patch(0.2.1) 로 릴리스합니다.
+
+### Added
+- `get_base_rate` 에 `frequency` 파라미터 추가 (`"M"` 기본 / `"D"`). ECOS 통계표
+  `722Y001` 은 일별 원천이라 `frequency="D"` 로 변경일 단위(sparse) 시계열을
+  조회할 수 있습니다. `"D"` 지정 시 날짜 형식은 `YYYYMMDD`, 기본 조회기간도
+  일별 포맷으로 산출합니다. 기본값 `"M"` 으로 기존 동작은 그대로 유지(하위호환).
+
+### Notes
+- M2 평잔·계절조정(`161Y005`/`BBHS00`) 시계열은 기존
+  `get_m2_variants(variant="평잔_계절조정")` 로 이미 제공됩니다 (별도 추가 없음).
+
 ## [0.2.0] - 2026-05-29
 
 v0.1.6 라이브 e2e 검증에서 드러난 follow-up(#2 Reliability epic)을 정리한 릴리스.
