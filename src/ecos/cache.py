@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import threading
 import time
+from collections import OrderedDict
 from dataclasses import dataclass
 from typing import Any
 
@@ -53,8 +55,11 @@ class Cache:
     def __init__(self, ttl: int = 3600, maxsize: int = 100):
         self.ttl = ttl
         self.maxsize = maxsize
-        self._cache: dict[str, CacheEntry] = {}
-        self._access_order: list[str] = []
+        # OrderedDict가 LRU 순서를 직접 보유하므로 O(1) move_to_end/popitem 사용.
+        # 별도 _access_order 리스트(O(n) remove)와의 비일관성을 제거한다.
+        self._cache: OrderedDict[str, CacheEntry] = OrderedDict()
+        # 재진입 가능 락: get()이 만료 시 invalidate()를 호출하므로 RLock 필요.
+        self._lock = threading.RLock()
         self._enabled: bool = True
 
     @property
@@ -103,26 +108,26 @@ class Cache:
         if not self._enabled:
             return None
 
-        entry = self._cache.get(key)
-        if entry is None:
-            record_cache_miss()
-            log_cache_operation("get", key, hit=False)
-            return None
+        with self._lock:
+            entry = self._cache.get(key)
+            if entry is None:
+                record_cache_miss()
+                log_cache_operation("get", key, hit=False)
+                return None
 
-        if entry.is_expired():
-            self.invalidate(key)
-            record_cache_miss()
-            log_cache_operation("get", key, hit=False)
-            return None
+            if entry.is_expired():
+                # 만료 항목 능동 제거 (maxsize 미만이어도 메모리 점유 방지)
+                self._cache.pop(key, None)
+                record_cache_miss()
+                log_cache_operation("get", key, hit=False)
+                return None
 
-        # LRU: 접근된 항목을 최신으로 이동
-        if key in self._access_order:
-            self._access_order.remove(key)
-        self._access_order.append(key)
+            # LRU: 접근된 항목을 최신으로 이동 (O(1))
+            self._cache.move_to_end(key)
 
-        record_cache_hit()
-        log_cache_operation("get", key, hit=True)
-        return entry.value
+            record_cache_hit()
+            log_cache_operation("get", key, hit=True)
+            return entry.value
 
     def set(self, key: str, value: Any) -> None:
         """
@@ -138,19 +143,19 @@ class Cache:
         if not self._enabled:
             return
 
-        # 최대 크기 초과 시 가장 오래된 항목 제거
-        while len(self._cache) >= self.maxsize and self._access_order:
-            oldest_key = self._access_order.pop(0)
-            self._cache.pop(oldest_key, None)
+        with self._lock:
+            if key in self._cache:
+                # 기존 키 갱신: 값 교체 후 최신으로 이동, 퇴출 불필요
+                self._cache[key] = CacheEntry(value=value, created_at=time.time(), ttl=self.ttl)
+                self._cache.move_to_end(key)
+            else:
+                # 최대 크기 초과 시 가장 오래된 항목(맨 앞) 제거 (O(1))
+                while self._cache and len(self._cache) >= self.maxsize:
+                    self._cache.popitem(last=False)
+                self._cache[key] = CacheEntry(value=value, created_at=time.time(), ttl=self.ttl)
 
-        self._cache[key] = CacheEntry(value=value, created_at=time.time(), ttl=self.ttl)
-
-        if key in self._access_order:
-            self._access_order.remove(key)
-        self._access_order.append(key)
-
-        record_cache_set()
-        log_cache_operation("set", key)
+            record_cache_set()
+            log_cache_operation("set", key)
 
     def invalidate(self, key: str) -> None:
         """
@@ -161,24 +166,26 @@ class Cache:
         key : str
             무효화할 캐시 키
         """
-        self._cache.pop(key, None)
-        if key in self._access_order:
-            self._access_order.remove(key)
+        with self._lock:
+            self._cache.pop(key, None)
 
     def clear(self) -> None:
         """모든 캐시를 삭제합니다."""
-        self._cache.clear()
-        self._access_order.clear()
-        record_cache_clear()
-        log_cache_operation("clear", "")
+        with self._lock:
+            self._cache.clear()
+            record_cache_clear()
+            log_cache_operation("clear", "")
 
     def __len__(self) -> int:
         """캐시된 항목 수"""
-        return len(self._cache)
+        with self._lock:
+            return len(self._cache)
 
     def __contains__(self, key: str) -> bool:
-        """캐시 키 존재 여부"""
-        return key in self._cache and not self._cache[key].is_expired()
+        """캐시 키 존재 여부 (만료 항목은 미포함으로 간주)"""
+        with self._lock:
+            entry = self._cache.get(key)
+            return entry is not None and not entry.is_expired()
 
 
 # 전역 캐시 인스턴스
