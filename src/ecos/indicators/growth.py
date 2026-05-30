@@ -323,6 +323,9 @@ def get_gdp_by_industry(
     -----
     - 계절조정: 계절적 요인 제거
     - 원계열: 계절조정하지 않은 원자료
+    - 이 통계표는 계층형입니다 — long-format에는 총계·소계(예: '총부가가치')와
+      세부 산업이 함께 포함되므로, ``category_value`` 를 단순 합산하면 중복
+      집계됩니다. 특정 시계열이 필요하면 ``sub_category`` 로 선택하세요.
 
     산업별 GDP는 경제 구조와 각 산업의 기여도를 파악하는 데 활용됩니다.
 
@@ -374,7 +377,8 @@ def get_gdp_by_industry(
 
     # 이 통계표는 분류축이 item_code1 하나뿐이라 prefix="" 로 전체 항목을 분류한다
     # (money.py의 다축 prefix 필터와 달리 단일 축이므로 필터 없이 전량 long-format화, #58 규약).
-    # 주의: 통계표에 총계/소계 행이 있으면 long-format에 함께 포함된다 → 라이브 e2e 검증 필요.
+    # 확인됨(라이브 e2e): 이 테이블들은 계층형이라 총계·소계·세부 항목이 long-format에
+    # 함께 포함된다. 특정 시계열만 필요하면 sub_category로 선택할 것(축 간 단순 합산 금지).
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
@@ -445,6 +449,11 @@ def get_gdp_by_expenditure(
     - 총고정자본형성: 기업 및 정부의 투자
     - 수출 - 수입: 순수출
 
+    이 통계표는 계층형입니다 — long-format에는 총계('국내총생산에 대한 지출')와
+    소계('총고정자본형성', '최종소비지출' 등) 및 그 구성요소('민간', '정부' 등)가
+    함께 포함되므로 ``category_value`` 를 단순 합산하면 중복 집계됩니다. 특정
+    시계열이 필요하면 ``sub_category`` 로 선택하세요.
+
     지출항목별 GDP는 경제 성장의 원천을 파악하는 데 활용됩니다.
 
     Examples
@@ -486,7 +495,8 @@ def get_gdp_by_expenditure(
 
     # 이 통계표는 분류축이 item_code1 하나뿐이라 prefix="" 로 전체 항목을 분류한다
     # (money.py의 다축 prefix 필터와 달리 단일 축이므로 필터 없이 전량 long-format화, #58 규약).
-    # 주의: 통계표에 총계/소계 행이 있으면 long-format에 함께 포함된다 → 라이브 e2e 검증 필요.
+    # 확인됨(라이브 e2e): 이 테이블들은 계층형이라 총계·소계·세부 항목이 long-format에
+    # 함께 포함된다. 특정 시계열만 필요하면 sub_category로 선택할 것(축 간 단순 합산 금지).
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
@@ -547,6 +557,9 @@ def get_gdp_deflator_by_industry(
     -----
     - GDP 디플레이터 = (명목 GDP / 실질 GDP) × 100
     - 각 산업별로 물가 변화를 측정
+    - 이 통계표는 계층형입니다 — long-format에는 총계('국내총생산(시장가격)',
+      '총부가가치(기초가격)')와 세부 산업이 함께 포함되므로, 특정 시계열이
+      필요하면 ``sub_category`` 로 선택하세요.
 
     산업별 GDP 디플레이터는 산업별 물가 동향을 파악하는 데 활용됩니다.
 
@@ -580,7 +593,8 @@ def get_gdp_deflator_by_industry(
 
     # 이 통계표는 분류축이 item_code1 하나뿐이라 prefix="" 로 전체 항목을 분류한다
     # (money.py의 다축 prefix 필터와 달리 단일 축이므로 필터 없이 전량 long-format화, #58 규약).
-    # 주의: 통계표에 총계/소계 행이 있으면 long-format에 함께 포함된다 → 라이브 e2e 검증 필요.
+    # 확인됨(라이브 e2e): 이 테이블들은 계층형이라 총계·소계·세부 항목이 long-format에
+    # 함께 포함된다. 특정 시계열만 필요하면 sub_category로 선택할 것(축 간 단순 합산 금지).
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_GDP_DEFLATOR_BY_INDUSTRY,
