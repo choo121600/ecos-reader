@@ -530,6 +530,10 @@ def _household_lending_mock() -> dict:
         ("11100B0", "기타대출-예금취급기관", "315205.7"),
         ("11110A0", "주택관련대출-예금은행", "560000.0"),
         ("11110B0", "기타대출-예금은행", "242374.7"),
+        ("11A00A0", "주택관련대출-비은행예금취급기관", "224794.3"),
+        ("11A00B0", "기타대출-비은행예금취급기관", "72831.0"),
+        ("1120093", "[참고] 주택금융공사 및 주택도시기금의 정책대출", "330000.0"),
+        ("1120094", "[참고] 예금은행 전세자금대출", "150000.0"),
     ]
     rows = []
     for time in ["202401", "202402"]:
@@ -562,8 +566,10 @@ class TestGetHouseholdLendingDetail:
         df = get_household_lending_detail(start_date="202401", end_date="202402")
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
         assert "주택관련대출-예금취급기관" in set(df["category_value"])
-        assert df["category_value"].nunique() == 5
-        assert len(df) == 10  # 5분류 × 2개월
+        # 총계·용도×기관 분류·[참고] 항목이 모두 long-format에 포함된다.
+        assert "[참고] 예금은행 전세자금대출" in set(df["category_value"])
+        assert df["category_value"].nunique() == 9
+        assert len(df) == 18  # 9분류 × 2개월
 
     @responses.activate
     def test_sub_category_by_item_code(self):
