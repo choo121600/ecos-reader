@@ -42,9 +42,9 @@ _PARTIAL_COVERAGE_CASES = [
         "get_household_lending_detail",
         lambda: ecos.get_household_lending_detail(),
     ),
-    # get_borrower_loan은 v0.2.0(#29)에서 분류축 전체를 long-format으로 반환하도록
-    # 재설계되어 더 이상 단일 항목 partial-coverage 경고를 내지 않으므로 제외.
-    ("get_cpi_monthly", lambda: ecos.get_cpi_monthly()),
+    # get_borrower_loan은 v0.2.0(#29)에서, get_cpi_monthly는 v0.3.0(#61)에서
+    # 전체 시리즈 long-format + sub_category 선택으로 재설계되어 더 이상
+    # partial-coverage 경고를 내지 않으므로 제외.
     # get_cpi_by_category는 v0.1.6에서 (stat_code, item_code) 매핑이 수정되어
     # 정상 데이터를 반환하므로 partial-coverage 목록에서 제외 (PR #27).
 ]

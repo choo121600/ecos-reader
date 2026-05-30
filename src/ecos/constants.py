@@ -361,7 +361,8 @@ STAT_GDP_DEFLATOR_BY_INDUSTRY = "200Y111"  # 경제활동별 GDP 디플레이터
 
 # CPI 월별 원지수
 # 901Y001은 ECOS API에 존재하지 않아 v0.1.6까지 빈 응답을 반환했음 (#32).
-# get_cpi와 동일한 소비자물가지수(901Y009) 총지수(item "0")를 사용하도록 수정.
+# 소비자물가지수(901Y009)를 사용. 레지스트리 cpi_monthly는 총지수(item "0")만,
+# get_cpi_monthly()는 전체 COICOP 품목을 반환한다 (v0.3.0 #61).
 STAT_CPI_MONTHLY = "901Y009"  # 소비자물가지수
 
 # CPI 세부 항목별 — (stat_code, item_code1) 튜플.

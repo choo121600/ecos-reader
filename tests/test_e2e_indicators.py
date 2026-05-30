@@ -583,13 +583,21 @@ class TestE2EPriceDetailIndicators:
     """물가 세부 지표 E2E 테스트"""
 
     def test_get_cpi_monthly(self):
-        """CPI 월별 원지수 (901Y009 총지수)"""
+        """CPI 월별 원지수 — 전체 품목 long-format (#61)."""
         df = ecos.get_cpi_monthly(start_date="202301", end_date="202312")
 
         assert not df.empty
-        assert "date" in df.columns
-        assert "value" in df.columns
-        assert len(df) > 0
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        # 총지수 + 다수 COICOP 품목이 포함돼야 함.
+        assert "총지수" in set(df["category_value"])
+        assert df["category_value"].nunique() > 10
+
+    def test_get_cpi_monthly_sub_category(self):
+        """sub_category로 단일 품목(총지수) 선택 (#61)."""
+        df = ecos.get_cpi_monthly(sub_category="총지수", start_date="202301", end_date="202312")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
+        assert df["value"].dropna().median() > 100  # CPI 원지수(2020=100)
 
     @pytest.mark.skip(reason="stat_code 901Y002가 ECOS API에 존재하지 않음")
     def test_get_cpi_by_category_goods(self):

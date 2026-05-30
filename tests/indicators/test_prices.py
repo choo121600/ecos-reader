@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import re
+import warnings
 
 import pytest
 import responses
@@ -105,53 +106,73 @@ class TestGetPpi:
         assert df["value"].iloc[0] == 1.50
 
 
+def _cpi_monthly_mock() -> dict:
+    """CPI 월별 통계표(901Y009) 다항목(계층) 응답 모킹."""
+    items = [
+        ("0", "총지수", "113.52"),
+        ("A", "식료품 및 비주류음료", "120.30"),
+        ("A01101", "쌀", "104.96"),
+    ]
+    rows = []
+    for time in ["202401", "202402"]:
+        for code, name, value in items:
+            rows.append(
+                {
+                    "ITEM_CODE1": code,
+                    "ITEM_NAME1": name,
+                    "TIME": time,
+                    "DATA_VALUE": value,
+                    "UNIT_NAME": "2020=100",
+                }
+            )
+    return {"StatisticSearch": {"row": rows}}
+
+
 @pytest.mark.usefixtures("set_api_key")
 class TestGetCpiMonthly:
-    """get_cpi_monthly 함수 테스트"""
+    """get_cpi_monthly 재설계 테스트 (#61)."""
+
+    def _add_mock(self):
+        responses.add(responses.GET, url=re.compile(r".*"), json=_cpi_monthly_mock(), status=200)
 
     @responses.activate
-    def test_get_cpi_monthly_success(self):
-        """CPI 월별 원지수 조회 성공 및 EcosPartialCoverageWarning 발생 확인"""
-        mock_response = {
-            "StatisticSearch": {
-                "row": [
-                    {
-                        "STAT_CODE": "901Y009",
-                        "STAT_NAME": "소비자물가지수",
-                        "ITEM_CODE1": "0",
-                        "ITEM_NAME1": "총지수",
-                        "TIME": "202401",
-                        "DATA_VALUE": "113.52",
-                        "UNIT_NAME": "지수",
-                    },
-                    {
-                        "STAT_CODE": "901Y009",
-                        "STAT_NAME": "소비자물가지수",
-                        "ITEM_CODE1": "0",
-                        "ITEM_NAME1": "총지수",
-                        "TIME": "202402",
-                        "DATA_VALUE": "114.10",
-                        "UNIT_NAME": "지수",
-                    },
-                ]
-            }
-        }
+    def test_default_returns_full_series_long_format(self):
+        """sub_category 미지정 시 전체 품목을 long-format으로 반환한다."""
+        self._add_mock()
+        df = get_cpi_monthly(start_date="202401", end_date="202402")
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        assert set(df["category_value"]) == {"총지수", "식료품 및 비주류음료", "쌀"}
+        assert len(df) == 6  # 3품목 × 2개월
 
-        responses.add(
-            responses.GET,
-            url=re.compile(r".*"),
-            json=mock_response,
-            status=200,
-        )
-
-        with pytest.warns(EcosPartialCoverageWarning):
-            df = get_cpi_monthly(start_date="202401", end_date="202402")
-
-        assert not df.empty
-        assert "date" in df.columns
-        assert "value" in df.columns
-        assert "unit" in df.columns
+    @responses.activate
+    def test_sub_category_total_index(self):
+        """sub_category='총지수'는 총지수 단일 시계열을 반환한다."""
+        self._add_mock()
+        df = get_cpi_monthly(sub_category="총지수", start_date="202401", end_date="202402")
+        assert list(df.columns) == ["date", "value", "unit"]
         assert df["value"].iloc[0] == 113.52
+
+    @responses.activate
+    def test_sub_category_by_item_code(self):
+        """sub_category로 item_code1(쌀=A01101)도 허용한다."""
+        self._add_mock()
+        df = get_cpi_monthly(sub_category="A01101", start_date="202401", end_date="202402")
+        assert (df["value"] == 104.96).all()
+
+    @responses.activate
+    def test_unknown_sub_category_raises(self):
+        """없는 sub_category는 사용 가능한 항목과 함께 ValueError."""
+        self._add_mock()
+        with pytest.raises(ValueError, match="사용 가능한 항목"):
+            get_cpi_monthly(sub_category="없는품목", start_date="202401", end_date="202402")
+
+    @responses.activate
+    def test_no_partial_coverage_warning(self):
+        """재설계 후에는 EcosPartialCoverageWarning을 발생시키지 않는다."""
+        self._add_mock()
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", EcosPartialCoverageWarning)
+            get_cpi_monthly(start_date="202401", end_date="202402")
 
 
 @pytest.mark.usefixtures("set_api_key")
