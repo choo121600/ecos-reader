@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import contextlib
 import time
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 from urllib.parse import quote
 
 import requests
@@ -25,7 +25,9 @@ from .exceptions import (
     EcosRateLimitError,
 )
 from .logging import log_api_request, log_error_response, log_retry_attempt, logger, mask_api_key
-from .types import EcosService
+
+if TYPE_CHECKING:
+    from .types import EcosService
 
 
 class EcosClient:
@@ -198,7 +200,7 @@ class EcosClient:
                 logger.debug(f"API 요청 전송: {mask_api_key(url)}")
                 response = self.session.get(url, timeout=self.timeout)
                 response.raise_for_status()
-                data = cast(dict[str, Any], response.json())
+                data = cast("dict[str, Any]", response.json())
 
                 # 에러 응답 확인
                 self._check_error_response(data, url)
@@ -328,7 +330,7 @@ class EcosClient:
             )
             cached = self._cache.get(cache_key)
             if cached is not None:
-                return cast(dict[str, Any], cached)
+                return cast("dict[str, Any]", cached)
 
         url = self._build_url(service, start, end, *path_params)
         result = self._make_request(url)
