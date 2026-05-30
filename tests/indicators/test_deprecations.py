@@ -38,11 +38,8 @@ _PARTIAL_COVERAGE_CASES = [
     # 내지 않으므로 제외.
     ("get_bond_yield(종류별)", lambda: ecos.get_bond_yield(bond_type="종류별")),
     ("get_bond_yield(시장별)", lambda: ecos.get_bond_yield(bond_type="시장별")),
-    (
-        "get_household_lending_detail",
-        lambda: ecos.get_household_lending_detail(),
-    ),
-    # get_borrower_loan은 v0.2.0(#29)에서, get_cpi_monthly는 v0.3.0(#61)에서
+    # get_borrower_loan은 v0.2.0(#29)에서, get_cpi_monthly(#61) /
+    # get_household_lending_detail(#62)은 v0.3.0에서
     # 전체 시리즈 long-format + sub_category 선택으로 재설계되어 더 이상
     # partial-coverage 경고를 내지 않으므로 제외.
     # get_cpi_by_category는 v0.1.6에서 (stat_code, item_code) 매핑이 수정되어

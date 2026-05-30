@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import re
+import warnings
 
 import pytest
 import responses
@@ -521,36 +522,98 @@ class TestGetHouseholdCredit:
             get_household_credit(category="소득별")  # type: ignore[arg-type]
 
 
+def _household_lending_mock() -> dict:
+    """예금취급기관 가계대출(용도별, 151Y005) 다항목 응답 모킹."""
+    items = [
+        ("1110000", "예금취급기관", "1100000"),
+        ("11100A0", "주택관련대출-예금취급기관", "784794.3"),
+        ("11100B0", "기타대출-예금취급기관", "315205.7"),
+        ("11110A0", "주택관련대출-예금은행", "560000.0"),
+        ("11110B0", "기타대출-예금은행", "242374.7"),
+        ("11A00A0", "주택관련대출-비은행예금취급기관", "224794.3"),
+        ("11A00B0", "기타대출-비은행예금취급기관", "72831.0"),
+        ("1120093", "[참고] 주택금융공사 및 주택도시기금의 정책대출", "330000.0"),
+        ("1120094", "[참고] 예금은행 전세자금대출", "150000.0"),
+    ]
+    rows = []
+    for time in ["202401", "202402"]:
+        for code, name, value in items:
+            rows.append(
+                {
+                    "ITEM_CODE1": code,
+                    "ITEM_NAME1": name,
+                    "TIME": time,
+                    "DATA_VALUE": value,
+                    "UNIT_NAME": "십억원",
+                }
+            )
+    return {"StatisticSearch": {"row": rows}}
+
+
 @pytest.mark.usefixtures("set_api_key")
 class TestGetHouseholdLendingDetail:
-    """get_household_lending_detail 함수 테스트"""
+    """get_household_lending_detail 재설계 테스트 (#62)."""
+
+    def _add_mock(self):
+        responses.add(
+            responses.GET, url=re.compile(r".*"), json=_household_lending_mock(), status=200
+        )
 
     @responses.activate
-    def test_returns_dataframe_and_emits_warning(self):
-        """데이터 조회 성공 및 EcosPartialCoverageWarning 발생"""
-        responses.add(
-            responses.GET,
-            url=re.compile(r".*"),
-            json=_simple_monthly_mock("1100000", "202401"),
-            status=200,
+    def test_default_returns_full_series_long_format(self):
+        """sub_category 미지정 시 전체 분류를 long-format으로 반환한다."""
+        self._add_mock()
+        df = get_household_lending_detail(start_date="202401", end_date="202402")
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        assert "주택관련대출-예금취급기관" in set(df["category_value"])
+        # 총계·용도×기관 분류·[참고] 항목이 모두 long-format에 포함된다.
+        assert "[참고] 예금은행 전세자금대출" in set(df["category_value"])
+        assert df["category_value"].nunique() == 9
+        assert len(df) == 18  # 9분류 × 2개월
+
+    @responses.activate
+    def test_sub_category_by_item_code(self):
+        """sub_category로 item_code1을 지정하면 단일 시계열을 반환한다."""
+        self._add_mock()
+        df = get_household_lending_detail(
+            sub_category="11100A0", start_date="202401", end_date="202402"
         )
-        with pytest.warns(EcosPartialCoverageWarning):
-            df = get_household_lending_detail(start_date="202401", end_date="202401")
-        assert not df.empty
         assert list(df.columns) == ["date", "value", "unit"]
-        assert df["value"].iloc[0] == 1100000.0
+        assert (df["value"] == 784794.3).all()
+
+    @responses.activate
+    def test_sub_category_by_name(self):
+        """sub_category로 항목명도 허용한다."""
+        self._add_mock()
+        df = get_household_lending_detail(
+            sub_category="기타대출-예금은행", start_date="202401", end_date="202401"
+        )
+        assert (df["value"] == 242374.7).all()
+
+    @responses.activate
+    def test_unknown_sub_category_raises(self):
+        """없는 sub_category는 사용 가능한 항목과 함께 ValueError."""
+        self._add_mock()
+        with pytest.raises(ValueError, match="사용 가능한 항목"):
+            get_household_lending_detail(
+                sub_category="없는분류", start_date="202401", end_date="202401"
+            )
+
+    @responses.activate
+    def test_no_partial_coverage_warning(self):
+        """재설계 후에는 EcosPartialCoverageWarning을 발생시키지 않는다."""
+        self._add_mock()
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", EcosPartialCoverageWarning)
+            get_household_lending_detail(start_date="202401", end_date="202401")
 
     @responses.activate
     def test_date_column_is_datetime(self):
         """date 컬럼이 datetime 타입인지 확인"""
-        responses.add(
-            responses.GET,
-            url=re.compile(r".*"),
-            json=_simple_monthly_mock("1050000", "202312"),
-            status=200,
+        self._add_mock()
+        df = get_household_lending_detail(
+            sub_category="11100A0", start_date="202401", end_date="202402"
         )
-        with pytest.warns(EcosPartialCoverageWarning):
-            df = get_household_lending_detail(start_date="202312", end_date="202312")
         import pandas as pd
 
         assert pd.api.types.is_datetime64_any_dtype(df["date"])
