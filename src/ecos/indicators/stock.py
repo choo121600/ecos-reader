@@ -200,6 +200,9 @@ def get_investor_trading(
     - 외국인 순매수: 외국인 투자자의 매수 - 매도
     - 기관 순매수: 기관 투자자의 매수 - 매도
     - 개인 순매수: 개인 투자자의 매수 - 매도
+    - ``category_value`` 는 ECOS 원본 라벨이라 각주 표식이 붙을 수 있습니다
+      (예: ``'외국인(순매수) 3)'``). 정확한 이름 매칭이 까다로우므로 단일 투자자
+      선택은 item_code(예: ``'S22CC'``)를 권장합니다.
 
     외국인과 기관의 순매수/순매도는 주가 방향성의 중요한 신호로 활용됩니다.
 
@@ -249,7 +252,7 @@ def get_investor_trading(
     if "item_code2" in df.columns:
         df = df[df["item_code2"] == metric_code]
     if "item_code1" in df.columns:
-        df = df[df["item_code1"] != prefix]  # 합계행(S22A/B/C) 제외
+        df = df[df["item_code1"] != prefix]  # 활성 prefix의 합계행(예: S22C) 제외
 
     return select_subcategory(
         df, prefix=prefix, sub_category=sub_category, context=f"action='{action}'"
