@@ -37,10 +37,7 @@ KNOWN_DEFECTS: set[tuple[str, str, str]] = {
     ("effective_rate", "REER", audit.WARN),
     # bop(301Y017→301Y013, CA/KA→000000/BOPC...) 정정 완료 — #74 에서 해소.
     # real_economy facility_invest(901Y049→901Y066) 정정 완료 — #72 에서 해소.
-    # 심리: 512Y014(BSI) 실제 item 은 99988/C0000/X5000 등 — A001/B001/C001 아님.
-    ("sentiment", "bsi_manufacturing", audit.FAIL),
-    ("sentiment", "bsi_non_manufacturing", audit.FAIL),
-    ("sentiment", "bsi_all", audit.FAIL),
+    # sentiment BSI(512Y014 item A001/B001/C001 → C0000/Y9900/99988) 정정 완료 — #73 에서 해소.
 }
 
 
