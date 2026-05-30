@@ -200,12 +200,12 @@ def get_yield_spread(
     """
     # 장기/단기 수익률 조회
     long_df = get_treasury_yield(
-        maturity=long_maturity,  # type: ignore
+        maturity=long_maturity,
         start_date=start_date,
         end_date=end_date,
     )
     short_df = get_treasury_yield(
-        maturity=short_maturity,  # type: ignore
+        maturity=short_maturity,
         start_date=start_date,
         end_date=end_date,
     )

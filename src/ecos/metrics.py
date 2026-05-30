@@ -99,7 +99,7 @@ class CacheMetrics:
 class MetricsCollector:
     """메트릭 수집기"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._lock = Lock()
         self.api_metrics: dict[str, ApiMetrics] = {}
         self.cache_metrics = CacheMetrics()

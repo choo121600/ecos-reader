@@ -97,9 +97,20 @@ markers = [
 
 [tool.mypy]
 python_version = "3.10"
-warn_return_any = true
+# py.typed 광고와 실제 타입 안전성을 일치시키기 위해 strict 모드 적용 (#17).
+# strict는 disallow_untyped_defs / disallow_incomplete_defs / check_untyped_defs /
+# disallow_any_generics / warn_return_any / warn_unused_ignores /
+# no_implicit_reexport 등을 일괄 활성화한다.
+strict = true
 warn_unused_configs = true
+# pandas 등 일부 서드파티는 완전한 stub을 제공하지 않으므로 누락 import는 무시.
 ignore_missing_imports = true
+
+# indicators 패키지는 __all__을 런타임에 동적 생성(#16)하므로 mypy가 재노출을
+# 정적으로 인식하지 못한다. 이 집계(aggregator) 모듈에 한해 implicit reexport 허용.
+[[tool.mypy.overrides]]
+module = ["ecos.indicators"]
+implicit_reexport = true
 
 [tool.coverage.run]
 source = ["src/ecos"]
