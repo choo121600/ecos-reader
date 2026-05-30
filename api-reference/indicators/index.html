@@ -4176,13 +4176,15 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
 
 
 <a href="#ecos.get_gdp_by_industry" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_gdp_by_industry</span><span class="p">(</span><span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="n">seasonal_adj</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_gdp_by_industry</span><span class="p">(</span><span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="n">seasonal_adj</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
 
         <p>경제활동별(산업별) GDP를 조회합니다.</p>
-<p>농림어업, 광공업, 서비스업 등 경제활동별 부가가치를 제공합니다.</p>
+<p>농림어업, 광공업, 서비스업 등 경제활동별 부가가치 전체 시리즈를 제공합니다.
+partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</code> 미지정 시
+전체 산업을 long-format으로, 지정 시 해당 산업 단일 시계열만 반환합니다.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4252,6 +4254,23 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
+                <code>sub_category</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>세부 산업(항목명 또는 item_code1). 지정 시 해당 산업 단일 시계열만
+반환합니다. 미지정 시 전체 산업을 long-format으로 반환합니다.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>start_date</code>
             </td>
             <td>
@@ -4301,10 +4320,11 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>컬럼: date, value, unit
-- date: 날짜 (datetime)
-- value: 산업별 GDP (조원)
-- unit: 단위</p>
+                <ul>
+<li><code>sub_category</code> 미지정: 컬럼 <code>date, category_value, value, unit</code>
+  (각 산업이 행으로 포함된 long-format, <code>category_value</code>=산업명)</li>
+<li><code>sub_category</code> 지정: 컬럼 <code>date, value, unit</code> (단일 시계열)</li>
+</ul>
               </div>
             </td>
           </tr>
@@ -4312,28 +4332,51 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
     </table>
 
 
-<details class="warning" open>
-  <summary>Warnings</summary>
-  <p>DeprecationWarning
-    현재 단일 항목(<code>item_code1="1101"</code>, 농림어업)만 반환하며 함수명이 시사하는
-    전체 산업 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
-    현재 동작에 의존한다면 <code>EcosClient.get_statistic_search</code>로 직접 item_code1을
-    전달하는 방식으로 마이그레이션하세요. (이슈 #8)</p>
-</details>
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지원하지 않는 basis/seasonal_adj/frequency 조합이거나, 지정한
+<code>sub_category</code> 가 존재하지 않는 경우 (사용 가능 항목을 함께 안내).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
 <li>계절조정: 계절적 요인 제거</li>
 <li>원계열: 계절조정하지 않은 원자료</li>
+<li>이 통계표는 계층형입니다 — long-format에는 총계·소계(예: '총부가가치')와
+  세부 산업이 함께 포함되므로, <code>category_value</code> 를 단순 합산하면 중복
+  집계됩니다. 특정 시계열이 필요하면 <code>sub_category</code> 로 선택하세요.</li>
 </ul>
 <p>산업별 GDP는 경제 구조와 각 산업의 기여도를 파악하는 데 활용됩니다.</p>
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">()</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 전체 산업 long-format</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">()</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">        date category_value     value   unit</span>
+</span></code></pre></div>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 제조업 단일 시계열</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;제조업&quot;</span><span class="p">)</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">,</span> <span class="n">seasonal_adj</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span></code></pre></div>
@@ -4351,13 +4394,15 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
 
 
 <a href="#ecos.get_gdp_by_expenditure" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_gdp_by_expenditure</span><span class="p">(</span><span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_gdp_by_expenditure</span><span class="p">(</span><span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
 
         <p>지출항목별 GDP를 조회합니다.</p>
-<p>민간소비, 정부소비, 투자, 수출입 등 지출항목별 GDP를 제공합니다.</p>
+<p>민간소비, 정부소비, 투자, 수출입 등 지출항목별 GDP 전체 시리즈를 제공합니다.
+partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</code> 미지정 시
+전체 지출항목을 long-format으로, 지정 시 해당 항목 단일 시계열만 반환합니다.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4411,6 +4456,23 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
+                <code>sub_category</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>세부 지출항목(항목명 또는 item_code1). 지정 시 해당 항목 단일 시계열만
+반환합니다. 미지정 시 전체 지출항목을 long-format으로 반환합니다.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>start_date</code>
             </td>
             <td>
@@ -4460,10 +4522,11 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>컬럼: date, value, unit
-- date: 날짜 (datetime)
-- value: 지출항목별 GDP (조원)
-- unit: 단위</p>
+                <ul>
+<li><code>sub_category</code> 미지정: 컬럼 <code>date, category_value, value, unit</code>
+  (각 지출항목이 행으로 포함된 long-format, <code>category_value</code>=항목명)</li>
+<li><code>sub_category</code> 지정: 컬럼 <code>date, value, unit</code> (단일 시계열)</li>
+</ul>
               </div>
             </td>
           </tr>
@@ -4471,14 +4534,29 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
     </table>
 
 
-<details class="warning" open>
-  <summary>Warnings</summary>
-  <p>DeprecationWarning
-    현재 단일 항목(<code>item_code1="10601"</code>, 지출항목별 전체(미확인))만 반환하며 함수명이
-    시사하는 전체 지출 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
-    현재 동작에 의존한다면 <code>EcosClient.get_statistic_search</code>로 직접 item_code1을
-    전달하는 방식으로 마이그레이션하세요. (이슈 #8)</p>
-</details>
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지원하지 않는 basis 조합이거나, 지정한 <code>sub_category</code> 가 존재하지
+않는 경우 (사용 가능 항목을 함께 안내).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
 <details class="note" open>
   <summary>Notes</summary>
@@ -4487,13 +4565,21 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
 - 정부소비: 정부의 소비지출
 - 총고정자본형성: 기업 및 정부의 투자
 - 수출 - 수입: 순수출</p>
+<p>이 통계표는 계층형입니다 — long-format에는 총계('국내총생산에 대한 지출')와
+소계('총고정자본형성', '최종소비지출' 등) 및 그 구성요소('민간', '정부' 등)가
+함께 포함되므로 <code>category_value</code> 를 단순 합산하면 중복 집계됩니다. 특정
+시계열이 필요하면 <code>sub_category</code> 로 선택하세요.</p>
 <p>지출항목별 GDP는 경제 성장의 원천을 파악하는 데 활용됩니다.</p>
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_expenditure</span><span class="p">()</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 전체 지출항목 long-format</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_expenditure</span><span class="p">()</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></code></pre></div>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 민간소비 단일 시계열</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_expenditure</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;민간소비지출&quot;</span><span class="p">)</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_expenditure</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">)</span>
 </span></code></pre></div>
@@ -4511,13 +4597,15 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
 
 
 <a href="#ecos.get_gdp_deflator_by_industry" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_gdp_deflator_by_industry</span><span class="p">(</span><span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_gdp_deflator_by_industry</span><span class="p">(</span><span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
 
         <p>경제활동별(산업별) GDP 디플레이터를 조회합니다.</p>
-<p>산업별 물가 변화를 나타내는 GDP 디플레이터를 제공합니다.</p>
+<p>산업별 물가 변화를 나타내는 GDP 디플레이터 전체 시리즈를 제공합니다.
+partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</code> 미지정 시
+전체 산업을 long-format으로, 지정 시 해당 산업 단일 시계열만 반환합니다.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4553,6 +4641,23 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
+                <code>sub_category</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>세부 산업(항목명 또는 item_code1). 지정 시 해당 산업 단일 시계열만
+반환합니다. 미지정 시 전체 산업을 long-format으로 반환합니다.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>start_date</code>
             </td>
             <td>
@@ -4602,10 +4707,11 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>컬럼: date, value, unit
-- date: 날짜 (datetime)
-- value: GDP 디플레이터
-- unit: 단위</p>
+                <ul>
+<li><code>sub_category</code> 미지정: 컬럼 <code>date, category_value, value, unit</code>
+  (각 산업이 행으로 포함된 long-format, <code>category_value</code>=산업명)</li>
+<li><code>sub_category</code> 지정: 컬럼 <code>date, value, unit</code> (단일 시계열)</li>
+</ul>
               </div>
             </td>
           </tr>
@@ -4613,28 +4719,49 @@ deprecated이며 v0.4.0에서 제거됩니다.</p>
     </table>
 
 
-<details class="warning" open>
-  <summary>Warnings</summary>
-  <p>DeprecationWarning
-    현재 단일 항목(<code>item_code1="1101"</code>, 농림어업)만 반환하며 함수명이 시사하는
-    전체 산업 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
-    현재 동작에 의존한다면 <code>EcosClient.get_statistic_search</code>로 직접 item_code1을
-    전달하는 방식으로 마이그레이션하세요. (이슈 #8)</p>
-</details>
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지정한 <code>sub_category</code> 가 존재하지 않는 경우 (사용 가능 항목을 함께 안내).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
 <li>GDP 디플레이터 = (명목 GDP / 실질 GDP) × 100</li>
 <li>각 산업별로 물가 변화를 측정</li>
+<li>이 통계표는 계층형입니다 — long-format에는 총계('국내총생산(시장가격)',
+  '총부가가치(기초가격)')와 세부 산업이 함께 포함되므로, 특정 시계열이
+  필요하면 <code>sub_category</code> 로 선택하세요.</li>
 </ul>
 <p>산업별 GDP 디플레이터는 산업별 물가 동향을 파악하는 데 활용됩니다.</p>
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_deflator_by_industry</span><span class="p">()</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 전체 산업 long-format</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_deflator_by_industry</span><span class="p">()</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></code></pre></div>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 제조업 단일 시계열</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_deflator_by_industry</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;제조업&quot;</span><span class="p">)</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_deflator_by_industry</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>

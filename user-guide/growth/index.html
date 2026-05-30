@@ -1148,7 +1148,7 @@
   <a href="#_22" class="md-nav__link">
     <span class="md-ellipsis">
       
-        기본 사용법
+        매개변수
       
     </span>
   </a>
@@ -1159,7 +1159,7 @@
   <a href="#_23" class="md-nav__link">
     <span class="md-ellipsis">
       
-        기간 지정
+        기본 사용법
       
     </span>
   </a>
@@ -1168,6 +1168,17 @@
         
           <li class="md-nav__item">
   <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        기간 지정
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
     <span class="md-ellipsis">
       
         반환 데이터 구조
@@ -1183,7 +1194,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_25" class="md-nav__link">
+  <a href="#_26" class="md-nav__link">
     <span class="md-ellipsis">
       
         다음 단계
@@ -2410,7 +2421,7 @@
   <a href="#_22" class="md-nav__link">
     <span class="md-ellipsis">
       
-        기본 사용법
+        매개변수
       
     </span>
   </a>
@@ -2421,7 +2432,7 @@
   <a href="#_23" class="md-nav__link">
     <span class="md-ellipsis">
       
-        기간 지정
+        기본 사용법
       
     </span>
   </a>
@@ -2430,6 +2441,17 @@
         
           <li class="md-nav__item">
   <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        기간 지정
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
     <span class="md-ellipsis">
       
         반환 데이터 구조
@@ -2445,7 +2467,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_25" class="md-nav__link">
+  <a href="#_26" class="md-nav__link">
     <span class="md-ellipsis">
       
         다음 단계
@@ -2857,25 +2879,39 @@
 <li><code>"annual"</code> - 연간</li>
 </ul>
 </li>
+<li><code>sub_category</code>: 세부 산업 선택 (선택)<ul>
+<li>미지정 - 전체 산업을 long-format(<code>date, category_value, value, unit</code>)으로 반환</li>
+<li>산업명 또는 <code>item_code1</code> 지정 - 해당 산업 단일 시계열만 반환</li>
 </ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">v0.3.0 재설계 (#59)</p>
+<p>이전에는 단일 항목(농림어업)만 반환하며 <code>EcosPartialCoverageWarning</code>을 냈으나,
+이제 전체 산업 시리즈를 제공합니다. 기존처럼 단일 시계열이 필요하면
+<code>sub_category</code>를 지정하세요.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">계층형 데이터 — 단순 합산 주의</p>
+<p>GDP 통계표는 계층형이라 long-format에 <strong>총계·소계</strong>(예: <code>총부가가치</code>,
+<code>국내총생산(시장가격)</code>, <code>총고정자본형성</code>)와 <strong>세부 항목</strong>이 함께 포함됩니다.
+<code>category_value</code>를 단순 합산하면 중복 집계되므로, 분석 시 원하는 계층의 항목을
+<code>sub_category</code>로 선택하거나 항목명으로 필터링하세요. (라이브 ECOS API로 확인됨)</p>
+</div>
 <h3 id="_17">기본 사용법<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="c1"># 산업별 실질 GDP (계절조정, 분기)</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">(</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">basis</span><span class="o">=</span><span class="s2">&quot;real&quot;</span><span class="p">,</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">seasonal_adj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="p">)</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="c1"># 전체 산업 long-format (sub_category 미지정)</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="n">seasonal_adj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span><span class="p">)</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>  <span class="c1"># date, category_value(산업명), value, unit</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># 제조업 단일 시계열</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;제조업&quot;</span><span class="p">)</span>
 </span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>
-</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="c1"># 산업별 명목 GDP (원계열, 분기)</span>
-</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">(</span>
-</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>    <span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">,</span>
-</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>    <span class="n">seasonal_adj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>    <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span>
-</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="p">)</span>
-</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="c1"># 산업별 명목 GDP (원계열, 분기) — 전체 시리즈</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">,</span> <span class="n">seasonal_adj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span><span class="p">)</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span></code></pre></div>
 <h3 id="_18">기간 지정<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">(</span>
@@ -2900,17 +2936,26 @@
 <li><code>"annual"</code> - 연간</li>
 </ul>
 </li>
+<li><code>sub_category</code>: 세부 지출항목 선택 (선택)<ul>
+<li>미지정 - 전체 지출항목을 long-format(<code>date, category_value, value, unit</code>)으로 반환</li>
+<li>항목명 또는 <code>item_code1</code> 지정 - 해당 항목 단일 시계열만 반환</li>
+</ul>
+</li>
 </ul>
 <h3 id="_20">기본 사용법<a class="headerlink" href="#_20" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="c1"># 지출항목별 실질 GDP</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="c1"># 전체 지출항목 long-format</span>
 </span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_expenditure</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span><span class="p">)</span>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>  <span class="c1"># date, category_value(항목명), value, unit</span>
 </span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1"># 지출항목별 명목 GDP</span>
-</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_expenditure</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span><span class="p">)</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1"># 민간소비지출 단일 시계열</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_expenditure</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;민간소비지출&quot;</span><span class="p">)</span>
 </span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="c1"># 지출항목별 명목 GDP — 전체 시리즈</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_expenditure</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span><span class="p">)</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span></code></pre></div>
 <h3 id="_21">기간 지정<a class="headerlink" href="#_21" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_expenditure</span><span class="p">(</span>
@@ -2922,21 +2967,38 @@
 </span></code></pre></div>
 <h2 id="gdp_9">산업별 GDP 디플레이터<a class="headerlink" href="#gdp_9" title="Permanent link">&para;</a></h2>
 <p>산업별 GDP 디플레이터를 조회합니다.</p>
-<h3 id="_22">기본 사용법<a class="headerlink" href="#_22" title="Permanent link">&para;</a></h3>
+<h3 id="_22">매개변수<a class="headerlink" href="#_22" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>frequency</code>: 조회 빈도<ul>
+<li><code>"quarterly"</code> - 분기별 (기본값)</li>
+<li><code>"annual"</code> - 연간</li>
+</ul>
+</li>
+<li><code>sub_category</code>: 세부 산업 선택 (선택)<ul>
+<li>미지정 - 전체 산업을 long-format(<code>date, category_value, value, unit</code>)으로 반환</li>
+<li>산업명 또는 <code>item_code1</code> 지정 - 해당 산업 단일 시계열만 반환</li>
+</ul>
+</li>
+</ul>
+<h3 id="_23">기본 사용법<a class="headerlink" href="#_23" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="c1"># 산업별 GDP 디플레이터</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="c1"># 전체 산업 GDP 디플레이터 long-format</span>
 </span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_deflator_by_industry</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span><span class="p">)</span>
-</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>  <span class="c1"># date, category_value(산업명), value, unit</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="c1"># 제조업 단일 시계열</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_deflator_by_industry</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;제조업&quot;</span><span class="p">)</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span></code></pre></div>
-<h3 id="_23">기간 지정<a class="headerlink" href="#_23" title="Permanent link">&para;</a></h3>
+<h3 id="_24">기간 지정<a class="headerlink" href="#_24" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_deflator_by_industry</span><span class="p">(</span>
 </span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>    <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span><span class="p">,</span>
 </span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>    <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;2020Q1&quot;</span><span class="p">,</span>
 </span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>    <span class="n">end_date</span><span class="o">=</span><span class="s2">&quot;2024Q4&quot;</span>
 </span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="_24">반환 데이터 구조<a class="headerlink" href="#_24" title="Permanent link">&para;</a></h3>
+<h3 id="_25">반환 데이터 구조<a class="headerlink" href="#_25" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2963,7 +3025,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_25">다음 단계<a class="headerlink" href="#_25" title="Permanent link">&para;</a></h2>
+<h2 id="_26">다음 단계<a class="headerlink" href="#_26" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../prices/">물가 지표</a> - CPI, PPI 등</li>
 <li><a href="../money/">통화 지표</a> - 통화량, 은행 대출 등</li>
