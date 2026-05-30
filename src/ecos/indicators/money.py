@@ -32,6 +32,7 @@ from ..constants import (
 from ..parser import normalize_stat_result, parse_response
 from ._dates import default_monthly, default_quarterly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
+from ._subcategory import select_subcategory
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -637,32 +638,12 @@ def get_borrower_loan(
     )
 
     df = parse_response(response)
-    if df.empty or "item_code1" not in df.columns:
-        return df
-
-    # 분류축 필터: "전체"는 단일 코드, 나머지는 prefix 매칭
-    if category == "전체":
-        axis = df[df["item_code1"] == prefix].copy()
-    else:
-        axis = df[df["item_code1"].str.startswith(prefix, na=False)].copy()
-
-    if axis.empty:
-        return parse_response({})  # 빈 DataFrame
-
-    if sub_category is not None:
-        # 세부 항목명(item_name1) 또는 item_code로 단일 시계열 선택
-        match = axis[
-            (axis.get("item_name1") == sub_category) | (axis["item_code1"] == sub_category)
-        ]
-        if match.empty:
-            available = sorted(axis.get("item_name1", axis["item_code1"]).dropna().unique())
-            raise ValueError(
-                f"sub_category='{sub_category}'는 loan_type='{loan_type}', "
-                f"category='{category}' 분류축에 존재하지 않습니다. "
-                f"사용 가능한 항목: {available}"
-            )
-        return normalize_stat_result(match)
-
-    # long-format: 세부 항목명을 category_value로 노출
-    axis = axis.rename(columns={"item_name1": "category_value"})
-    return normalize_stat_result(axis, columns=["date", "category_value", "value", "unit"])
+    # partial-coverage 재설계 공통 규약(#58) — _subcategory.select_subcategory 참고.
+    # "전체"는 단일 코드 정확 일치, 나머지 분류축은 prefix 매칭.
+    return select_subcategory(
+        df,
+        prefix=prefix,
+        exact=(category == "전체"),
+        sub_category=sub_category,
+        context=f"loan_type='{loan_type}', category='{category}'",
+    )
