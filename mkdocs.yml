@@ -6,6 +6,16 @@ site_url: https://github.com/choo121600/ecos-reader
 repo_name: choo121600/ecos-reader
 repo_url: https://github.com/choo121600/ecos-reader
 
+# 깨진 링크/누락 페이지를 빌드 실패로 검출 (#18).
+strict: true
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  nav:
+    omitted_files: warn
+    not_found: warn
+
 theme:
   name: material
   language: ko
@@ -57,6 +67,20 @@ markdown_extensions:
 plugins:
   - search:
       lang: ko
+  # docstring 기반 API 문서 자동 생성 (#18). NumPy 스타일 docstring 사용.
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            show_source: false
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            separate_signature: true
+            members_order: source
+            heading_level: 2
 
 extra:
   social:
@@ -83,9 +107,16 @@ nav:
       - 클라이언트: api-reference/client.md
       - 지표 함수: api-reference/indicators.md
       - 예외 처리: api-reference/exceptions.md
+      - 통계 검색: api-reference/statistic-search.md
+      - 통계 항목 목록: api-reference/statistic-item-list.md
+      - 통계 메타: api-reference/statistic-meta.md
+      - 통계표 목록: api-reference/statistic-table-list.md
+      - 통계 Top 100: api-reference/statistic-top-100.md
+      - 통계 용어: api-reference/statistic-word.md
   - 예제:
       - 기본 사용법: examples/basic.md
       - 거시경제 대시보드: examples/dashboard.md
   - 개발:
       - 기여하기: development/contributing.md
       - 릴리스 가이드: development/release.md
+      - 지표 레지스트리: development/indicator-registry.md
