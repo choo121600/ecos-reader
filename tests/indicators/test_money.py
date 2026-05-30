@@ -10,7 +10,6 @@ import warnings
 import pytest
 import responses
 
-from ecos.indicators._deprecations import EcosPartialCoverageWarning
 from ecos.indicators.money import (
     get_bank_lending,
     get_borrower_loan,
@@ -600,11 +599,11 @@ class TestGetHouseholdLendingDetail:
             )
 
     @responses.activate
-    def test_no_partial_coverage_warning(self):
-        """재설계 후에는 EcosPartialCoverageWarning을 발생시키지 않는다."""
+    def test_emits_no_warning(self):
+        """재설계 후 어떤 경고도 발생시키지 않는다 (partial-coverage 경고 제거, #64)."""
         self._add_mock()
         with warnings.catch_warnings():
-            warnings.simplefilter("error", EcosPartialCoverageWarning)
+            warnings.simplefilter("error")
             get_household_lending_detail(start_date="202401", end_date="202401")
 
     @responses.activate

@@ -13,7 +13,6 @@ import warnings
 import pytest
 import responses
 
-from ecos.indicators._deprecations import EcosPartialCoverageWarning
 from ecos.indicators.stock import get_investor_trading, get_stock_index
 
 
@@ -104,7 +103,7 @@ class TestGetStockIndex:
             status=200,
         )
         with warnings.catch_warnings():
-            warnings.simplefilter("error", EcosPartialCoverageWarning)
+            warnings.simplefilter("error")  # 재설계 후 경고 없음 (#60/#64)
             df = get_stock_index(frequency="monthly", start_date="202401", end_date="202401")
         assert df["value"].iloc[0] == 2746.63
 
@@ -190,9 +189,9 @@ class TestGetInvestorTrading:
             get_investor_trading(metric="없음")  # type: ignore[arg-type]
 
     @responses.activate
-    def test_no_partial_coverage_warning(self):
-        """재설계 후에는 EcosPartialCoverageWarning을 발생시키지 않는다."""
+    def test_emits_no_warning(self):
+        """재설계 후 어떤 경고도 발생시키지 않는다 (partial-coverage 경고 제거, #64)."""
         self._add_mock()
         with warnings.catch_warnings():
-            warnings.simplefilter("error", EcosPartialCoverageWarning)
+            warnings.simplefilter("error")
             get_investor_trading(start_date="202401", end_date="202401")
