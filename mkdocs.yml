@@ -87,6 +87,11 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/choo121600/ecos-reader
 
+# 자동 생성 데이터 카탈로그(834표 대용량, scripts/audit_codes.py catalog)는
+# 사이트 nav 에서 제외 — mkdocs --strict 빌드 통과용 (#67).
+not_in_nav: |
+  /reference/ecos_code_catalog.md
+
 nav:
   - 홈: index.md
   - 시작하기:
