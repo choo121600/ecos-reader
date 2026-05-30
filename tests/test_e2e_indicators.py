@@ -228,24 +228,43 @@ class TestE2EStockIndicators:
         assert len(df) > 0
 
     def test_get_stock_index_monthly(self):
-        """주가지수 조회 (월별)"""
+        """주가지수 조회 (월별) — KOSPI 종가(지수)여야 함 (#60 정정).
+
+        이전엔 1010000(회사수, ~780)를 반환했으나 이제 KOSPI 지수(~2000+)를 반환한다.
+        """
         df = ecos.get_stock_index(frequency="monthly", start_date="202301", end_date="202312")
 
         assert not df.empty
-        assert "date" in df.columns
-        assert "value" in df.columns
-        assert "unit" in df.columns
+        assert {"date", "value", "unit"} <= set(df.columns)
         assert len(df) > 0
+        # KOSPI 지수는 회사수(~780)와 자릿수가 다름 — 지수 범위(>1000)인지 확인.
+        assert df["value"].dropna().median() > 1000
+
+    def test_get_stock_index_monthly_sub_category(self):
+        """월별 sub_category로 다른 항목(시가총액) 선택 (#60)."""
+        df = ecos.get_stock_index(
+            frequency="monthly",
+            sub_category="KOSPI_시가총액",
+            start_date="202301",
+            end_date="202312",
+        )
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
 
     def test_get_investor_trading(self):
-        """투자자별 주식거래 조회"""
+        """투자자별 주식거래 조회 — 전체 투자자 long-format (#60)."""
         df = ecos.get_investor_trading(start_date="202301", end_date="202312")
 
         assert not df.empty
-        assert "date" in df.columns
-        assert "value" in df.columns
-        assert "unit" in df.columns
-        assert len(df) > 0
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        # 기관/개인/외국인 등 복수 투자자가 포함돼야 함.
+        assert df["category_value"].nunique() >= 3
+
+    def test_get_investor_trading_sub_category(self):
+        """sub_category(item_code)로 단일 투자자 시계열 (#60)."""
+        df = ecos.get_investor_trading(sub_category="S22CC", start_date="202301", end_date="202312")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
 
 
 class TestE2EBondIndicators:

@@ -40,10 +40,17 @@ df = ecos.get_stock_index(
 ```python
 import ecos
 
-# 월별 KOSPI 지수 조회
+# 월별 KOSPI 종가(지수) 조회
 df = ecos.get_stock_index(frequency="monthly")
 print(df.tail())
+
+# 같은 통계표의 다른 항목 선택 (시가총액·거래대금·KOSDAQ 지수 등)
+df = ecos.get_stock_index(frequency="monthly", sub_category="KOSPI_시가총액")
 ```
+
+!!! note "v0.3.0 정정 (#60)"
+    월별 기본값이 `1010000`(KOSPI 회사수, 오류)에서 `1070000`(KOSPI 종가, 지수)로
+    정정되었습니다. 회사수 등 다른 항목이 필요하면 `sub_category`로 선택하세요.
 
 ### 기간 지정 (월별)
 
@@ -64,7 +71,7 @@ df = ecos.get_stock_index(
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | `date` | datetime | 조회일/월 |
-| `value` | float | KOSPI 지수 또는 회사수 |
+| `value` | float | KOSPI 지수 (기본) 또는 선택한 항목 값 |
 | `unit` | str | 단위 |
 
 ### KOSPI 시각화
@@ -98,27 +105,36 @@ print(f"변동성 (표준편차): {df['value'].std():.2f}")
 
 ## 투자자별 주식거래
 
-투자자 유형별 주식 거래 현황을 조회합니다.
+투자자(기관·개인·외국인 등) 유형별 주식 거래를 조회합니다. `action`(매도/매수/순매수)과
+`metric`(거래대금/거래량)을 선택할 수 있습니다.
+
+### 매개변수
+
+- `action`: 거래 행위 — `순매수`(기본값) / `매수` / `매도`
+- `metric`: 측정 지표 — `거래대금`(기본값) / `거래량`
+- `sub_category`: 특정 투자자 선택 (항목명 또는 item_code). 미지정 시 전체 투자자
+  long-format 반환.
 
 ### 기본 사용법
 
 ```python
 import ecos
 
-# 투자자별 거래 조회
+# 투자자별 순매수 거래대금 (long-format: date, category_value, value, unit)
 df = ecos.get_investor_trading()
 print(df.tail())
+
+# 외국인 순매수만 (item_code 사용 — 라벨 변동에 안정적)
+df = ecos.get_investor_trading(sub_category="S22CC")
+
+# 투자자별 매수 거래량
+df = ecos.get_investor_trading(action="매수", metric="거래량")
 ```
 
-### 기간 지정
-
-```python
-# 2024년 데이터
-df = ecos.get_investor_trading(
-    start_date="202401",
-    end_date="202412"
-)
-```
+!!! note "v0.3.0 재설계 (#60)"
+    이전에는 단일 항목(기타법인 매도)만 반환했으나, 이제 투자자별 전체 시리즈를
+    제공합니다. `category_value`는 ECOS 라벨(예: `개인(순매수)`)을 따르며, 안정적
+    선택을 위해 `sub_category`에 item_code(예: `S22CB`)도 사용할 수 있습니다.
 
 !!! info "날짜 형식"
     투자자별 거래는 월간 데이터이므로 `YYYYMM` 형식을 사용합니다.
@@ -128,6 +144,7 @@ df = ecos.get_investor_trading(
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | `date` | datetime | 조회 월 |
+| `category_value` | str | 투자자명 (sub_category 미지정 시) |
 | `value` | float | 거래금액 또는 거래량 |
 | `unit` | str | 단위 |
 
@@ -135,21 +152,12 @@ df = ecos.get_investor_trading(
 
 ```python
 import ecos
-import matplotlib.pyplot as plt
 
-df = ecos.get_investor_trading(start_date="202301")
-
-# 시각화
+# 외국인 순매수 추이 (단일 투자자 선택)
+df = ecos.get_investor_trading(sub_category="S22CC", start_date="202301")
 df.set_index('date')['value'].plot(
-    kind='bar',
-    title='투자자별 주식거래',
-    ylabel='거래금액',
-    figsize=(14, 6),
-    grid=True
+    title='외국인 순매수 거래대금', ylabel='거래대금', figsize=(14, 6), grid=True
 )
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.show()
 ```
 
 ## 채권 수익률

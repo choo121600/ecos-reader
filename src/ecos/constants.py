@@ -186,8 +186,28 @@ ITEM_FISCAL_BALANCE = "A"  # 총수입 (통합재정수지 데이터)
 STAT_STOCK_DAILY = "802Y001"  # 주식시장 (일별)
 STAT_STOCK_MONTHLY = "901Y014"  # 주식시장 (월/연)
 
-# 투자자별 주식거래
+# 주가지수 기본 item_code1 (sub_category 미지정 시 반환할 "지수"). #60 재설계.
+#   일별(802Y001): 0001000 KOSPI지수
+#   월별(901Y014): 1070000 KOSPI_종가 (이전 1010000=회사수는 오류였음)
+ITEM_STOCK_INDEX_DAILY = "0001000"
+ITEM_STOCK_INDEX_MONTHLY = "1070000"
+
+# 투자자별 주식거래 (901Y055) — #60 재설계.
+# 2차원 구조: item_code1 = 행위(매도/매수/순매수) × 투자자, item_code2 = 지표(거래대금/거래량).
+#   item_code1 prefix: S22A 매도 / S22B 매수 / S22C 순매수
+#     (prefix + 투자자코드: A=기관 B=개인 C=외국인 D=기타외국인 F=기타법인,
+#      prefix 정확일치는 전체 합계행이므로 long-format에서 제외)
+#   item_code2: VA 거래대금 / VO 거래량
 STAT_INVESTOR_TRADING = "901Y055"
+INVESTOR_TRADING_ACTION_PREFIX: dict[str, str] = {
+    "매도": "S22A",
+    "매수": "S22B",
+    "순매수": "S22C",
+}
+INVESTOR_TRADING_METRIC_CODE: dict[str, str] = {
+    "거래대금": "VA",
+    "거래량": "VO",
+}
 
 
 # ============================================================================
