@@ -226,7 +226,7 @@ GDP 증가율을 조회합니다.
 
 ```python
 def get_gdp(
-    frequency: str = "Q",
+    frequency: str = "quarterly",
     basis: str = "real",
     start_date: str | None = None,
     end_date: str | None = None
@@ -236,7 +236,7 @@ def get_gdp(
 
 #### 매개변수
 
-- `frequency` (str, optional): 주기 (`Q`: 분기, `A`: 연간) (기본값: `"Q"`)
+- `frequency` (str, optional): 주기 (`quarterly`: 분기, `annual`: 연간) (기본값: `"quarterly"`)
 - `basis` (str, optional): 기준 (`real`: 실질, `nominal`: 명목) (기본값: `"real"`)
 - `start_date` (str, optional): 시작일 (분기: YYYYQN, 연간: YYYY)
 - `end_date` (str, optional): 종료일 (분기: YYYYQN, 연간: YYYY)
@@ -255,14 +255,14 @@ def get_gdp(
 import ecos
 
 # 분기별 실질 GDP
-df = ecos.get_gdp(frequency="Q", basis="real")
+df = ecos.get_gdp(frequency="quarterly", basis="real")
 
 # 연간 명목 GDP
-df = ecos.get_gdp(frequency="A", basis="nominal")
+df = ecos.get_gdp(frequency="annual", basis="nominal")
 
 # 특정 기간
 df = ecos.get_gdp(
-    frequency="Q",
+    frequency="quarterly",
     basis="real",
     start_date="2020Q1",
     end_date="2024Q4"

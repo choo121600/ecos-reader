@@ -121,7 +121,7 @@ df = ecos.get_treasury_yield(
 
 ```python
 df = ecos.get_gdp(
-    frequency="Q",
+    frequency="quarterly",
     start_date="2020Q1",
     end_date="2024Q4"
 )
@@ -133,7 +133,7 @@ df = ecos.get_gdp(
 
 ```python
 df = ecos.get_gdp(
-    frequency="A",
+    frequency="annual",
     start_date="2015",
     end_date="2024"
 )
@@ -271,7 +271,7 @@ import pandas as pd
 # 여러 지표 조회
 base_rate = ecos.get_base_rate(start_date="202001", end_date="202412")
 cpi = ecos.get_cpi(start_date="202001", end_date="202412")
-gdp = ecos.get_gdp(frequency="Q", start_date="2020Q1", end_date="2024Q4")
+gdp = ecos.get_gdp(frequency="quarterly", start_date="2020Q1", end_date="2024Q4")
 
 # 데이터 병합 (날짜 기준)
 merged = pd.merge(

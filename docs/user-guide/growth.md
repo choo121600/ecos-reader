@@ -9,8 +9,8 @@ GDP, GDP 디플레이터 등 경제 성장 관련 지표를 조회하는 방법�
 ### 매개변수
 
 - `frequency`: 조회 빈도
-    - `"Q"` - 분기별 (기본값)
-    - `"A"` - 연간
+    - `"quarterly"` - 분기별 (기본값)
+    - `"annual"` - 연간
 - `basis`: 기준
     - `"real"` - 실질 GDP (기본값)
     - `"nominal"` - 명목 GDP
@@ -21,7 +21,7 @@ GDP, GDP 디플레이터 등 경제 성장 관련 지표를 조회하는 방법�
 import ecos
 
 # 분기별 실질 GDP (전년동기대비)
-df = ecos.get_gdp(frequency="Q", basis="real")
+df = ecos.get_gdp(frequency="quarterly", basis="real")
 print(df.tail())
 ```
 
@@ -30,7 +30,7 @@ print(df.tail())
 ```python
 # 2020년 1분기부터 2024년 4분기까지
 df = ecos.get_gdp(
-    frequency="Q",
+    frequency="quarterly",
     basis="real",
     start_date="2020Q1",
     end_date="2024Q4"
@@ -55,7 +55,7 @@ import ecos
 import matplotlib.pyplot as plt
 
 # 분기별 실질 GDP
-df = ecos.get_gdp(frequency="Q", start_date="2015Q1")
+df = ecos.get_gdp(frequency="quarterly", start_date="2015Q1")
 
 # 그래프
 df.set_index('date')['value'].plot(
@@ -79,7 +79,7 @@ plt.show()
 import ecos
 
 # 연간 실질 GDP
-df = ecos.get_gdp(frequency="A", basis="real")
+df = ecos.get_gdp(frequency="annual", basis="real")
 print(df)
 ```
 
@@ -88,7 +88,7 @@ print(df)
 ```python
 # 2015년부터 2024년까지
 df = ecos.get_gdp(
-    frequency="A",
+    frequency="annual",
     basis="real",
     start_date="2015",
     end_date="2024"
@@ -104,7 +104,7 @@ df = ecos.get_gdp(
 import ecos
 
 # 연간 명목 GDP
-df = ecos.get_gdp(frequency="A", basis="nominal")
+df = ecos.get_gdp(frequency="annual", basis="nominal")
 print(df)
 ```
 
@@ -116,8 +116,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 두 지표 조회
-real = ecos.get_gdp(frequency="A", basis="real", start_date="2010")
-nominal = ecos.get_gdp(frequency="A", basis="nominal", start_date="2010")
+real = ecos.get_gdp(frequency="annual", basis="real", start_date="2010")
+nominal = ecos.get_gdp(frequency="annual", basis="nominal", start_date="2010")
 
 # 데이터 병합
 merged = pd.merge(
@@ -222,7 +222,7 @@ plt.show()
 import ecos
 import numpy as np
 
-df = ecos.get_gdp(frequency="Q", start_date="2010Q1")
+df = ecos.get_gdp(frequency="quarterly", start_date="2010Q1")
 
 # 이동 평균으로 추세 파악
 df['MA4'] = df['value'].rolling(window=4).mean()  # 4분기 이동평균
@@ -246,7 +246,7 @@ for _, row in recent.iterrows():
 import ecos
 import matplotlib.pyplot as plt
 
-df = ecos.get_gdp(frequency="Q", start_date="2015Q1")
+df = ecos.get_gdp(frequency="quarterly", start_date="2015Q1")
 
 # 잠재성장률 설정
 POTENTIAL_GROWTH = 2.0
@@ -300,7 +300,7 @@ plt.show()
 ```python
 import ecos
 
-df = ecos.get_gdp(frequency="Q", start_date="2010Q1")
+df = ecos.get_gdp(frequency="quarterly", start_date="2010Q1")
 
 # 기간별 분석
 periods = [
@@ -330,7 +330,7 @@ for start, end, label in periods:
 ```python
 import ecos
 
-df = ecos.get_gdp(frequency="Q", start_date="2019Q1")
+df = ecos.get_gdp(frequency="quarterly", start_date="2019Q1")
 
 # 코로나 이전/이후 구분
 pre_covid = df[df['date'] < '2020-03-01']['value']
@@ -361,7 +361,7 @@ print(f"\n최대 충격: {min_covid:.2f}% ({min_date.strftime('%Y-Q%q')})")
 import ecos
 
 # 분기별 GDP 성장률
-df = ecos.get_gdp_growth_rate(frequency="Q")
+df = ecos.get_gdp_growth_rate(frequency="quarterly")
 print(df.tail())
 ```
 
@@ -370,7 +370,7 @@ print(df.tail())
 ```python
 # 2020년 1분기부터 2024년 4분기까지
 df = ecos.get_gdp_growth_rate(
-    frequency="Q",
+    frequency="quarterly",
     start_date="2020Q1",
     end_date="2024Q4"
 )
@@ -389,8 +389,8 @@ df = ecos.get_gdp_growth_rate(
     - `True` - 계절조정 계열 (기본값)
     - `False` - 원계열
 - `frequency`: 조회 빈도
-    - `"Q"` - 분기별 (기본값)
-    - `"A"` - 연간
+    - `"quarterly"` - 분기별 (기본값)
+    - `"annual"` - 연간
 
 ### 기본 사용법
 
@@ -401,7 +401,7 @@ import ecos
 df = ecos.get_gdp_by_industry(
     basis="real",
     seasonal_adj=True,
-    frequency="Q"
+    frequency="quarterly"
 )
 print(df.tail())
 
@@ -409,7 +409,7 @@ print(df.tail())
 df = ecos.get_gdp_by_industry(
     basis="nominal",
     seasonal_adj=False,
-    frequency="Q"
+    frequency="quarterly"
 )
 print(df.tail())
 ```
@@ -420,7 +420,7 @@ print(df.tail())
 df = ecos.get_gdp_by_industry(
     basis="real",
     seasonal_adj=True,
-    frequency="Q",
+    frequency="quarterly",
     start_date="2020Q1",
     end_date="2024Q4"
 )
@@ -436,8 +436,8 @@ df = ecos.get_gdp_by_industry(
     - `"real"` - 실질 GDP (기본값)
     - `"nominal"` - 명목 GDP
 - `frequency`: 조회 빈도
-    - `"Q"` - 분기별 (기본값)
-    - `"A"` - 연간
+    - `"quarterly"` - 분기별 (기본값)
+    - `"annual"` - 연간
 
 ### 기본 사용법
 
@@ -445,11 +445,11 @@ df = ecos.get_gdp_by_industry(
 import ecos
 
 # 지출항목별 실질 GDP
-df = ecos.get_gdp_by_expenditure(basis="real", frequency="Q")
+df = ecos.get_gdp_by_expenditure(basis="real", frequency="quarterly")
 print(df.tail())
 
 # 지출항목별 명목 GDP
-df = ecos.get_gdp_by_expenditure(basis="nominal", frequency="Q")
+df = ecos.get_gdp_by_expenditure(basis="nominal", frequency="quarterly")
 print(df.tail())
 ```
 
@@ -458,7 +458,7 @@ print(df.tail())
 ```python
 df = ecos.get_gdp_by_expenditure(
     basis="real",
-    frequency="Q",
+    frequency="quarterly",
     start_date="2020Q1",
     end_date="2024Q4"
 )
@@ -474,7 +474,7 @@ df = ecos.get_gdp_by_expenditure(
 import ecos
 
 # 산업별 GDP 디플레이터
-df = ecos.get_gdp_deflator_by_industry(frequency="Q")
+df = ecos.get_gdp_deflator_by_industry(frequency="quarterly")
 print(df.tail())
 ```
 
@@ -482,7 +482,7 @@ print(df.tail())
 
 ```python
 df = ecos.get_gdp_deflator_by_industry(
-    frequency="Q",
+    frequency="quarterly",
     start_date="2020Q1",
     end_date="2024Q4"
 )

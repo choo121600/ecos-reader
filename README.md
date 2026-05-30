@@ -75,7 +75,7 @@ df = ecos.get_treasury_yield(maturity="10Y")
 print(df)
 
 # GDP 조회
-df = ecos.get_gdp(frequency="Q", basis="real")
+df = ecos.get_gdp(frequency="quarterly", basis="real")
 print(df)
 ```
 
@@ -163,10 +163,10 @@ df = ecos.get_base_rate(start_date="202001", end_date="202312")
 df = ecos.get_treasury_yield(maturity="3Y", start_date="20240101", end_date="20241231")
 
 # 분기 데이터 (YYYYQN 형식)
-df = ecos.get_gdp(frequency="Q", start_date="2020Q1", end_date="2024Q4")
+df = ecos.get_gdp(frequency="quarterly", start_date="2020Q1", end_date="2024Q4")
 
 # 연간 데이터 (YYYY 형식)
-df = ecos.get_gdp(frequency="A", start_date="2015", end_date="2024")
+df = ecos.get_gdp(frequency="annual", start_date="2015", end_date="2024")
 ```
 
 ### 고급 사용 예제
@@ -196,14 +196,14 @@ plt.show()
 import ecos
 
 # 실질 GDP 및 성장률 조회
-gdp = ecos.get_gdp(frequency="Q", basis="real", start_date="2020Q1", end_date="2024Q4")
-growth = ecos.get_gdp_growth_rate(frequency="Q", start_date="2020Q1", end_date="2024Q4")
+gdp = ecos.get_gdp(frequency="quarterly", basis="real", start_date="2020Q1", end_date="2024Q4")
+growth = ecos.get_gdp_growth_rate(frequency="quarterly", start_date="2020Q1", end_date="2024Q4")
 
 # 산업별 기여도 분석
 industry_gdp = ecos.get_gdp_by_industry(
     basis="real",
     seasonal_adj=True,
-    frequency="Q",
+    frequency="quarterly",
     start_date="2023Q1",
     end_date="2023Q4"
 )
