@@ -152,11 +152,13 @@ ITEM_RETAIL_SALES = "*"
 # 심리 지표 (sentiment)
 # ============================================================================
 
-# 기업경기실사지수 (BSI)
+# 기업경기실사지수 (BSI) — 512Y014(기업경기조사, 전망).
+# item_code1 은 업종 선택자(이전 A001/B001/C001 은 존재하지 않던 코드 — #73/#67).
+# 설문항목(업황/매출/생산 등)은 item_code2(BA/BB/…)로 별도 선택한다(2-축 구조).
 STAT_BSI = "512Y014"
-ITEM_BSI_MANUFACTURING = "A001"
-ITEM_BSI_NON_MANUFACTURING = "B001"
-ITEM_BSI_ALL = "C001"
+ITEM_BSI_MANUFACTURING = "C0000"  # 제조업
+ITEM_BSI_NON_MANUFACTURING = "Y9900"  # 비제조업
+ITEM_BSI_ALL = "99988"  # 전산업
 
 # 소비자심리지수 (CSI)
 STAT_CSI = "511Y002"

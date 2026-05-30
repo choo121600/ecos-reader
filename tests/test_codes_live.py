@@ -44,10 +44,7 @@ KNOWN_DEFECTS: set[tuple[str, str, str]] = {
     ("bop", "capital_account", audit.FAIL),
     # 실물: STAT_FACILITY_INVESTMENT(901Y049) 항목 목록 비어있음 — stat_code 오류.
     ("real_economy", "facility_invest", audit.FAIL),
-    # 심리: 512Y014(BSI) 실제 item 은 99988/C0000/X5000 등 — A001/B001/C001 아님.
-    ("sentiment", "bsi_manufacturing", audit.FAIL),
-    ("sentiment", "bsi_non_manufacturing", audit.FAIL),
-    ("sentiment", "bsi_all", audit.FAIL),
+    # sentiment BSI(512Y014 item A001/B001/C001 → C0000/Y9900/99988) 정정 완료 — #73 에서 해소.
 }
 
 
