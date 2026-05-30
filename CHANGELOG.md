@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-05-30
+
+> Epic #3(Extensibility & Long-term Design)의 하위 작업을 정리한 릴리스.
+> 모든 변경이 하위호환이라, `0.3.0`(시그니처 breaking 재설계용 예약)을 침범하지
+> 않도록 patch(0.2.2) 로 릴리스합니다.
+
+### Added
+- `frequency` 어휘를 풀네임으로 통일: `daily` / `monthly` / `quarterly` / `annual`.
+  카테고리마다 달랐던 표기(`growth` 의 `Q`/`A`, `interest_rate` 의 `D`/`M`,
+  `stock` 의 `daily`/`monthly`)를 정식 어휘로 일원화. PR #51 (#20).
+- `EcosDeprecationWarning` 공개 export (`from ecos import EcosDeprecationWarning`).
+  레거시 입력값 사용 시 발생하며, 기본 경고 필터에서도 보이도록 `UserWarning` 기반.
+- `mkdocstrings` 도입으로 indicator/클라이언트/예외 API 문서를 docstring 기반
+  자동 생성. PR #53 (#18).
+
+### Deprecated
+- 레거시 단일 문자 `frequency`(`"D"`/`"M"`/`"Q"`/`"A"`). 당분간 동작하되
+  `EcosDeprecationWarning` 을 발생시키며 **v0.4.0** 에서 제거 예정. 정식 어휘로
+  마이그레이션하세요(문서: 사용자 가이드 > frequency 마이그레이션). PR #51 (#20).
+
+### Changed
+- `mypy strict` 모드 적용 — `py.typed` 광고와 실제 타입 안전성을 일치. CI 의
+  `mypy src/ecos` 가 strict 를 강제. PR #52 (#17).
+- `mkdocs build --strict` 적용 — 깨진 링크/누락 페이지를 빌드 실패로 검출,
+  PR 에서도 docs 빌드 검증. PR #53 (#18).
+
+### Internal
+- 보안/유지보수 자동화: `dependabot`(pip·github-actions), `CodeQL`(Python),
+  `pip-audit`(주간), `CODEOWNERS` 추가. `ruff` 규칙에 `S`(bandit)/`RUF`/`PT`/
+  `TC`/`N` 추가. PR #50 (#19).
+
 ## [0.2.1] - 2026-05-29
 
 > 0.3.0 은 시그니처 breaking 재설계(epic #3)를 위해 예약돼 있어, 본 하위호환
