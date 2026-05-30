@@ -160,7 +160,9 @@ def get_cpi_monthly(
     sub_category : str, optional
         세부 품목/분류(항목명 또는 item_code1). 지정 시 해당 품목 단일 시계열만
         반환합니다. 미지정 시 전체 품목을 long-format으로 반환합니다.
-        예) '총지수', '식료품 및 비주류음료', '쌀', 또는 item_code 'A01101'
+        예) '총지수', '식료품 및 비주류음료', '쌀', 또는 item_code 'A01101'.
+        품목명은 분류축 내에서 중복될 수 있으므로 유일 선택이 필요하면
+        item_code1(예: 'A01101')을 사용하세요.
     start_date : str, optional
         조회 시작일 (YYYYMM 형식), 기본값: 2년 전
     end_date : str, optional
@@ -186,6 +188,8 @@ def get_cpi_monthly(
       COICOP 대분류(A=식료품 등), 중·소분류, 개별 품목(쌀 등)이 모두 포함됩니다.
       특정 시계열이 필요하면 ``sub_category`` 로 선택하세요(축 간 단순 합산 금지).
     - 특수분류(상품/서비스/근원 등) 선택은 ``get_cpi_by_category`` 를 사용하세요.
+    - ``ecos.get_indicator("cpi_monthly")`` 레지스트리 경로는 총지수 단일 시계열만
+      반환합니다(저수준 접근). 이 함수는 전체 품목 분류를 제공합니다.
 
     Examples
     --------
