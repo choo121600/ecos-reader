@@ -391,26 +391,30 @@ df = ecos.get_gdp_growth_rate(
 - `frequency`: 조회 빈도
     - `"quarterly"` - 분기별 (기본값)
     - `"annual"` - 연간
+- `sub_category`: 세부 산업 선택 (선택)
+    - 미지정 - 전체 산업을 long-format(`date, category_value, value, unit`)으로 반환
+    - 산업명 또는 `item_code1` 지정 - 해당 산업 단일 시계열만 반환
+
+!!! note "v0.3.0 재설계 (#59)"
+    이전에는 단일 항목(농림어업)만 반환하며 `EcosPartialCoverageWarning`을 냈으나,
+    이제 전체 산업 시리즈를 제공합니다. 기존처럼 단일 시계열이 필요하면
+    `sub_category`를 지정하세요.
 
 ### 기본 사용법
 
 ```python
 import ecos
 
-# 산업별 실질 GDP (계절조정, 분기)
-df = ecos.get_gdp_by_industry(
-    basis="real",
-    seasonal_adj=True,
-    frequency="quarterly"
-)
+# 전체 산업 long-format (sub_category 미지정)
+df = ecos.get_gdp_by_industry(basis="real", seasonal_adj=True, frequency="quarterly")
+print(df.head())  # date, category_value(산업명), value, unit
+
+# 제조업 단일 시계열
+df = ecos.get_gdp_by_industry(sub_category="제조업")
 print(df.tail())
 
-# 산업별 명목 GDP (원계열, 분기)
-df = ecos.get_gdp_by_industry(
-    basis="nominal",
-    seasonal_adj=False,
-    frequency="quarterly"
-)
+# 산업별 명목 GDP (원계열, 분기) — 전체 시리즈
+df = ecos.get_gdp_by_industry(basis="nominal", seasonal_adj=False, frequency="quarterly")
 print(df.tail())
 ```
 
@@ -438,17 +442,24 @@ df = ecos.get_gdp_by_industry(
 - `frequency`: 조회 빈도
     - `"quarterly"` - 분기별 (기본값)
     - `"annual"` - 연간
+- `sub_category`: 세부 지출항목 선택 (선택)
+    - 미지정 - 전체 지출항목을 long-format(`date, category_value, value, unit`)으로 반환
+    - 항목명 또는 `item_code1` 지정 - 해당 항목 단일 시계열만 반환
 
 ### 기본 사용법
 
 ```python
 import ecos
 
-# 지출항목별 실질 GDP
+# 전체 지출항목 long-format
 df = ecos.get_gdp_by_expenditure(basis="real", frequency="quarterly")
+print(df.head())  # date, category_value(항목명), value, unit
+
+# 민간소비지출 단일 시계열
+df = ecos.get_gdp_by_expenditure(sub_category="민간소비지출")
 print(df.tail())
 
-# 지출항목별 명목 GDP
+# 지출항목별 명목 GDP — 전체 시리즈
 df = ecos.get_gdp_by_expenditure(basis="nominal", frequency="quarterly")
 print(df.tail())
 ```
@@ -468,13 +479,26 @@ df = ecos.get_gdp_by_expenditure(
 
 산업별 GDP 디플레이터를 조회합니다.
 
+### 매개변수
+
+- `frequency`: 조회 빈도
+    - `"quarterly"` - 분기별 (기본값)
+    - `"annual"` - 연간
+- `sub_category`: 세부 산업 선택 (선택)
+    - 미지정 - 전체 산업을 long-format(`date, category_value, value, unit`)으로 반환
+    - 산업명 또는 `item_code1` 지정 - 해당 산업 단일 시계열만 반환
+
 ### 기본 사용법
 
 ```python
 import ecos
 
-# 산업별 GDP 디플레이터
+# 전체 산업 GDP 디플레이터 long-format
 df = ecos.get_gdp_deflator_by_industry(frequency="quarterly")
+print(df.head())  # date, category_value(산업명), value, unit
+
+# 제조업 단일 시계열
+df = ecos.get_gdp_deflator_by_industry(sub_category="제조업")
 print(df.tail())
 ```
 

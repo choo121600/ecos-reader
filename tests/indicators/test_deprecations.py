@@ -32,9 +32,9 @@ def _empty_mock():
 
 # (func_name, callable that invokes the indicator with valid default args)
 _PARTIAL_COVERAGE_CASES = [
-    ("get_gdp_by_industry", lambda: ecos.get_gdp_by_industry()),
-    ("get_gdp_by_expenditure", lambda: ecos.get_gdp_by_expenditure()),
-    ("get_gdp_deflator_by_industry", lambda: ecos.get_gdp_deflator_by_industry()),
+    # get_gdp_by_industry / by_expenditure / deflator_by_industry는 v0.3.0(#59)에서
+    # 전체 시리즈 long-format + sub_category 선택으로 재설계되어 더 이상 partial-coverage
+    # 경고를 내지 않으므로 제외.
     (
         "get_stock_index",
         lambda: ecos.get_stock_index(frequency="monthly"),
