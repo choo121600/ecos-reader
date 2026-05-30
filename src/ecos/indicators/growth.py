@@ -372,7 +372,9 @@ def get_gdp_by_industry(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    # item_code1 미지정 → 전체 산업 수신 후 select_subcategory로 분류(#58 규약).
+    # 이 통계표는 분류축이 item_code1 하나뿐이라 prefix="" 로 전체 항목을 분류한다
+    # (money.py의 다축 prefix 필터와 달리 단일 축이므로 필터 없이 전량 long-format화, #58 규약).
+    # 주의: 통계표에 총계/소계 행이 있으면 long-format에 함께 포함된다 → 라이브 e2e 검증 필요.
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
@@ -482,7 +484,9 @@ def get_gdp_by_expenditure(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    # item_code1 미지정 → 전체 지출항목 수신 후 select_subcategory로 분류(#58 규약).
+    # 이 통계표는 분류축이 item_code1 하나뿐이라 prefix="" 로 전체 항목을 분류한다
+    # (money.py의 다축 prefix 필터와 달리 단일 축이므로 필터 없이 전량 long-format화, #58 규약).
+    # 주의: 통계표에 총계/소계 행이 있으면 long-format에 함께 포함된다 → 라이브 e2e 검증 필요.
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
@@ -574,7 +578,9 @@ def get_gdp_deflator_by_industry(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    # item_code1 미지정 → 전체 산업 수신 후 select_subcategory로 분류(#58 규약).
+    # 이 통계표는 분류축이 item_code1 하나뿐이라 prefix="" 로 전체 항목을 분류한다
+    # (money.py의 다축 prefix 필터와 달리 단일 축이므로 필터 없이 전량 long-format화, #58 규약).
+    # 주의: 통계표에 총계/소계 행이 있으면 long-format에 함께 포함된다 → 라이브 e2e 검증 필요.
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_GDP_DEFLATOR_BY_INDUSTRY,
