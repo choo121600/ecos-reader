@@ -1,0 +1,7444 @@
+
+<!doctype html>
+<html lang="ko" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="한국은행 ECOS Open API Python 클라이언트">
+      
+      
+        <meta name="author" content="yeonguk">
+      
+      
+        <link rel="canonical" href="https://github.com/choo121600/ecos-reader/reference/ecos_code_catalog/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>ECOS 전체 통계표 카탈로그 - ecos-reader</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ecos" class="md-skip">
+          콘텐츠로 이동
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="상단/헤더">
+    <a href="../.." title="ecos-reader" class="md-header__button md-logo" aria-label="ecos-reader" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ecos-reader
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ECOS 전체 통계표 카탈로그
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="다크 모드로 전환"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="다크 모드로 전환" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="라이트 모드로 전환"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="라이트 모드로 전환" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="검색" placeholder="검색" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="검색">
+        
+        <button type="reset" class="md-search__icon md-icon" title="지우기" aria-label="지우기" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            검색 초기화
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/choo121600/ecos-reader" title="저장소로 이동" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    choo121600/ecos-reader
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="탭" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  홈
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installation/" class="md-tabs__link">
+          
+  
+  
+  시작하기
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user-guide/basic-usage/" class="md-tabs__link">
+          
+  
+  
+  사용자 가이드
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api-reference/overview/" class="md-tabs__link">
+          
+  
+  
+  API 레퍼런스
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../examples/basic/" class="md-tabs__link">
+          
+  
+  
+  예제
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../development/contributing/" class="md-tabs__link">
+          
+  
+  
+  개발
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="네비게이션" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ecos-reader" class="md-nav__button md-logo" aria-label="ecos-reader" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ecos-reader
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/choo121600/ecos-reader" title="저장소로 이동" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    choo121600/ecos-reader
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    홈
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    시작하기
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    시작하기
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    설치
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    빠른 시작
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    사용자 가이드
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    사용자 가이드
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/basic-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    기본 사용법
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/interest-rates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    금리 지표
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/prices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    물가 지표
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/growth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    성장 지표
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/money/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    통화 지표
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/fiscal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    재정 지표
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/financial-markets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    금융시장 지표
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    고급 기능
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/migration-frequency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    frequency 마이그레이션
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API 레퍼런스
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API 레퍼런스
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    개요
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    클라이언트
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/indicators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    지표 함수
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/exceptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    예외 처리
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/statistic-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    통계 검색
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/statistic-item-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    통계 항목 목록
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/statistic-meta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    통계 메타
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/statistic-table-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    통계표 목록
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/statistic-top-100/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    통계 Top 100
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/statistic-word/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    통계 용어
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    예제
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    예제
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    기본 사용법
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    거시경제 대시보드
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    개발
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    개발
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    기여하기
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    릴리스 가이드
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/indicator-registry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    지표 레지스트리
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/partial-coverage-redesign/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Partial-coverage 재설계 규약
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ecos">ECOS 전체 통계표 카탈로그<a class="headerlink" href="#ecos" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><code>scripts/audit_codes.py catalog</code> 자동 생성 — 수기 편집 금지.
+StatisticTableList 전체 834개 통계표.</p>
+<p>검색가능(SRCH_YN=Y, 실제 데이터 조회 대상) 609개.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>통계표코드</th>
+<th>통계명</th>
+<th>주기</th>
+<th>검색가능</th>
+<th>상위코드</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000000001</td>
+<td>1. 통화/금융</td>
+<td>-</td>
+<td>N</td>
+<td>*</td>
+</tr>
+<tr>
+<td>0000000620</td>
+<td>1.1. 통화/유동성(신지표)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000001</td>
+</tr>
+<tr>
+<td>0000000621</td>
+<td>1.1.1. 본원통화</td>
+<td>-</td>
+<td>N</td>
+<td>0000000620</td>
+</tr>
+<tr>
+<td>0000000622</td>
+<td>1.1.1.1. 본원통화 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000621</td>
+</tr>
+<tr>
+<td>102Y004</td>
+<td>1.1.1.1.1. 본원통화 구성내역(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000622</td>
+</tr>
+<tr>
+<td>102Y002</td>
+<td>1.1.1.1.2. 본원통화 구성내역(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000622</td>
+</tr>
+<tr>
+<td>102Y003</td>
+<td>1.1.1.1.3. 본원통화 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000622</td>
+</tr>
+<tr>
+<td>102Y001</td>
+<td>1.1.1.1.4. 본원통화 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000622</td>
+</tr>
+<tr>
+<td>0000000623</td>
+<td>1.1.2. M1(협의통화)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000620</td>
+</tr>
+<tr>
+<td>0000000624</td>
+<td>1.1.2.1. M1(협의통화) 상품별 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000623</td>
+</tr>
+<tr>
+<td>161Y001</td>
+<td>1.1.2.1.1. M1 상품별 구성내역(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000624</td>
+</tr>
+<tr>
+<td>161Y002</td>
+<td>1.1.2.1.2. M1 상품별 구성내역(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000624</td>
+</tr>
+<tr>
+<td>161Y003</td>
+<td>1.1.2.1.3. M1 상품별 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000624</td>
+</tr>
+<tr>
+<td>161Y004</td>
+<td>1.1.2.1.4. M1 상품별 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000624</td>
+</tr>
+<tr>
+<td>0000000625</td>
+<td>1.1.3. M2(광의통화)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000620</td>
+</tr>
+<tr>
+<td>0000000626</td>
+<td>1.1.3.1. M2(광의통화) 상품별 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000625</td>
+</tr>
+<tr>
+<td>161Y005</td>
+<td>1.1.3.1.1. M2 상품별 구성내역(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000626</td>
+</tr>
+<tr>
+<td>161Y006</td>
+<td>1.1.3.1.2. M2 상품별 구성내역(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000626</td>
+</tr>
+<tr>
+<td>161Y007</td>
+<td>1.1.3.1.3. M2 상품별 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000626</td>
+</tr>
+<tr>
+<td>161Y008</td>
+<td>1.1.3.1.4. M2 상품별 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000626</td>
+</tr>
+<tr>
+<td>0000000627</td>
+<td>1.1.3.2. M2(광의통화) 경제주체별 보유현황</td>
+<td>-</td>
+<td>N</td>
+<td>0000000625</td>
+</tr>
+<tr>
+<td>161Y009</td>
+<td>1.1.3.2.1. M2 경제주체별 보유현황(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000627</td>
+</tr>
+<tr>
+<td>161Y010</td>
+<td>1.1.3.2.2. M2 경제주체별 보유현황(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000627</td>
+</tr>
+<tr>
+<td>161Y011</td>
+<td>1.1.3.2.3. M2 경제주체별 보유현황(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000627</td>
+</tr>
+<tr>
+<td>161Y012</td>
+<td>1.1.3.2.4. M2 경제주체별 보유현황(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000627</td>
+</tr>
+<tr>
+<td>0000000628</td>
+<td>1.1.3.3. M2 기관별 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000625</td>
+</tr>
+<tr>
+<td>161Y013</td>
+<td>1.1.3.3.1. M2 기관별 구성내역(평잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000628</td>
+</tr>
+<tr>
+<td>161Y014</td>
+<td>1.1.3.3.2. M2 기관별 구성내역(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000628</td>
+</tr>
+<tr>
+<td>0000000629</td>
+<td>1.1.4. Lf(금융기관 유동성)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000620</td>
+</tr>
+<tr>
+<td>0000000630</td>
+<td>1.1.4.1. Lf(금융기관 유동성) 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000629</td>
+</tr>
+<tr>
+<td>171Y003</td>
+<td>1.1.4.1.1. Lf 구성내역(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000630</td>
+</tr>
+<tr>
+<td>171Y004</td>
+<td>1.1.4.1.2. Lf 구성내역(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000630</td>
+</tr>
+<tr>
+<td>171Y001</td>
+<td>1.1.4.1.3. Lf 상품별 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000630</td>
+</tr>
+<tr>
+<td>171Y002</td>
+<td>1.1.4.1.4. Lf 상품별 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000630</td>
+</tr>
+<tr>
+<td>0000000631</td>
+<td>1.1.5. L(광의유동성)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000620</td>
+</tr>
+<tr>
+<td>172Y001</td>
+<td>1.1.5.1. L(광의유동성) 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000631</td>
+</tr>
+<tr>
+<td>172Y002</td>
+<td>1.1.5.2. L(광의유동성) 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000631</td>
+</tr>
+<tr>
+<td>0000000632</td>
+<td>1.1.6. 예금취급기관 개관표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000620</td>
+</tr>
+<tr>
+<td>161Y015</td>
+<td>1.1.6.1. 예금취급기관 개관표(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000632</td>
+</tr>
+<tr>
+<td>161Y016</td>
+<td>1.1.6.2. 중앙은행 개관표(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000632</td>
+</tr>
+<tr>
+<td>161Y017</td>
+<td>1.1.6.3. 기타예금취급기관 개관표(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000632</td>
+</tr>
+<tr>
+<td>0000000020</td>
+<td>1.2. 금융기관 여수신</td>
+<td>-</td>
+<td>N</td>
+<td>0000000001</td>
+</tr>
+<tr>
+<td>0000000021</td>
+<td>1.2.1. 수신</td>
+<td>-</td>
+<td>N</td>
+<td>0000000020</td>
+</tr>
+<tr>
+<td>0000000022</td>
+<td>1.2.1.1. 예금은행 수신</td>
+<td>-</td>
+<td>N</td>
+<td>0000000021</td>
+</tr>
+<tr>
+<td>104Y014</td>
+<td>1.2.1.1.1. 예금은행 총수신(평잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000022</td>
+</tr>
+<tr>
+<td>104Y013</td>
+<td>1.2.1.1.2. 예금은행 총수신(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000022</td>
+</tr>
+<tr>
+<td>104Y008</td>
+<td>1.2.1.1.3. 예금은행 원화예금(종별, 평잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000022</td>
+</tr>
+<tr>
+<td>104Y015</td>
+<td>1.2.1.1.4. 예금은행 원화예금(종별, 말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000022</td>
+</tr>
+<tr>
+<td>104Y009</td>
+<td>1.2.1.1.5. 예금은행 원화예금(예금주별,말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000022</td>
+</tr>
+<tr>
+<td>104Y010</td>
+<td>1.2.1.1.6. 예금은행 정기예금(기간별, 말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000022</td>
+</tr>
+<tr>
+<td>0000000023</td>
+<td>1.2.1.2. 비은행금융기관 수신</td>
+<td>-</td>
+<td>N</td>
+<td>0000000021</td>
+</tr>
+<tr>
+<td>111Y008</td>
+<td>1.2.1.2.1. 비은행금융기관 수신(평잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000023</td>
+</tr>
+<tr>
+<td>111Y007</td>
+<td>1.2.1.2.2. 비은행금융기관 수신(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000023</td>
+</tr>
+<tr>
+<td>0000000024</td>
+<td>1.2.2. 여신</td>
+<td>-</td>
+<td>N</td>
+<td>0000000020</td>
+</tr>
+<tr>
+<td>104Y016</td>
+<td>1.2.2.1. 예금은행 대출금(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000024</td>
+</tr>
+<tr>
+<td>111Y009</td>
+<td>1.2.2.2. 비은행금융기관 여신(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000024</td>
+</tr>
+<tr>
+<td>0000000027</td>
+<td>1.2.3. 지역별 여수신</td>
+<td>-</td>
+<td>N</td>
+<td>0000000020</td>
+</tr>
+<tr>
+<td>141Y002</td>
+<td>1.2.3.1. 예금은행 지역별 수신(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000027</td>
+</tr>
+<tr>
+<td>141Y006</td>
+<td>1.2.3.2. 비은행금융기관 지역별 수신(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000027</td>
+</tr>
+<tr>
+<td>141Y008</td>
+<td>1.2.3.3. 생명보험회사 지역별 수신(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000027</td>
+</tr>
+<tr>
+<td>0000000031</td>
+<td>1.2.3.4. 예금은행 지역별 대출금(말잔)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000027</td>
+</tr>
+<tr>
+<td>141Y003</td>
+<td>1.2.3.4.1. 예금은행 지역별 대출금(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000031</td>
+</tr>
+<tr>
+<td>151Y003</td>
+<td>1.2.3.4.2. 예금은행 지역별 가계대출(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000031</td>
+</tr>
+<tr>
+<td>141Y004</td>
+<td>1.2.3.4.3. 예금은행 지역별 기업대출(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000031</td>
+</tr>
+<tr>
+<td>0000000032</td>
+<td>1.2.3.5. 비은행금융기관 지역별 여신(말잔)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000027</td>
+</tr>
+<tr>
+<td>141Y007</td>
+<td>1.2.3.5.1. 비은행금융기관 지역별 여신(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000032</td>
+</tr>
+<tr>
+<td>151Y006</td>
+<td>1.2.3.5.2. 비은행금융기관 지역별 가계대출(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000032</td>
+</tr>
+<tr>
+<td>141Y010</td>
+<td>1.2.3.5.3. 비은행금융기관 지역별 기업대출(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000032</td>
+</tr>
+<tr>
+<td>141Y009</td>
+<td>1.2.3.6. 생명보험회사 지역별 여신(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000027</td>
+</tr>
+<tr>
+<td>141Y005</td>
+<td>1.2.3.7. 예금은행 지역별 연체율</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000027</td>
+</tr>
+<tr>
+<td>0000000035</td>
+<td>1.2.4. 가계신용</td>
+<td>-</td>
+<td>N</td>
+<td>0000000020</td>
+</tr>
+<tr>
+<td>0000000036</td>
+<td>1.2.4.1. 가계신용(분기)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000035</td>
+</tr>
+<tr>
+<td>151Y001</td>
+<td>1.2.4.1.1. 가계신용(업권별, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000036</td>
+</tr>
+<tr>
+<td>151Y004</td>
+<td>1.2.4.1.2. 가계신용(용도별, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000036</td>
+</tr>
+<tr>
+<td>0000000037</td>
+<td>1.2.4.2. 예금취급기관 가계대출(월)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000035</td>
+</tr>
+<tr>
+<td>151Y002</td>
+<td>1.2.4.2.1. 예금취급기관 가계대출(업권별, 월)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000037</td>
+</tr>
+<tr>
+<td>151Y005</td>
+<td>1.2.4.2.2. 예금취급기관 가계대출(용도별, 월)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000037</td>
+</tr>
+<tr>
+<td>0000000038</td>
+<td>1.2.5. 산업별대출금</td>
+<td>-</td>
+<td>N</td>
+<td>0000000020</td>
+</tr>
+<tr>
+<td>0000000039</td>
+<td>1.2.5.1. 예금취급기관 산업별대출금</td>
+<td>-</td>
+<td>N</td>
+<td>0000000038</td>
+</tr>
+<tr>
+<td>131Y016</td>
+<td>1.2.5.1.1. 산업별대출금(예금취급기관, 전산업)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000039</td>
+</tr>
+<tr>
+<td>131Y017</td>
+<td>1.2.5.1.2. 산업별대출금(예금취급기관, 용도별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000039</td>
+</tr>
+<tr>
+<td>0000000040</td>
+<td>1.2.5.2. 예금은행 산업별대출금</td>
+<td>-</td>
+<td>N</td>
+<td>0000000038</td>
+</tr>
+<tr>
+<td>131Y013</td>
+<td>1.2.5.2.1. 산업별대출금(예금은행, 전산업)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000040</td>
+</tr>
+<tr>
+<td>131Y011</td>
+<td>1.2.5.2.2. 산업별대출금(예금은행, 용도별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000040</td>
+</tr>
+<tr>
+<td>131Y010</td>
+<td>1.2.5.2.3. 산업별대출금(예금은행, 기업형태별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000040</td>
+</tr>
+<tr>
+<td>131Y018</td>
+<td>1.2.5.2.4. 산업별대출금(예금은행, 기업규모별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000040</td>
+</tr>
+<tr>
+<td>132Y001</td>
+<td>1.2.5.2.5. 산업별대출금(예금은행, 지역별, 전산업)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000040</td>
+</tr>
+<tr>
+<td>132Y003</td>
+<td>1.2.5.2.6. 산업별대출금(예금은행, 지역별, 용도별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000040</td>
+</tr>
+<tr>
+<td>0000000041</td>
+<td>1.2.5.3. 비은행예금취급기관 산업별대출금</td>
+<td>-</td>
+<td>N</td>
+<td>0000000038</td>
+</tr>
+<tr>
+<td>131Y014</td>
+<td>1.2.5.3.1. 산업별대출금(비은행예금취급기관, 전산업)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000041</td>
+</tr>
+<tr>
+<td>131Y015</td>
+<td>1.2.5.3.2. 산업별대출금(비은행예금취급기관, 용도별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000041</td>
+</tr>
+<tr>
+<td>0000000042</td>
+<td>1.2.6. 기타 여수신 관련 통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000020</td>
+</tr>
+<tr>
+<td>104Y017</td>
+<td>1.2.6.1. 예금은행 예금회전율</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000042</td>
+</tr>
+<tr>
+<td>901Y123</td>
+<td>1.2.6.2. 금융기관 점포/인원 현황</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000042</td>
+</tr>
+<tr>
+<td>0000000043</td>
+<td>1.2.6.3. 은행대출금 연체율</td>
+<td>-</td>
+<td>N</td>
+<td>0000000042</td>
+</tr>
+<tr>
+<td>901Y054</td>
+<td>1.2.6.3.1. 은행대출금 연체율(1일 이상)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000043</td>
+</tr>
+<tr>
+<td>901Y124</td>
+<td>1.2.6.3.2. 은행대출금 연체율(1개월 이상)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000043</td>
+</tr>
+<tr>
+<td>901Y059</td>
+<td>1.2.6.4. 보험계약실적</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000042</td>
+</tr>
+<tr>
+<td>105Y001</td>
+<td>1.2.6.5. 예금규모별 계좌수 및 금액</td>
+<td>S</td>
+<td>Y</td>
+<td>0000000042</td>
+</tr>
+<tr>
+<td>0000000048</td>
+<td>1.3. 금리</td>
+<td>-</td>
+<td>N</td>
+<td>0000000001</td>
+</tr>
+<tr>
+<td>722Y001</td>
+<td>1.3.1. 한국은행 기준금리 및 여수신금리</td>
+<td>D</td>
+<td>Y</td>
+<td>0000000048</td>
+</tr>
+<tr>
+<td>0000000050</td>
+<td>1.3.2. 시장금리</td>
+<td>-</td>
+<td>N</td>
+<td>0000000048</td>
+</tr>
+<tr>
+<td>817Y002</td>
+<td>1.3.2.1. 시장금리(일별)</td>
+<td>D</td>
+<td>Y</td>
+<td>0000000050</td>
+</tr>
+<tr>
+<td>721Y001</td>
+<td>1.3.2.2. 시장금리(월,분기,년)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000050</td>
+</tr>
+<tr>
+<td>0000000053</td>
+<td>1.3.3. 예금은행 가중평균금리</td>
+<td>-</td>
+<td>N</td>
+<td>0000000048</td>
+</tr>
+<tr>
+<td>0000000054</td>
+<td>1.3.3.1. 수신금리</td>
+<td>-</td>
+<td>N</td>
+<td>0000000053</td>
+</tr>
+<tr>
+<td>121Y002</td>
+<td>1.3.3.1.1. 예금은행 수신금리(신규취급액 기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000054</td>
+</tr>
+<tr>
+<td>121Y013</td>
+<td>1.3.3.1.2. 예금은행 수신금리(잔액 기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000054</td>
+</tr>
+<tr>
+<td>0000000055</td>
+<td>1.3.3.2. 대출금리</td>
+<td>-</td>
+<td>N</td>
+<td>0000000053</td>
+</tr>
+<tr>
+<td>121Y006</td>
+<td>1.3.3.2.1. 예금은행 대출금리(신규취급액 기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000055</td>
+</tr>
+<tr>
+<td>121Y015</td>
+<td>1.3.3.2.2. 예금은행 대출금리(잔액 기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000055</td>
+</tr>
+<tr>
+<td>121Y008</td>
+<td>1.3.3.3. 예금은행 금리수준별 여수신 비중(신규취급액 기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000053</td>
+</tr>
+<tr>
+<td>0000000057</td>
+<td>1.3.3.4. 예금은행 고정 및 변동금리대출 비중</td>
+<td>-</td>
+<td>N</td>
+<td>0000000053</td>
+</tr>
+<tr>
+<td>121Y010</td>
+<td>1.3.3.4.1. 예금은행 고정 및 변동금리대출 비중(신규취급액 기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000057</td>
+</tr>
+<tr>
+<td>121Y011</td>
+<td>1.3.3.4.2. 예금은행 고정 및 변동금리대출 비중(잔액 기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000057</td>
+</tr>
+<tr>
+<td>0000000058</td>
+<td>1.3.4. 비은행금융기관 가중평균금리</td>
+<td>-</td>
+<td>N</td>
+<td>0000000048</td>
+</tr>
+<tr>
+<td>121Y004</td>
+<td>1.3.4.1. 비은행금융기관 수신금리(신규취급액 기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000058</td>
+</tr>
+<tr>
+<td>121Y007</td>
+<td>1.3.4.2. 비은행금융기관 대출금리(신규취급액 기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000058</td>
+</tr>
+<tr>
+<td>0000000061</td>
+<td>1.4. 한국은행 주요계정</td>
+<td>-</td>
+<td>N</td>
+<td>0000000001</td>
+</tr>
+<tr>
+<td>103Y002</td>
+<td>1.4.1. 한국은행 주요계정(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000061</td>
+</tr>
+<tr>
+<td>871Y001</td>
+<td>1.4.2. 화폐발행잔액</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000061</td>
+</tr>
+<tr>
+<td>0000000064</td>
+<td>1.4.3. 예금은행 지급준비액</td>
+<td>-</td>
+<td>N</td>
+<td>0000000061</td>
+</tr>
+<tr>
+<td>814Y001</td>
+<td>1.4.3.1. 예금은행 지급준비액(신기준, 평잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000064</td>
+</tr>
+<tr>
+<td>814Y002</td>
+<td>1.4.3.2. 예금은행 지급준비액(구기준, 평잔)</td>
+<td>SM</td>
+<td>Y</td>
+<td>0000000064</td>
+</tr>
+<tr>
+<td>641Y001</td>
+<td>1.4.4. 한국은행 원화대출금</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000061</td>
+</tr>
+<tr>
+<td>0000000397</td>
+<td>1.5. 주식/채권/재정</td>
+<td>-</td>
+<td>N</td>
+<td>0000000001</td>
+</tr>
+<tr>
+<td>0000000398</td>
+<td>1.5.1. 주식거래/주가지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000397</td>
+</tr>
+<tr>
+<td>802Y001</td>
+<td>1.5.1.1. 주식시장(일)</td>
+<td>D</td>
+<td>Y</td>
+<td>0000000398</td>
+</tr>
+<tr>
+<td>901Y014</td>
+<td>1.5.1.2. 주식시장(월,년)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000398</td>
+</tr>
+<tr>
+<td>901Y055</td>
+<td>1.5.1.3. 투자자별 주식거래</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000398</td>
+</tr>
+<tr>
+<td>901Y056</td>
+<td>1.5.1.4. 증시주변자금동향</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000398</td>
+</tr>
+<tr>
+<td>901Y057</td>
+<td>1.5.1.5. 주가지수선물거래</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000398</td>
+</tr>
+<tr>
+<td>901Y058</td>
+<td>1.5.1.6. 주가지수옵션거래</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000398</td>
+</tr>
+<tr>
+<td>0000000957</td>
+<td>1.5.2. 채권거래</td>
+<td>-</td>
+<td>N</td>
+<td>0000000397</td>
+</tr>
+<tr>
+<td>901Y015</td>
+<td>1.5.2.1. 채권종류별 거래</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000957</td>
+</tr>
+<tr>
+<td>901Y120</td>
+<td>1.5.2.2. 채권시장별 거래</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000957</td>
+</tr>
+<tr>
+<td>191Y001</td>
+<td>1.5.3. 주요 국공채 발행액/잔액</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000397</td>
+</tr>
+<tr>
+<td>0000000399</td>
+<td>1.5.4. 재정</td>
+<td>-</td>
+<td>N</td>
+<td>0000000397</td>
+</tr>
+<tr>
+<td>901Y013</td>
+<td>1.5.4.1. 통합재정수지</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000399</td>
+</tr>
+<tr>
+<td>901Y081</td>
+<td>1.5.4.2. 조세징수액</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000399</td>
+</tr>
+<tr>
+<td>0000001000</td>
+<td>1.6. 차주별 가계부채</td>
+<td>-</td>
+<td>N</td>
+<td>0000000001</td>
+</tr>
+<tr>
+<td>0000001001</td>
+<td>1.6.1. 차주당 금액 기준</td>
+<td>-</td>
+<td>N</td>
+<td>0000001000</td>
+</tr>
+<tr>
+<td>0000001003</td>
+<td>1.6.1.1. 신규취급액</td>
+<td>-</td>
+<td>N</td>
+<td>0000001001</td>
+</tr>
+<tr>
+<td>181Y001</td>
+<td>1.6.1.1.1. 차주당 가계대출 신규취급액</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001003</td>
+</tr>
+<tr>
+<td>0000001007</td>
+<td>1.6.1.1.2. 차주당 가계대출 신규취급액 (교차항목)</td>
+<td>-</td>
+<td>N</td>
+<td>0000001003</td>
+</tr>
+<tr>
+<td>181Y003</td>
+<td>1.6.1.1.2.1. 연령별 지역별</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001007</td>
+</tr>
+<tr>
+<td>181Y005</td>
+<td>1.6.1.1.2.2. 연령별 업권별</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001007</td>
+</tr>
+<tr>
+<td>181Y007</td>
+<td>1.6.1.1.2.3. 연령별 상품별</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001007</td>
+</tr>
+<tr>
+<td>181Y009</td>
+<td>1.6.1.1.2.4. 상품별 업권별</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001007</td>
+</tr>
+<tr>
+<td>181Y011</td>
+<td>1.6.1.1.3. 차주당 주택담보대출 신규취급액</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001003</td>
+</tr>
+<tr>
+<td>0000001004</td>
+<td>1.6.1.2. 잔액</td>
+<td>-</td>
+<td>N</td>
+<td>0000001001</td>
+</tr>
+<tr>
+<td>181Y002</td>
+<td>1.6.1.2.1. 차주당 가계대출 잔액</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001004</td>
+</tr>
+<tr>
+<td>0000001008</td>
+<td>1.6.1.2.2. 차주당 가계대출 잔액 (교차항목)</td>
+<td>-</td>
+<td>N</td>
+<td>0000001004</td>
+</tr>
+<tr>
+<td>181Y004</td>
+<td>1.6.1.2.2.1. 연령별 지역별</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001008</td>
+</tr>
+<tr>
+<td>181Y006</td>
+<td>1.6.1.2.2.2. 연령별 업권별</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001008</td>
+</tr>
+<tr>
+<td>181Y008</td>
+<td>1.6.1.2.2.3. 연령별 상품별</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001008</td>
+</tr>
+<tr>
+<td>181Y010</td>
+<td>1.6.1.2.2.4. 상품별 업권별</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001008</td>
+</tr>
+<tr>
+<td>181Y012</td>
+<td>1.6.1.2.3. 차주당 주택담보대출 잔액</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001004</td>
+</tr>
+<tr>
+<td>0000001002</td>
+<td>1.6.2. 금액 비중 기준</td>
+<td>-</td>
+<td>N</td>
+<td>0000001000</td>
+</tr>
+<tr>
+<td>0000001005</td>
+<td>1.6.2.1. 신규취급액</td>
+<td>-</td>
+<td>N</td>
+<td>0000001002</td>
+</tr>
+<tr>
+<td>181Y013</td>
+<td>1.6.2.1.1. 가계대출 신규취급액 비중</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001005</td>
+</tr>
+<tr>
+<td>181Y015</td>
+<td>1.6.2.1.2. 주택담보대출 신규취급액 비중</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001005</td>
+</tr>
+<tr>
+<td>0000001006</td>
+<td>1.6.2.2. 잔액</td>
+<td>-</td>
+<td>N</td>
+<td>0000001002</td>
+</tr>
+<tr>
+<td>181Y016</td>
+<td>1.6.2.2.1. 가계대출 잔액 비중</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001006</td>
+</tr>
+<tr>
+<td>181Y014</td>
+<td>1.6.2.2.2. 주택담보대출 잔액 비중</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000001006</td>
+</tr>
+<tr>
+<td>0000000002</td>
+<td>1.7. 통화/유동성(구지표)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000001</td>
+</tr>
+<tr>
+<td>0000000003</td>
+<td>1.7.1. 본원통화</td>
+<td>-</td>
+<td>N</td>
+<td>0000000002</td>
+</tr>
+<tr>
+<td>0000000004</td>
+<td>1.7.1.1. 본원통화 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000003</td>
+</tr>
+<tr>
+<td>102Y104</td>
+<td>1.7.1.1.1. 본원통화 구성내역(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000004</td>
+</tr>
+<tr>
+<td>102Y102</td>
+<td>1.7.1.1.2. 본원통화 구성내역(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000004</td>
+</tr>
+<tr>
+<td>102Y103</td>
+<td>1.7.1.1.3. 본원통화 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000004</td>
+</tr>
+<tr>
+<td>102Y101</td>
+<td>1.7.1.1.4. 본원통화 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000004</td>
+</tr>
+<tr>
+<td>0000000005</td>
+<td>1.7.2. M1(협의통화)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000002</td>
+</tr>
+<tr>
+<td>0000000006</td>
+<td>1.7.2.1. M1(협의통화) 상품별 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000005</td>
+</tr>
+<tr>
+<td>101Y018</td>
+<td>1.7.2.1.1. M1 상품별 구성내역(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000006</td>
+</tr>
+<tr>
+<td>101Y019</td>
+<td>1.7.2.1.2. M1 상품별 구성내역(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000006</td>
+</tr>
+<tr>
+<td>101Y016</td>
+<td>1.7.2.1.3. M1 상품별 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000006</td>
+</tr>
+<tr>
+<td>101Y017</td>
+<td>1.7.2.1.4. M1 상품별 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000006</td>
+</tr>
+<tr>
+<td>0000000007</td>
+<td>1.7.3. M2(광의통화)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000002</td>
+</tr>
+<tr>
+<td>0000000008</td>
+<td>1.7.3.1. M2(광의통화) 상품별 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000007</td>
+</tr>
+<tr>
+<td>101Y003</td>
+<td>1.7.3.1.1. M2 상품별 구성내역(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000008</td>
+</tr>
+<tr>
+<td>101Y004</td>
+<td>1.7.3.1.2. M2 상품별 구성내역(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000008</td>
+</tr>
+<tr>
+<td>101Y001</td>
+<td>1.7.3.1.3. M2 상품별 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000008</td>
+</tr>
+<tr>
+<td>101Y002</td>
+<td>1.7.3.1.4. M2 상품별 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000008</td>
+</tr>
+<tr>
+<td>0000000009</td>
+<td>1.7.3.2. M2(광의통화) 경제주체별 보유현황</td>
+<td>-</td>
+<td>N</td>
+<td>0000000007</td>
+</tr>
+<tr>
+<td>101Y006</td>
+<td>1.7.3.2.1. M2 경제주체별 보유현황(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000009</td>
+</tr>
+<tr>
+<td>101Y015</td>
+<td>1.7.3.2.2. M2 경제주체별 보유현황(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000009</td>
+</tr>
+<tr>
+<td>101Y005</td>
+<td>1.7.3.2.3. M2 경제주체별 보유현황(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000009</td>
+</tr>
+<tr>
+<td>101Y014</td>
+<td>1.7.3.2.4. M2 경제주체별 보유현황(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000009</td>
+</tr>
+<tr>
+<td>0000000010</td>
+<td>1.7.3.3. M2 기관별 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000007</td>
+</tr>
+<tr>
+<td>101Y008</td>
+<td>1.7.3.3.1. M2 기관별구성내역(평잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000010</td>
+</tr>
+<tr>
+<td>101Y007</td>
+<td>1.7.3.3.2. M2 기관별구성내역(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000010</td>
+</tr>
+<tr>
+<td>0000000012</td>
+<td>1.7.4. Lf(금융기관 유동성) 관련통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000002</td>
+</tr>
+<tr>
+<td>0000000013</td>
+<td>1.7.4.1. Lf(금융기관 유동성) 상품별 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000012</td>
+</tr>
+<tr>
+<td>111Y003</td>
+<td>1.7.4.1.1. Lf 상품별 구성내역(평잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000013</td>
+</tr>
+<tr>
+<td>111Y004</td>
+<td>1.7.4.1.2. Lf 상품별 구성내역(평잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000013</td>
+</tr>
+<tr>
+<td>111Y001</td>
+<td>1.7.4.1.3. Lf 상품별 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000013</td>
+</tr>
+<tr>
+<td>111Y002</td>
+<td>1.7.4.1.4. Lf 상품별 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000013</td>
+</tr>
+<tr>
+<td>0000000015</td>
+<td>1.7.5. L(광의유동성) 구성내역</td>
+<td>-</td>
+<td>N</td>
+<td>0000000002</td>
+</tr>
+<tr>
+<td>112Y001</td>
+<td>1.7.5.1. L(광의유동성) 구성내역(말잔, 계절조정계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000015</td>
+</tr>
+<tr>
+<td>112Y002</td>
+<td>1.7.5.2. L(광의유동성) 구성내역(말잔, 원계열)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000015</td>
+</tr>
+<tr>
+<td>0000000017</td>
+<td>1.7.6. 예금취급기관 개관표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000002</td>
+</tr>
+<tr>
+<td>101Y009</td>
+<td>1.7.6.1. 예금취급기관 개관표(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000017</td>
+</tr>
+<tr>
+<td>101Y010</td>
+<td>1.7.6.2. 중앙은행 개관표(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000017</td>
+</tr>
+<tr>
+<td>101Y011</td>
+<td>1.7.6.3. 기타예금취급기관 개관표(말잔)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000017</td>
+</tr>
+<tr>
+<td>0000000066</td>
+<td>2. 국민계정</td>
+<td>-</td>
+<td>N</td>
+<td>*</td>
+</tr>
+<tr>
+<td>0000000910</td>
+<td>2.1. 국민소득통계(2020년 기준년)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000066</td>
+</tr>
+<tr>
+<td>0000000911</td>
+<td>2.1.1. 주요지표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>200Y101</td>
+<td>2.1.1.1. 주요지표(연간지표)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000911</td>
+</tr>
+<tr>
+<td>200Y102</td>
+<td>2.1.1.2. 주요지표(분기지표)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000911</td>
+</tr>
+<tr>
+<td>0000000912</td>
+<td>2.1.2. 생산, 지출 및 분배 GDP, GDP 디플레이터</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>0000000913</td>
+<td>2.1.2.1. 경제활동별 GDP 및 GNI</td>
+<td>-</td>
+<td>N</td>
+<td>0000000912</td>
+</tr>
+<tr>
+<td>200Y103</td>
+<td>2.1.2.1.1. 경제활동별 GDP 및 GNI(계절조정, 명목, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000913</td>
+</tr>
+<tr>
+<td>200Y104</td>
+<td>2.1.2.1.2. 경제활동별 GDP 및 GNI(계절조정, 실질, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000913</td>
+</tr>
+<tr>
+<td>200Y105</td>
+<td>2.1.2.1.3. 경제활동별 GDP 및 GNI(원계열, 명목, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000913</td>
+</tr>
+<tr>
+<td>200Y106</td>
+<td>2.1.2.1.4. 경제활동별 GDP 및 GNI(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000913</td>
+</tr>
+<tr>
+<td>0000000914</td>
+<td>2.1.2.2. 국내총생산에 대한 지출</td>
+<td>-</td>
+<td>N</td>
+<td>0000000912</td>
+</tr>
+<tr>
+<td>200Y107</td>
+<td>2.1.2.2.1. 국내총생산에 대한 지출(계절조정, 명목, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000914</td>
+</tr>
+<tr>
+<td>200Y108</td>
+<td>2.1.2.2.2. 국내총생산에 대한 지출(계절조정, 실질, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000914</td>
+</tr>
+<tr>
+<td>200Y109</td>
+<td>2.1.2.2.3. 국내총생산에 대한 지출(원계열, 명목, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000914</td>
+</tr>
+<tr>
+<td>200Y110</td>
+<td>2.1.2.2.4. 국내총생산에 대한 지출(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000914</td>
+</tr>
+<tr>
+<td>0000000936</td>
+<td>2.1.2.3. 부가가치 항목별 명목 GDP</td>
+<td>-</td>
+<td>N</td>
+<td>0000000912</td>
+</tr>
+<tr>
+<td>200Y160</td>
+<td>2.1.2.3.1. 부가가치 항목별 명목 GDP(계절조정, 명목, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000936</td>
+</tr>
+<tr>
+<td>200Y161</td>
+<td>2.1.2.3.2. 부가가치 항목별 명목 GDP(원계열, 명목, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000936</td>
+</tr>
+<tr>
+<td>0000000915</td>
+<td>2.1.2.4. GDP 디플레이터</td>
+<td>-</td>
+<td>N</td>
+<td>0000000912</td>
+</tr>
+<tr>
+<td>200Y111</td>
+<td>2.1.2.4.1. 경제활동별 국내총생산 디플레이터(분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000915</td>
+</tr>
+<tr>
+<td>200Y112</td>
+<td>2.1.2.4.2. 국내총생산에 대한 지출 디플레이터(분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000915</td>
+</tr>
+<tr>
+<td>0000000916</td>
+<td>2.1.3. 종합계정</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>0000000917</td>
+<td>2.1.3.1. 국내총생산과 지출</td>
+<td>-</td>
+<td>N</td>
+<td>0000000916</td>
+</tr>
+<tr>
+<td>200Y113</td>
+<td>2.1.3.1.1. 국내총생산과 지출(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000917</td>
+</tr>
+<tr>
+<td>200Y114</td>
+<td>2.1.3.1.2. 경제활동별 국내총부가가치와 요소소득(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000917</td>
+</tr>
+<tr>
+<td>0000000918</td>
+<td>2.1.3.2. 국민처분가능소득과 처분</td>
+<td>-</td>
+<td>N</td>
+<td>0000000916</td>
+</tr>
+<tr>
+<td>200Y115</td>
+<td>2.1.3.2.1. 국민처분가능소득과 처분(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000918</td>
+</tr>
+<tr>
+<td>200Y116</td>
+<td>2.1.3.2.2. 국민소득과 부문별 국민처분가능소득(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000918</td>
+</tr>
+<tr>
+<td>0000000919</td>
+<td>2.1.3.3. 자본거래</td>
+<td>-</td>
+<td>N</td>
+<td>0000000916</td>
+</tr>
+<tr>
+<td>200Y117</td>
+<td>2.1.3.3.1. 자본거래(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000919</td>
+</tr>
+<tr>
+<td>0000000920</td>
+<td>2.1.3.4. 국외거래</td>
+<td>-</td>
+<td>N</td>
+<td>0000000916</td>
+</tr>
+<tr>
+<td>200Y118</td>
+<td>2.1.3.4.1. 경상거래(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000920</td>
+</tr>
+<tr>
+<td>200Y119</td>
+<td>2.1.3.4.2. 자본거래(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000920</td>
+</tr>
+<tr>
+<td>0000000921</td>
+<td>2.1.4. 제도부문별 계정</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>200Y120</td>
+<td>2.1.4.1. 제도부문별 생산계정(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000921</td>
+</tr>
+<tr>
+<td>200Y121</td>
+<td>2.1.4.2. 제도부문별 소득계정(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000921</td>
+</tr>
+<tr>
+<td>200Y162</td>
+<td>2.1.4.3. 제도부문별 소득계정(명목, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000921</td>
+</tr>
+<tr>
+<td>200Y122</td>
+<td>2.1.4.4. 제도부문별 자본계정(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000921</td>
+</tr>
+<tr>
+<td>0000000922</td>
+<td>2.1.5. GDP에 대한 성장기여도</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>200Y123</td>
+<td>2.1.5.1. 경제활동별 성장기여도(계절조정, 실질, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000922</td>
+</tr>
+<tr>
+<td>200Y124</td>
+<td>2.1.5.2. 경제활동별 성장기여도(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000922</td>
+</tr>
+<tr>
+<td>200Y125</td>
+<td>2.1.5.3. 지출항목별 성장기여도(계절조정, 실질, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000922</td>
+</tr>
+<tr>
+<td>200Y126</td>
+<td>2.1.5.4. 지출항목별 성장기여도(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000922</td>
+</tr>
+<tr>
+<td>0000000923</td>
+<td>2.1.6. 총자본형성</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>0000000924</td>
+<td>2.1.6.1. 자본재형태별 총자본형성</td>
+<td>-</td>
+<td>N</td>
+<td>0000000923</td>
+</tr>
+<tr>
+<td>200Y127</td>
+<td>2.1.6.1.1. 자본재형태별 총자본형성(계절조정, 명목, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000924</td>
+</tr>
+<tr>
+<td>200Y128</td>
+<td>2.1.6.1.2. 자본재형태별 총자본형성(계절조정, 실질, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000924</td>
+</tr>
+<tr>
+<td>200Y129</td>
+<td>2.1.6.1.3. 자본재형태별 총자본형성(원계열, 명목, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000924</td>
+</tr>
+<tr>
+<td>200Y130</td>
+<td>2.1.6.1.4. 자본재형태별 총자본형성(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000924</td>
+</tr>
+<tr>
+<td>0000000925</td>
+<td>2.1.6.2. 주체별 총자본형성</td>
+<td>-</td>
+<td>N</td>
+<td>0000000923</td>
+</tr>
+<tr>
+<td>200Y131</td>
+<td>2.1.6.2.1. 주체별 총자본형성(원계열, 명목, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000925</td>
+</tr>
+<tr>
+<td>200Y132</td>
+<td>2.1.6.2.2. 주체별 총자본형성(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000925</td>
+</tr>
+<tr>
+<td>200Y133</td>
+<td>2.1.6.2.3. 주체별 총고정자본형성(계절조정, 명목, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000925</td>
+</tr>
+<tr>
+<td>200Y134</td>
+<td>2.1.6.2.4. 주체별 총고정자본형성(계절조정, 실질, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000925</td>
+</tr>
+<tr>
+<td>0000000926</td>
+<td>2.1.6.3. 경제활동별 총고정자본형성</td>
+<td>-</td>
+<td>N</td>
+<td>0000000923</td>
+</tr>
+<tr>
+<td>200Y135</td>
+<td>2.1.6.3.1. 경제활동별 총고정자본형성(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000926</td>
+</tr>
+<tr>
+<td>200Y136</td>
+<td>2.1.6.3.2. 경제활동별 총고정자본형성(실질, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000926</td>
+</tr>
+<tr>
+<td>200Y137</td>
+<td>2.1.6.3.3. 경제활동별 자본재형태별 총고정자본형성(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000926</td>
+</tr>
+<tr>
+<td>0000000927</td>
+<td>2.1.6.4. 경제활동별 설비투자</td>
+<td>-</td>
+<td>N</td>
+<td>0000000923</td>
+</tr>
+<tr>
+<td>200Y138</td>
+<td>2.1.6.4.1. 경제활동별 설비투자(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000927</td>
+</tr>
+<tr>
+<td>200Y139</td>
+<td>2.1.6.4.2. 경제활동별 설비투자(실질, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000927</td>
+</tr>
+<tr>
+<td>0000000928</td>
+<td>2.1.7. 민간최종소비지출</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>0000000929</td>
+<td>2.1.7.1. 가계의 목적별 최종소비지출</td>
+<td>-</td>
+<td>N</td>
+<td>0000000928</td>
+</tr>
+<tr>
+<td>200Y140</td>
+<td>2.1.7.1.1. 가계의 목적별 최종소비지출(계절조정, 명목, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000929</td>
+</tr>
+<tr>
+<td>200Y141</td>
+<td>2.1.7.1.2. 가계의 목적별 최종소비지출(계절조정, 실질, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000929</td>
+</tr>
+<tr>
+<td>200Y142</td>
+<td>2.1.7.1.3. 가계의 목적별 최종소비지출(원계열, 명목, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000929</td>
+</tr>
+<tr>
+<td>200Y143</td>
+<td>2.1.7.1.4. 가계의 목적별 최종소비지출(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000929</td>
+</tr>
+<tr>
+<td>0000000930</td>
+<td>2.1.7.2. 가계의 형태별 최종소비지출</td>
+<td>-</td>
+<td>N</td>
+<td>0000000928</td>
+</tr>
+<tr>
+<td>200Y144</td>
+<td>2.1.7.2.1. 가계의 형태별 최종소비지출(계절조정, 명목, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000930</td>
+</tr>
+<tr>
+<td>200Y145</td>
+<td>2.1.7.2.2. 가계의 형태별 최종소비지출(계절조정, 실질, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000930</td>
+</tr>
+<tr>
+<td>200Y146</td>
+<td>2.1.7.2.3. 가계의 형태별 최종소비지출(원계열, 명목, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000930</td>
+</tr>
+<tr>
+<td>200Y147</td>
+<td>2.1.7.2.4. 가계의 형태별 최종소비지출(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000930</td>
+</tr>
+<tr>
+<td>0000000931</td>
+<td>2.1.7.3. 가계에 봉사하는 비영리단체의 목적별 최종소비지출</td>
+<td>-</td>
+<td>N</td>
+<td>0000000928</td>
+</tr>
+<tr>
+<td>200Y148</td>
+<td>2.1.7.3.1. 가계에 봉사하는 비영리단체의 목적별 최종소비지출(원계열, 명목, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000931</td>
+</tr>
+<tr>
+<td>200Y149</td>
+<td>2.1.7.3.2. 가계에 봉사하는 비영리단체의 목적별 최종소비지출(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000931</td>
+</tr>
+<tr>
+<td>0000000932</td>
+<td>2.1.8. 일반정부 및 공공부문계정</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>200Y151</td>
+<td>2.1.8.1. 일반정부의 부문별 기능별 최종소비지출(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000932</td>
+</tr>
+<tr>
+<td>200Y152</td>
+<td>2.1.8.2. 일반정부의 부문별 기능별 총지출 (명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000932</td>
+</tr>
+<tr>
+<td>200Y153</td>
+<td>2.1.8.3. 일반정부의 부문별 총수입, 총지출, 저축투자차액(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000932</td>
+</tr>
+<tr>
+<td>200Y154</td>
+<td>2.1.8.4. 공공부문의 부문별 총수입, 총지출, 저축투자차액(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000932</td>
+</tr>
+<tr>
+<td>0000000933</td>
+<td>2.1.9. 총저축과 총투자</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>200Y155</td>
+<td>2.1.9.1. 총저축과 총투자(계절조정, 명목, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000933</td>
+</tr>
+<tr>
+<td>200Y156</td>
+<td>2.1.9.2. 총저축과 총투자(원계열, 명목, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000933</td>
+</tr>
+<tr>
+<td>0000000934</td>
+<td>2.1.10. 정보통신 부가가치 및 최종수요</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>200Y157</td>
+<td>2.1.10.1. 정보통신산업(계절조정, 실질, 분기)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000934</td>
+</tr>
+<tr>
+<td>200Y158</td>
+<td>2.1.10.2. 정보통신산업(원계열, 실질, 분기 및 연간)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000934</td>
+</tr>
+<tr>
+<td>0000000935</td>
+<td>2.1.11. 가계분배계정(실험적 통계)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000910</td>
+</tr>
+<tr>
+<td>200Y159</td>
+<td>2.1.11.1. 가계분배계정(명목, 연간)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000935</td>
+</tr>
+<tr>
+<td>0000000110</td>
+<td>2.2. 산업연관표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000066</td>
+</tr>
+<tr>
+<td>0000000901</td>
+<td>2.2.1. 2020년 실측표 기준</td>
+<td>-</td>
+<td>N</td>
+<td>0000000110</td>
+</tr>
+<tr>
+<td>0000000903</td>
+<td>2.2.1.2. 데이터</td>
+<td>-</td>
+<td>N</td>
+<td>0000000901</td>
+</tr>
+<tr>
+<td>271Y110</td>
+<td>2.2.1.2.1. 투입산출표 총거래표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y111</td>
+<td>2.2.1.2.2. 투입산출표 총투입계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y112</td>
+<td>2.2.1.2.3. 투입산출표 생산유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y113</td>
+<td>2.2.1.2.4. 투입산출표 수입유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y114</td>
+<td>2.2.1.2.5. 투입산출표 부가가치유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y115</td>
+<td>2.2.1.2.6. 투입산출표 취업유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y116</td>
+<td>2.2.1.2.7. 투입산출표 고용유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y120</td>
+<td>2.2.1.2.8. 투입산출표 총거래표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y121</td>
+<td>2.2.1.2.9. 투입산출표 총투입계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y122</td>
+<td>2.2.1.2.10. 투입산출표 생산유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y123</td>
+<td>2.2.1.2.11. 투입산출표 수입유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y124</td>
+<td>2.2.1.2.12. 투입산출표 부가가치유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y125</td>
+<td>2.2.1.2.13. 투입산출표 취업유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>271Y126</td>
+<td>2.2.1.2.14. 투입산출표 고용유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000903</td>
+</tr>
+<tr>
+<td>0000000531</td>
+<td>2.2.2. 2015년 실측표 기준</td>
+<td>-</td>
+<td>N</td>
+<td>0000000110</td>
+</tr>
+<tr>
+<td>0000000533</td>
+<td>2.2.2.2. 데이터</td>
+<td>-</td>
+<td>N</td>
+<td>0000000531</td>
+</tr>
+<tr>
+<td>271Y008</td>
+<td>2.2.2.2.1. 투입산출표 총거래표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y009</td>
+<td>2.2.2.2.2. 투입산출표 총투입계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y010</td>
+<td>2.2.2.2.3. 투입산출표 생산유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y011</td>
+<td>2.2.2.2.4. 투입산출표 수입유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y012</td>
+<td>2.2.2.2.5. 투입산출표 부가가치유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y013</td>
+<td>2.2.2.2.6. 투입산출표 취업유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y014</td>
+<td>2.2.2.2.7. 투입산출표 고용유발계수표(생산자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y015</td>
+<td>2.2.2.2.8. 공급표(기초가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y016</td>
+<td>2.2.2.2.9. 사용표(구매자가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y017</td>
+<td>2.2.2.2.10. 사용표(기초가격, 대분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y068</td>
+<td>2.2.2.2.11. 투입산출표 총거래표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y069</td>
+<td>2.2.2.2.12. 투입산출표 총투입계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y070</td>
+<td>2.2.2.2.13. 투입산출표 생산유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y071</td>
+<td>2.2.2.2.14. 투입산출표 수입유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y072</td>
+<td>2.2.2.2.15. 투입산출표 부가가치유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y073</td>
+<td>2.2.2.2.16. 투입산출표 취업유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y074</td>
+<td>2.2.2.2.17. 투입산출표 고용유발계수표(생산자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y075</td>
+<td>2.2.2.2.18. 공급표(기초가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y076</td>
+<td>2.2.2.2.19. 사용표(구매자가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>271Y077</td>
+<td>2.2.2.2.20. 사용표(기초가격, 중분류)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000533</td>
+</tr>
+<tr>
+<td>0000000111</td>
+<td>2.3. 자금순환표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000066</td>
+</tr>
+<tr>
+<td>0000000112</td>
+<td>2.3.1. 2009- (2008 SNA 기준)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000111</td>
+</tr>
+<tr>
+<td>283Y001</td>
+<td>2.3.1.1. 주요지표(2009~)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000112</td>
+</tr>
+<tr>
+<td>281Y001</td>
+<td>2.3.1.2. 금융거래표(2009~)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000112</td>
+</tr>
+<tr>
+<td>281Y002</td>
+<td>2.3.1.3. 금융자산부채잔액표(2008~)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000112</td>
+</tr>
+<tr>
+<td>0000000802</td>
+<td>2.3.1.4. 상세채권통계(2018~)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000112</td>
+</tr>
+<tr>
+<td>0000000804</td>
+<td>2.3.1.4.1. 채권발행표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000802</td>
+</tr>
+<tr>
+<td>282Y001</td>
+<td>2.3.1.4.1.1. 발행잔액(명목)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000804</td>
+</tr>
+<tr>
+<td>282Y002</td>
+<td>2.3.1.4.1.2. 발행잔액(시가)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000804</td>
+</tr>
+<tr>
+<td>282Y003</td>
+<td>2.3.1.4.1.3. 순발행액(시가)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000804</td>
+</tr>
+<tr>
+<td>0000000805</td>
+<td>2.3.1.4.2. 채권보유표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000802</td>
+</tr>
+<tr>
+<td>282Y004</td>
+<td>2.3.1.4.2.1. 보유잔액(시가)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000805</td>
+</tr>
+<tr>
+<td>282Y005</td>
+<td>2.3.1.4.2.2. 순취득액(시가)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000805</td>
+</tr>
+<tr>
+<td>282Y006</td>
+<td>2.3.1.4.3. 채권발행-보유관계표(잔액, 시가)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000802</td>
+</tr>
+<tr>
+<td>0000001009</td>
+<td>2.3.1.5. 상세자금순환표(2018~)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000112</td>
+</tr>
+<tr>
+<td>284Y001</td>
+<td>2.3.1.5.1. 잔액표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000001009</td>
+</tr>
+<tr>
+<td>284Y002</td>
+<td>2.3.1.5.2. 거래표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000001009</td>
+</tr>
+<tr>
+<td>0000000115</td>
+<td>2.3.2. 2002-2013 (1993 SNA 기준)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000111</td>
+</tr>
+<tr>
+<td>281Y006</td>
+<td>2.3.2.1. 금융거래표(2003~2013)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000115</td>
+</tr>
+<tr>
+<td>281Y007</td>
+<td>2.3.2.2. 금융자산부채잔액표(2002~)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000115</td>
+</tr>
+<tr>
+<td>0000000118</td>
+<td>2.3.3. 1975-2005 (1968 SNA 기준)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000111</td>
+</tr>
+<tr>
+<td>281Y004</td>
+<td>2.3.3.1. 금융거래표(1975~2005)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000118</td>
+</tr>
+<tr>
+<td>281Y005</td>
+<td>2.3.3.2. 금융자산부채잔액표(1975~2005)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000118</td>
+</tr>
+<tr>
+<td>0000000121</td>
+<td>2.3.4. 1969-1974 (1968 SNA 기준)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000111</td>
+</tr>
+<tr>
+<td>281Y011</td>
+<td>2.3.4.1. 금융거래표(1970~1974)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000121</td>
+</tr>
+<tr>
+<td>281Y012</td>
+<td>2.3.4.2. 금융자산부채잔액표(1969~1974)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000121</td>
+</tr>
+<tr>
+<td>0000000124</td>
+<td>2.3.5. 1962-1970 (1953 SNA 기준)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000111</td>
+</tr>
+<tr>
+<td>281Y009</td>
+<td>2.3.5.1. 금융거래표(1963~1970)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000124</td>
+</tr>
+<tr>
+<td>281Y010</td>
+<td>2.3.5.2. 금융자산부채잔액표(1962~1970)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000124</td>
+</tr>
+<tr>
+<td>0000000940</td>
+<td>2.4. 국민대차대조표(2020년 기준년)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000066</td>
+</tr>
+<tr>
+<td>0000000941</td>
+<td>2.4.1. 자산별 자본스톡</td>
+<td>-</td>
+<td>N</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>0000000942</td>
+<td>2.4.1.1. 자산별 순자본스톡</td>
+<td>-</td>
+<td>N</td>
+<td>0000000941</td>
+</tr>
+<tr>
+<td>291Y501</td>
+<td>2.4.1.1.1. 자산별 순자본스톡(명목, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000942</td>
+</tr>
+<tr>
+<td>291Y502</td>
+<td>2.4.1.1.2. 자산별 순자본스톡(실질, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000942</td>
+</tr>
+<tr>
+<td>0000000943</td>
+<td>2.4.1.2. 자산별 생산자본스톡</td>
+<td>-</td>
+<td>N</td>
+<td>0000000941</td>
+</tr>
+<tr>
+<td>291Y503</td>
+<td>2.4.1.2.1. 자산별 생산자본스톡(명목, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000943</td>
+</tr>
+<tr>
+<td>291Y504</td>
+<td>2.4.1.2.2. 자산별 생산자본스톡(실질, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000943</td>
+</tr>
+<tr>
+<td>0000000944</td>
+<td>2.4.2. 제도부문별 대차대조표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>291Y505</td>
+<td>2.4.2.1. 제도부문별 대차대조표(명목, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000944</td>
+</tr>
+<tr>
+<td>291Y506</td>
+<td>2.4.2.2. 자산/부채의 증감(명목)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000944</td>
+</tr>
+<tr>
+<td>291Y507</td>
+<td>2.4.2.3. 순자산 증감(명목)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000944</td>
+</tr>
+<tr>
+<td>0000000945</td>
+<td>2.4.3. 제도부문별 순자본스톡</td>
+<td>-</td>
+<td>N</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>291Y508</td>
+<td>2.4.3.1. 제도부문별 순자본스톡(명목, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000945</td>
+</tr>
+<tr>
+<td>0000000946</td>
+<td>2.4.4. 제도부문별 비금융자산별 보유손익(명목)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>291Y509</td>
+<td>2.4.4.1. 제도부문별 비금융자산별 명목보유손익(명목)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000946</td>
+</tr>
+<tr>
+<td>291Y510</td>
+<td>2.4.4.2. 제도부문별 비금융자산별 중립보유손익(명목)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000946</td>
+</tr>
+<tr>
+<td>291Y511</td>
+<td>2.4.4.3. 제도부문별 비금융자산별 실질보유손익(명목)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000946</td>
+</tr>
+<tr>
+<td>0000000947</td>
+<td>2.4.5. 제도부문별 생산자본스톡</td>
+<td>-</td>
+<td>N</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>291Y512</td>
+<td>2.4.5.1. 제도부문별 생산자본스톡(명목, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000947</td>
+</tr>
+<tr>
+<td>291Y513</td>
+<td>2.4.5.2. 제도부문별 생산자본스톡(실질, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000947</td>
+</tr>
+<tr>
+<td>0000000948</td>
+<td>2.4.6. 제도부문별 자본서비스물량지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>291Y514</td>
+<td>2.4.6.1. 제도부문별 연쇄라스파이레스 자본서비스물량지수</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000948</td>
+</tr>
+<tr>
+<td>291Y515</td>
+<td>2.4.6.2. 제도부문별 연쇄통크비스트 자본서비스물량지수</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000948</td>
+</tr>
+<tr>
+<td>291Y516</td>
+<td>2.4.6.3. 제도부문별 자본사용자비용 비중(명목, %)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000948</td>
+</tr>
+<tr>
+<td>0000000949</td>
+<td>2.4.7. 경제활동별 순자본스톡</td>
+<td>-</td>
+<td>N</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>291Y517</td>
+<td>2.4.7.1. 경제활동별 순자본스톡(명목, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000949</td>
+</tr>
+<tr>
+<td>291Y518</td>
+<td>2.4.7.2. 경제활동별 순자본스톡(실질, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000949</td>
+</tr>
+<tr>
+<td>0000000950</td>
+<td>2.4.8. 경제활동별 생산자본스톡</td>
+<td>-</td>
+<td>N</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>291Y519</td>
+<td>2.4.8.1. 경제활동별 생산자본스톡(명목, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000950</td>
+</tr>
+<tr>
+<td>291Y520</td>
+<td>2.4.8.2. 경제활동별 생산자본스톡(실질, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000950</td>
+</tr>
+<tr>
+<td>0000000951</td>
+<td>2.4.9. 경제활동별 자본서비스물량지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>291Y521</td>
+<td>2.4.9.1. 경제활동별 연쇄라스파이레스 자본서비스물량지수</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000951</td>
+</tr>
+<tr>
+<td>291Y522</td>
+<td>2.4.9.2. 경제활동별 연쇄통크비스트 자본서비스물량지수</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000951</td>
+</tr>
+<tr>
+<td>291Y523</td>
+<td>2.4.9.3. 경제활동별 자본사용자비용 비중(명목, %)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000951</td>
+</tr>
+<tr>
+<td>291Y524</td>
+<td>2.4.10. 시도별 주택 시가총액(명목, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>291Y525</td>
+<td>2.4.11. 시도별 토지자산 순자본스톡(명목, 연말기준)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000940</td>
+</tr>
+<tr>
+<td>0000000157</td>
+<td>2.5. 국제수지표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000066</td>
+</tr>
+<tr>
+<td>0000000158</td>
+<td>2.5.1. 국제수지</td>
+<td>-</td>
+<td>N</td>
+<td>0000000157</td>
+</tr>
+<tr>
+<td>301Y013</td>
+<td>2.5.1.1. 국제수지</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000158</td>
+</tr>
+<tr>
+<td>301Y017</td>
+<td>2.5.1.2. 경상수지(계절조정)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000158</td>
+</tr>
+<tr>
+<td>301Y014</td>
+<td>2.5.1.3. 서비스무역세분류통계</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000158</td>
+</tr>
+<tr>
+<td>301Y015</td>
+<td>2.5.1.4. 지역별 경상수지</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000158</td>
+</tr>
+<tr>
+<td>301Y016</td>
+<td>2.5.1.5. 지역별 자본수지/금융계정</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000158</td>
+</tr>
+<tr>
+<td>0000000159</td>
+<td>2.5.2. 지식서비스 무역통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000157</td>
+</tr>
+<tr>
+<td>0000000160</td>
+<td>2.5.2.1. 지식서비스 무역통계 (일반분류)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000159</td>
+</tr>
+<tr>
+<td>304Y101</td>
+<td>2.5.2.1.1. 지식서비스 무역통계(유형별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000160</td>
+</tr>
+<tr>
+<td>304Y102</td>
+<td>2.5.2.1.2. 지식서비스 무역통계(산업별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000160</td>
+</tr>
+<tr>
+<td>304Y103</td>
+<td>2.5.2.1.3. 지식서비스 무역통계(기관형태별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000160</td>
+</tr>
+<tr>
+<td>304Y104</td>
+<td>2.5.2.1.4. 지식서비스 무역통계(지역별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000160</td>
+</tr>
+<tr>
+<td>0000000161</td>
+<td>2.5.2.2. ICT 산업 특수분류</td>
+<td>-</td>
+<td>N</td>
+<td>0000000159</td>
+</tr>
+<tr>
+<td>304Y105</td>
+<td>2.5.2.2.1. ICT 산업 특수분류(ICT산업별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000161</td>
+</tr>
+<tr>
+<td>0000000162</td>
+<td>2.5.2.3. 콘텐츠 산업 특수분류</td>
+<td>-</td>
+<td>N</td>
+<td>0000000159</td>
+</tr>
+<tr>
+<td>304Y106</td>
+<td>2.5.2.3.1. 콘텐츠 산업 특수분류(콘텐츠산업별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000162</td>
+</tr>
+<tr>
+<td>0000000163</td>
+<td>2.5.2.4. 지식재산권 무역수지</td>
+<td>-</td>
+<td>N</td>
+<td>0000000159</td>
+</tr>
+<tr>
+<td>304Y107</td>
+<td>2.5.2.4.1. 지식재산권 무역수지(유형별)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000163</td>
+</tr>
+<tr>
+<td>0000000167</td>
+<td>2.6. 국제투자대조표/대외채권채무</td>
+<td>-</td>
+<td>N</td>
+<td>0000000066</td>
+</tr>
+<tr>
+<td>0000000168</td>
+<td>2.6.1. 국제투자대조표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000167</td>
+</tr>
+<tr>
+<td>311Y001</td>
+<td>2.6.1.1. 국제투자대조표(IIP)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000168</td>
+</tr>
+<tr>
+<td>311Y002</td>
+<td>2.6.1.2. 지역별 국제투자대조표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000168</td>
+</tr>
+<tr>
+<td>311Y003</td>
+<td>2.6.1.3. 통화별 국제투자대조표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000168</td>
+</tr>
+<tr>
+<td>0000000172</td>
+<td>2.6.2. 대외채무/채권</td>
+<td>-</td>
+<td>N</td>
+<td>0000000167</td>
+</tr>
+<tr>
+<td>311Y004</td>
+<td>2.6.2.1. 대외채무</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000172</td>
+</tr>
+<tr>
+<td>311Y005</td>
+<td>2.6.2.2. 대외채권</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000172</td>
+</tr>
+<tr>
+<td>311Y006</td>
+<td>2.6.2.3. 순대외채권</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000172</td>
+</tr>
+<tr>
+<td>0000000176</td>
+<td>3. 환율/통관수출입/외환보유액</td>
+<td>-</td>
+<td>N</td>
+<td>*</td>
+</tr>
+<tr>
+<td>0000000177</td>
+<td>3.1. 환율</td>
+<td>-</td>
+<td>N</td>
+<td>0000000176</td>
+</tr>
+<tr>
+<td>0000000178</td>
+<td>3.1.1. 일일환율</td>
+<td>-</td>
+<td>N</td>
+<td>0000000177</td>
+</tr>
+<tr>
+<td>731Y001</td>
+<td>3.1.1.1. 주요국 통화의 대원화환율</td>
+<td>D</td>
+<td>Y</td>
+<td>0000000178</td>
+</tr>
+<tr>
+<td>731Y002</td>
+<td>3.1.1.2. 주요국 통화의 대미달러환율</td>
+<td>D</td>
+<td>Y</td>
+<td>0000000178</td>
+</tr>
+<tr>
+<td>731Y003</td>
+<td>3.1.1.3. 원화의 대미달러, 원화의 대위안/대엔 환율</td>
+<td>D</td>
+<td>Y</td>
+<td>0000000178</td>
+</tr>
+<tr>
+<td>0000000182</td>
+<td>3.1.2. 평균환율/기말환율</td>
+<td>-</td>
+<td>N</td>
+<td>0000000177</td>
+</tr>
+<tr>
+<td>731Y004</td>
+<td>3.1.2.1. 주요국 통화의 대원화환율</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000182</td>
+</tr>
+<tr>
+<td>731Y005</td>
+<td>3.1.2.2. 주요국 통화의 대미달러환율</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000182</td>
+</tr>
+<tr>
+<td>731Y006</td>
+<td>3.1.2.3. 원화의 대미달러, 원화의 대위안/대엔 환율</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000182</td>
+</tr>
+<tr>
+<td>0000000186</td>
+<td>3.2. 통관기준 수출입</td>
+<td>-</td>
+<td>N</td>
+<td>0000000176</td>
+</tr>
+<tr>
+<td>901Y118</td>
+<td>3.2.1. 수출입 총괄</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000186</td>
+</tr>
+<tr>
+<td>901Y119</td>
+<td>3.2.2. 대륙별 수출입</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000186</td>
+</tr>
+<tr>
+<td>901Y121</td>
+<td>3.2.3. 국가별 수출입</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000186</td>
+</tr>
+<tr>
+<td>901Y092</td>
+<td>3.2.4. 성질별 수출입</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000186</td>
+</tr>
+<tr>
+<td>0000000190</td>
+<td>3.2.5. 결제통화별 수출입</td>
+<td>-</td>
+<td>N</td>
+<td>0000000186</td>
+</tr>
+<tr>
+<td>0000000191</td>
+<td>3.2.5.1. 결제통화별 수출</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>-</td>
+<td>N</td>
+<td>0000000190</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>303Y001</td>
+<td>3.2.5.1.1. 지역별 결제통화(수출)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000191</td>
+</tr>
+<tr>
+<td>303Y002</td>
+<td>3.2.5.1.2. 국가별 결제통화(수출)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000191</td>
+</tr>
+<tr>
+<td>303Y003</td>
+<td>3.2.5.1.3. 지역별,국가별 원화결제(수출)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000191</td>
+</tr>
+<tr>
+<td>0000000192</td>
+<td>3.2.5.2. 결제통화별 수입</td>
+<td>-</td>
+<td>N</td>
+<td>0000000190</td>
+</tr>
+<tr>
+<td>303Y004</td>
+<td>3.2.5.2.1. 지역별 결제통화(수입)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000192</td>
+</tr>
+<tr>
+<td>303Y005</td>
+<td>3.2.5.2.2. 국가별 결제통화(수입)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000192</td>
+</tr>
+<tr>
+<td>303Y006</td>
+<td>3.2.5.2.3. 지역별,국가별 원화결제(수입)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000192</td>
+</tr>
+<tr>
+<td>0000000193</td>
+<td>3.3. 무역지수/교역조건지수(2020=100)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000176</td>
+</tr>
+<tr>
+<td>0000000194</td>
+<td>3.3.1. 수출입 금액/물량지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000193</td>
+</tr>
+<tr>
+<td>0000000195</td>
+<td>3.3.1.1. 수출 금액/물량지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000194</td>
+</tr>
+<tr>
+<td>403Y001</td>
+<td>3.3.1.1.1. 수출금액지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000195</td>
+</tr>
+<tr>
+<td>403Y002</td>
+<td>3.3.1.1.2. 수출물량지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000195</td>
+</tr>
+<tr>
+<td>0000000196</td>
+<td>3.3.1.2. 수입 금액/물량지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000194</td>
+</tr>
+<tr>
+<td>403Y003</td>
+<td>3.3.1.2.1. 수입금액지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000196</td>
+</tr>
+<tr>
+<td>403Y004</td>
+<td>3.3.1.2.2. 수입물량지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000196</td>
+</tr>
+<tr>
+<td>403Y005</td>
+<td>3.3.2. 교역조건지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000193</td>
+</tr>
+<tr>
+<td>0000000198</td>
+<td>3.4. 해외투자/차관</td>
+<td>-</td>
+<td>N</td>
+<td>0000000176</td>
+</tr>
+<tr>
+<td>901Y060</td>
+<td>3.4.1. 해외직접투자</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000198</td>
+</tr>
+<tr>
+<td>901Y061</td>
+<td>3.4.2. 외국인직접투자</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000198</td>
+</tr>
+<tr>
+<td>732Y001</td>
+<td>3.5. 외환보유액</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000176</td>
+</tr>
+<tr>
+<td>0000000202</td>
+<td>4. 물가</td>
+<td>-</td>
+<td>N</td>
+<td>*</td>
+</tr>
+<tr>
+<td>0000000203</td>
+<td>4.1. 생산자물가지수(2020=100)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000202</td>
+</tr>
+<tr>
+<td>0000000204</td>
+<td>4.1.1. 생산자물가지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000203</td>
+</tr>
+<tr>
+<td>404Y014</td>
+<td>4.1.1.1. 생산자물가지수(기본분류)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000204</td>
+</tr>
+<tr>
+<td>404Y015</td>
+<td>4.1.1.2. 생산자물가지수(특수분류)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000204</td>
+</tr>
+<tr>
+<td>404Y016</td>
+<td>4.1.1.3. 생산자물가지수(품목별)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000204</td>
+</tr>
+<tr>
+<td>404Y017</td>
+<td>4.1.1.4. 생산자물가지수-총지수(1910~1964)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000204</td>
+</tr>
+<tr>
+<td>405Y006</td>
+<td>4.1.2. 국내공급물가지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000203</td>
+</tr>
+<tr>
+<td>405Y007</td>
+<td>4.1.3. 총산출물가지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000203</td>
+</tr>
+<tr>
+<td>0000000211</td>
+<td>4.2. 소비자물가지수(2020=100)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000202</td>
+</tr>
+<tr>
+<td>901Y009</td>
+<td>4.2.1. 소비자물가지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000211</td>
+</tr>
+<tr>
+<td>901Y010</td>
+<td>4.2.2. 소비자물가지수(특수분류)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000211</td>
+</tr>
+<tr>
+<td>0000000214</td>
+<td>4.3. 수출/수입물가지수(2020=100)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000202</td>
+</tr>
+<tr>
+<td>0000000215</td>
+<td>4.3.1. 수출물가지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000214</td>
+</tr>
+<tr>
+<td>402Y014</td>
+<td>4.3.1.1. 수출물가지수(기본분류)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000215</td>
+</tr>
+<tr>
+<td>402Y015</td>
+<td>4.3.1.2. 수출물가지수(특수분류)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000215</td>
+</tr>
+<tr>
+<td>402Y016</td>
+<td>4.3.1.3. 수출물가지수(품목별)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000215</td>
+</tr>
+<tr>
+<td>0000000219</td>
+<td>4.3.2. 수입물가지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000214</td>
+</tr>
+<tr>
+<td>401Y015</td>
+<td>4.3.2.1. 수입물가지수(기본분류)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000219</td>
+</tr>
+<tr>
+<td>401Y016</td>
+<td>4.3.2.2. 수입물가지수(특수분류)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000219</td>
+</tr>
+<tr>
+<td>401Y017</td>
+<td>4.3.2.3. 수입물가지수(품목별)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000219</td>
+</tr>
+<tr>
+<td>401Y018</td>
+<td>4.3.2.4. 수입물가지수(용도별)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000219</td>
+</tr>
+<tr>
+<td>0000000224</td>
+<td>4.4. 부동산 가격지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000202</td>
+</tr>
+<tr>
+<td>0000000225</td>
+<td>4.4.1. 주택가격지수(KB)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000224</td>
+</tr>
+<tr>
+<td>901Y062</td>
+<td>4.4.1.1. 주택매매가격지수(KB)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000225</td>
+</tr>
+<tr>
+<td>901Y063</td>
+<td>4.4.1.2. 주택전세가격지수(KB)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000225</td>
+</tr>
+<tr>
+<td>901Y064</td>
+<td>4.4.2. 지역별 지가변동률</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000224</td>
+</tr>
+<tr>
+<td>0000000227</td>
+<td>4.4.3. 유형별 주택가격지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000224</td>
+</tr>
+<tr>
+<td>0000000952</td>
+<td>4.4.3.1. 유형별 주택매매가격지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000227</td>
+</tr>
+<tr>
+<td>901Y113</td>
+<td>4.4.3.1.1. 유형별 주택매매가격지수(기준월: 2025.03)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000952</td>
+</tr>
+<tr>
+<td>901Y093</td>
+<td>4.4.3.1.2. 유형별 주택매매가격지수(기준월: 2021.06)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000952</td>
+</tr>
+<tr>
+<td>0000000953</td>
+<td>4.4.3.2. 유형별 주택전세가격지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000227</td>
+</tr>
+<tr>
+<td>901Y114</td>
+<td>4.4.3.2.1. 유형별 주택전세가격지수(기준월: 2025.03)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000953</td>
+</tr>
+<tr>
+<td>901Y094</td>
+<td>4.4.3.2.2. 유형별 주택전세가격지수(기준월: 2021.06)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000953</td>
+</tr>
+<tr>
+<td>0000000954</td>
+<td>4.4.3.3. 유형별 주택월세통합가격지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000227</td>
+</tr>
+<tr>
+<td>901Y115</td>
+<td>4.4.3.3.1. 유형별 주택월세통합가격지수(기준월: 2025.03)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000954</td>
+</tr>
+<tr>
+<td>901Y095</td>
+<td>4.4.3.3.2. 유형별 주택월세통합가격지수(기준월: 2021.06)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000954</td>
+</tr>
+<tr>
+<td>901Y089</td>
+<td>4.4.4. 아파트 매매 실거래가격지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000224</td>
+</tr>
+<tr>
+<td>0000000229</td>
+<td>4.4.5. 상권별 임대가격지수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000224</td>
+</tr>
+<tr>
+<td>901Y096</td>
+<td>4.4.5.1. 상권별 오피스임대가격지수</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000229</td>
+</tr>
+<tr>
+<td>901Y097</td>
+<td>4.4.5.2. 상권별 중대형 상가 임대가격지수</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000229</td>
+</tr>
+<tr>
+<td>0000000230</td>
+<td>5. 기업경영분석</td>
+<td>-</td>
+<td>N</td>
+<td>*</td>
+</tr>
+<tr>
+<td>0000000231</td>
+<td>5.1. 기업경영분석지표(연)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000230</td>
+</tr>
+<tr>
+<td>0000000400</td>
+<td>5.1.1. 성장성 지표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000231</td>
+</tr>
+<tr>
+<td>501Y005</td>
+<td>5.1.1.1. 성장성 지표(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000400</td>
+</tr>
+<tr>
+<td>501Y019</td>
+<td>5.1.1.2. 성장성 지표(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000400</td>
+</tr>
+<tr>
+<td>501Y020</td>
+<td>5.1.1.3. 성장성 지표(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000400</td>
+</tr>
+<tr>
+<td>501Y021</td>
+<td>5.1.1.4. 성장성 지표(2007~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000400</td>
+</tr>
+<tr>
+<td>501Y022</td>
+<td>5.1.1.5. 성장성 지표(1998~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000400</td>
+</tr>
+<tr>
+<td>501Y023</td>
+<td>5.1.1.6. 성장성 지표(1990~1997, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000400</td>
+</tr>
+<tr>
+<td>0000000239</td>
+<td>5.1.2. 손익 지표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000231</td>
+</tr>
+<tr>
+<td>501Y006</td>
+<td>5.1.2.1. 손익 지표(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000239</td>
+</tr>
+<tr>
+<td>501Y024</td>
+<td>5.1.2.2. 손익 지표(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000239</td>
+</tr>
+<tr>
+<td>501Y025</td>
+<td>5.1.2.3. 손익 지표(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000239</td>
+</tr>
+<tr>
+<td>501Y026</td>
+<td>5.1.2.4. 손익 지표(2007~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000239</td>
+</tr>
+<tr>
+<td>501Y027</td>
+<td>5.1.2.5. 손익 지표(1998~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000239</td>
+</tr>
+<tr>
+<td>501Y028</td>
+<td>5.1.2.6. 손익 지표(1990~1997, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000239</td>
+</tr>
+<tr>
+<td>0000000245</td>
+<td>5.1.3. 자산/자본 지표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000231</td>
+</tr>
+<tr>
+<td>501Y007</td>
+<td>5.1.3.1. 자산/자본 지표(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000245</td>
+</tr>
+<tr>
+<td>501Y029</td>
+<td>5.1.3.2. 자산/자본 지표(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000245</td>
+</tr>
+<tr>
+<td>501Y030</td>
+<td>5.1.3.3. 자산/자본 지표(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000245</td>
+</tr>
+<tr>
+<td>501Y031</td>
+<td>5.1.3.4. 자산/자본 지표(2007~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000245</td>
+</tr>
+<tr>
+<td>501Y032</td>
+<td>5.1.3.5. 자산/자본 지표(1998~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000245</td>
+</tr>
+<tr>
+<td>501Y033</td>
+<td>5.1.3.6. 자산/자본 지표(1990~1997, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000245</td>
+</tr>
+<tr>
+<td>0000000246</td>
+<td>5.1.4. 자산/자본 회전율</td>
+<td>-</td>
+<td>N</td>
+<td>0000000231</td>
+</tr>
+<tr>
+<td>501Y008</td>
+<td>5.1.4.1. 자산/자본 회전율(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000246</td>
+</tr>
+<tr>
+<td>501Y034</td>
+<td>5.1.4.2. 자산/자본 회전율(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000246</td>
+</tr>
+<tr>
+<td>501Y035</td>
+<td>5.1.4.3. 자산/자본 회전율(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000246</td>
+</tr>
+<tr>
+<td>501Y036</td>
+<td>5.1.4.4. 자산/자본 회전율(2007~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000246</td>
+</tr>
+<tr>
+<td>501Y037</td>
+<td>5.1.4.5. 자산/자본 회전율(1998~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000246</td>
+</tr>
+<tr>
+<td>501Y038</td>
+<td>5.1.4.6. 자산/자본 회전율(1990~1997, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000246</td>
+</tr>
+<tr>
+<td>0000000247</td>
+<td>5.1.5. 생산성 지표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000231</td>
+</tr>
+<tr>
+<td>501Y009</td>
+<td>5.1.5.1. 생산성 지표(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000247</td>
+</tr>
+<tr>
+<td>501Y039</td>
+<td>5.1.5.2. 생산성 지표(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000247</td>
+</tr>
+<tr>
+<td>501Y040</td>
+<td>5.1.5.3. 생산성 지표(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000247</td>
+</tr>
+<tr>
+<td>501Y041</td>
+<td>5.1.5.4. 생산성 지표(2007~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000247</td>
+</tr>
+<tr>
+<td>501Y042</td>
+<td>5.1.5.5. 생산성 지표(2002~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000247</td>
+</tr>
+<tr>
+<td>501Y043</td>
+<td>5.1.5.6. 생산성 지표(1998~2006, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000247</td>
+</tr>
+<tr>
+<td>501Y044</td>
+<td>5.1.5.7. 생산성 지표(1990~1997, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000247</td>
+</tr>
+<tr>
+<td>0000000248</td>
+<td>5.1.6. 분위수</td>
+<td>-</td>
+<td>N</td>
+<td>0000000231</td>
+</tr>
+<tr>
+<td>501Y086</td>
+<td>5.1.6.1. 분위수(제11차 한국표준산업분류, 2013~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000248</td>
+</tr>
+<tr>
+<td>0000000267</td>
+<td>5.2. 기업경영분석지표(분기)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000230</td>
+</tr>
+<tr>
+<td>502Y001</td>
+<td>5.2.1. 성장성 지표</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000267</td>
+</tr>
+<tr>
+<td>502Y002</td>
+<td>5.2.2. 손익 지표</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000267</td>
+</tr>
+<tr>
+<td>502Y003</td>
+<td>5.2.3. 자산/자본 지표</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000267</td>
+</tr>
+<tr>
+<td>502Y004</td>
+<td>5.2.4. 자산 회전율</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000267</td>
+</tr>
+<tr>
+<td>0000000401</td>
+<td>5.3. 재무상태표(연)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000230</td>
+</tr>
+<tr>
+<td>501Y001</td>
+<td>5.3.1. 재무상태표(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000401</td>
+</tr>
+<tr>
+<td>501Y049</td>
+<td>5.3.2. 재무상태표(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000401</td>
+</tr>
+<tr>
+<td>501Y050</td>
+<td>5.3.3. 재무상태표(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000401</td>
+</tr>
+<tr>
+<td>501Y051</td>
+<td>5.3.4. 재무상태표(2008~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000401</td>
+</tr>
+<tr>
+<td>501Y052</td>
+<td>5.3.5. 재무상태표(2000~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000401</td>
+</tr>
+<tr>
+<td>501Y053</td>
+<td>5.3.6. 재무상태표(1999, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000401</td>
+</tr>
+<tr>
+<td>501Y054</td>
+<td>5.3.7. 재무상태표(1997~1998, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000401</td>
+</tr>
+<tr>
+<td>501Y055</td>
+<td>5.3.8. 재무상태표(1990~1996, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000401</td>
+</tr>
+<tr>
+<td>0000000402</td>
+<td>5.4. 손익계산서(연)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000230</td>
+</tr>
+<tr>
+<td>501Y002</td>
+<td>5.4.1. 손익계산서(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000402</td>
+</tr>
+<tr>
+<td>501Y056</td>
+<td>5.4.2. 손익계산서(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000402</td>
+</tr>
+<tr>
+<td>501Y057</td>
+<td>5.4.3. 손익계산서(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000402</td>
+</tr>
+<tr>
+<td>501Y058</td>
+<td>5.4.4. 손익계산서(2008~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000402</td>
+</tr>
+<tr>
+<td>501Y059</td>
+<td>5.4.5. 손익계산서(2000~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000402</td>
+</tr>
+<tr>
+<td>501Y060</td>
+<td>5.4.6. 손익계산서(1999, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000402</td>
+</tr>
+<tr>
+<td>501Y061</td>
+<td>5.4.7. 손익계산서(1997~1998, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000402</td>
+</tr>
+<tr>
+<td>501Y062</td>
+<td>5.4.8. 손익계산서(1990~1996, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000402</td>
+</tr>
+<tr>
+<td>0000000403</td>
+<td>5.5. 제조원가명세서(연)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000230</td>
+</tr>
+<tr>
+<td>501Y003</td>
+<td>5.5.1. 제조원가명세서(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000403</td>
+</tr>
+<tr>
+<td>501Y063</td>
+<td>5.5.2. 제조원가명세서(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000403</td>
+</tr>
+<tr>
+<td>501Y064</td>
+<td>5.5.3. 제조원가명세서(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000403</td>
+</tr>
+<tr>
+<td>501Y065</td>
+<td>5.5.4. 제조원가명세서(2007~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000403</td>
+</tr>
+<tr>
+<td>501Y066</td>
+<td>5.5.5. 제조원가명세서(2000~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000403</td>
+</tr>
+<tr>
+<td>501Y067</td>
+<td>5.5.6. 제조원가명세서(1990~1999, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000403</td>
+</tr>
+<tr>
+<td>0000000404</td>
+<td>5.6. 이익잉여금 처분계산서(연)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000230</td>
+</tr>
+<tr>
+<td>501Y004</td>
+<td>5.6.1. 이익잉여금 처분계산서(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000404</td>
+</tr>
+<tr>
+<td>501Y068</td>
+<td>5.6.2. 이익잉여금 처분계산서(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000404</td>
+</tr>
+<tr>
+<td>501Y069</td>
+<td>5.6.3. 이익잉여금 처분계산서(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000404</td>
+</tr>
+<tr>
+<td>501Y070</td>
+<td>5.6.4. 이익잉여금 처분계산서(2007~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000404</td>
+</tr>
+<tr>
+<td>501Y071</td>
+<td>5.6.5. 이익잉여금 처분계산서(2000~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000404</td>
+</tr>
+<tr>
+<td>501Y072</td>
+<td>5.6.6. 이익잉여금 처분계산서(1990~1999, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000404</td>
+</tr>
+<tr>
+<td>0000000405</td>
+<td>5.7. 부가가치 구성(연)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000230</td>
+</tr>
+<tr>
+<td>501Y010</td>
+<td>5.7.1. 부가가치 구성(제11차 한국표준산업분류, 2009~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000405</td>
+</tr>
+<tr>
+<td>501Y073</td>
+<td>5.7.2. 부가가치 구성(중소기업기본법, 2015~2016)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000405</td>
+</tr>
+<tr>
+<td>501Y074</td>
+<td>5.7.3. 부가가치 구성(조세특례제한법, 2009~2014)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000405</td>
+</tr>
+<tr>
+<td>501Y075</td>
+<td>5.7.4. 부가가치 구성(2007~2010, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000405</td>
+</tr>
+<tr>
+<td>501Y076</td>
+<td>5.7.5. 부가가치 구성(2002~2007, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000405</td>
+</tr>
+<tr>
+<td>501Y077</td>
+<td>5.7.6. 부가가치 구성(1998~2006, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000405</td>
+</tr>
+<tr>
+<td>501Y078</td>
+<td>5.7.7. 부가가치 구성(1990~1997, 표본조사)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000405</td>
+</tr>
+<tr>
+<td>0000000406</td>
+<td>5.8. 현금흐름표(연)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000230</td>
+</tr>
+<tr>
+<td>0000000407</td>
+<td>5.8.1. 현금흐름표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000406</td>
+</tr>
+<tr>
+<td>501Y013</td>
+<td>5.8.1.1. 현금흐름표(2012~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000407</td>
+</tr>
+<tr>
+<td>501Y079</td>
+<td>5.8.1.2. 현금흐름표(2008~2011)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000407</td>
+</tr>
+<tr>
+<td>501Y080</td>
+<td>5.8.1.3. 현금흐름표(1995~2007)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000407</td>
+</tr>
+<tr>
+<td>0000000408</td>
+<td>5.8.2. 현금흐름관련 기타 주요 재무항목</td>
+<td>-</td>
+<td>N</td>
+<td>0000000406</td>
+</tr>
+<tr>
+<td>501Y014</td>
+<td>5.8.2.1. 현금흐름관련 기타 주요 재무항목(2012~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000408</td>
+</tr>
+<tr>
+<td>501Y081</td>
+<td>5.8.2.2. 현금흐름관련 기타 주요 재무항목(2008~2011)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000408</td>
+</tr>
+<tr>
+<td>501Y082</td>
+<td>5.8.2.3. 현금흐름관련 기타 주요 재무항목(1995~2007)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000408</td>
+</tr>
+<tr>
+<td>0000000409</td>
+<td>5.8.3. 현금흐름비율</td>
+<td>-</td>
+<td>N</td>
+<td>0000000406</td>
+</tr>
+<tr>
+<td>501Y015</td>
+<td>5.8.3.1. 현금흐름비율(2012~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000409</td>
+</tr>
+<tr>
+<td>501Y083</td>
+<td>5.8.3.2. 현금흐름비율(2008~2011)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000409</td>
+</tr>
+<tr>
+<td>501Y084</td>
+<td>5.8.3.3. 현금흐름비율(1995~2007)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000409</td>
+</tr>
+<tr>
+<td>0000000411</td>
+<td>5.9. 지역별 기업경영분석</td>
+<td>-</td>
+<td>N</td>
+<td>0000000230</td>
+</tr>
+<tr>
+<td>0000000602</td>
+<td>5.9.1. 기업경영분석(11차한국표준산업분류)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000411</td>
+</tr>
+<tr>
+<td>503Y005</td>
+<td>5.9.1.1. 성장성 지표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>503Y006</td>
+<td>5.9.1.2. 손익 지표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>503Y007</td>
+<td>5.9.1.3. 자산/자본 지표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>503Y008</td>
+<td>5.9.1.4. 자산/자본 회전율</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>503Y009</td>
+<td>5.9.1.5. 생산성 지표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>503Y001</td>
+<td>5.9.1.6. 재무상태표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>503Y002</td>
+<td>5.9.1.7. 손익계산서</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>503Y003</td>
+<td>5.9.1.8. 제조원가명세서</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>503Y004</td>
+<td>5.9.1.9. 이익잉여금 처분계산서</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>503Y010</td>
+<td>5.9.1.10. 부가가치 구성</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000602</td>
+</tr>
+<tr>
+<td>0000000603</td>
+<td>5.9.2. 기업경영분석(10차한국표준산업분류, 2015 ~ 2023)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000411</td>
+</tr>
+<tr>
+<td>503Y105</td>
+<td>5.9.2.1. 성장성 지표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>503Y106</td>
+<td>5.9.2.2. 손익 지표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>503Y107</td>
+<td>5.9.2.3. 자산/자본 지표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>503Y108</td>
+<td>5.9.2.4. 자산/자본 회전율</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>503Y109</td>
+<td>5.9.2.5. 생산성 지표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>503Y110</td>
+<td>5.9.2.6. 부가가치 구성</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>503Y101</td>
+<td>5.9.2.7. 재무상태표</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>503Y102</td>
+<td>5.9.2.8. 손익계산서</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>503Y103</td>
+<td>5.9.2.9. 제조원가명세서</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>503Y104</td>
+<td>5.9.2.10. 이익잉여금 처분계산서</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000603</td>
+</tr>
+<tr>
+<td>0000000283</td>
+<td>6. 심리지수</td>
+<td>-</td>
+<td>N</td>
+<td>*</td>
+</tr>
+<tr>
+<td>0000000284</td>
+<td>6.1. 기업경기조사</td>
+<td>-</td>
+<td>N</td>
+<td>0000000283</td>
+</tr>
+<tr>
+<td>0000000432</td>
+<td>6.1.1. 기업경기조사</td>
+<td>-</td>
+<td>N</td>
+<td>0000000284</td>
+</tr>
+<tr>
+<td>512Y013</td>
+<td>6.1.1.1. 기업경기조사(실적)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000432</td>
+</tr>
+<tr>
+<td>512Y014</td>
+<td>6.1.1.2. 기업경기조사(전망)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000432</td>
+</tr>
+<tr>
+<td>512Y015</td>
+<td>6.1.1.3. 기업경기조사(매출액가중 실적)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000432</td>
+</tr>
+<tr>
+<td>512Y016</td>
+<td>6.1.1.4. 기업경기조사(매출액가중 전망)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000432</td>
+</tr>
+<tr>
+<td>512Y017</td>
+<td>6.1.1.5. 기업경기조사((구)실적(~2012.6))</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000432</td>
+</tr>
+<tr>
+<td>512Y018</td>
+<td>6.1.1.6. 기업경기조사((구)전망(~2012.7))</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000432</td>
+</tr>
+<tr>
+<td>0000000433</td>
+<td>6.1.2. 업종별 기업경기조사, 2009.8~</td>
+<td>-</td>
+<td>N</td>
+<td>0000000284</td>
+</tr>
+<tr>
+<td>512Y007</td>
+<td>6.1.2.1. 업종별 기업경기실사지수, 2009.8~(실적)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000433</td>
+</tr>
+<tr>
+<td>512Y008</td>
+<td>6.1.2.2. 업종별 기업경기실사지수, 2009.9~(전망)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000433</td>
+</tr>
+<tr>
+<td>0000000434</td>
+<td>6.1.3. 업종별 기업경기조사, ~2009.8</td>
+<td>-</td>
+<td>N</td>
+<td>0000000284</td>
+</tr>
+<tr>
+<td>512Y001</td>
+<td>6.1.3.1. 업종별 기업경기실사지수, ~2009.7(실적)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000434</td>
+</tr>
+<tr>
+<td>512Y002</td>
+<td>6.1.3.2. 업종별 기업경기실사지수, ~2009.8(전망)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000434</td>
+</tr>
+<tr>
+<td>512Y021</td>
+<td>6.1.4. 경영애로사항</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000284</td>
+</tr>
+<tr>
+<td>0000000435</td>
+<td>6.1.5. 지역별 기업경기조사</td>
+<td>-</td>
+<td>N</td>
+<td>0000000284</td>
+</tr>
+<tr>
+<td>512Y019</td>
+<td>6.1.5.1. 지역별 기업경기조사(실적(2013.1~))</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000435</td>
+</tr>
+<tr>
+<td>512Y020</td>
+<td>6.1.5.2. 지역별 기업경기조사(전망(2013.2~))</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000435</td>
+</tr>
+<tr>
+<td>512Y011</td>
+<td>6.1.5.3. 지역별 기업경기조사(실적(~2012.12))</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000435</td>
+</tr>
+<tr>
+<td>512Y012</td>
+<td>6.1.5.4. 지역별 기업경기조사(전망(~2013.1))</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000435</td>
+</tr>
+<tr>
+<td>0000000436</td>
+<td>6.2. 소비자동향조사</td>
+<td>-</td>
+<td>N</td>
+<td>0000000283</td>
+</tr>
+<tr>
+<td>511Y002</td>
+<td>6.2.1. 소비자동향조사(전국, 월, 2008.9~)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000436</td>
+</tr>
+<tr>
+<td>511Y001</td>
+<td>6.2.2. 소비자동향조사(전국, 분기, 1995.3/4~2008.2/4)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000436</td>
+</tr>
+<tr>
+<td>511Y003</td>
+<td>6.2.3. 기대인플레이션율(전국, 월)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000436</td>
+</tr>
+<tr>
+<td>511Y004</td>
+<td>6.2.4. 소비자동향조사(지역, 월)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000436</td>
+</tr>
+<tr>
+<td>513Y001</td>
+<td>6.3. 경제심리지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000283</td>
+</tr>
+<tr>
+<td>521Y001</td>
+<td>6.4. 뉴스심리지수(실험적 통계)</td>
+<td>D</td>
+<td>Y</td>
+<td>0000000283</td>
+</tr>
+<tr>
+<td>0000000290</td>
+<td>6.5. 대출행태서베이</td>
+<td>-</td>
+<td>N</td>
+<td>0000000283</td>
+</tr>
+<tr>
+<td>514Y001</td>
+<td>6.5.1. 대출행태서베이(대출태도)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000290</td>
+</tr>
+<tr>
+<td>514Y002</td>
+<td>6.5.2. 대출행태서베이(신용위험)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000290</td>
+</tr>
+<tr>
+<td>514Y003</td>
+<td>6.5.3. 대출행태서베이(대출수요)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000290</td>
+</tr>
+<tr>
+<td>0000000313</td>
+<td>7. 지급결제</td>
+<td>-</td>
+<td>N</td>
+<td>*</td>
+</tr>
+<tr>
+<td>0000000314</td>
+<td>7.1. 어음교환 및 부도</td>
+<td>-</td>
+<td>N</td>
+<td>0000000313</td>
+</tr>
+<tr>
+<td>801Y002</td>
+<td>7.1.1. 어음교환 및 부도</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000314</td>
+</tr>
+<tr>
+<td>801Y003</td>
+<td>7.1.2. 지역별 어음부도율</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000314</td>
+</tr>
+<tr>
+<td>0000000323</td>
+<td>7.2. 한은금융망 통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000313</td>
+</tr>
+<tr>
+<td>606Y002</td>
+<td>7.2.1. 한은금융망</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000323</td>
+</tr>
+<tr>
+<td>0000000448</td>
+<td>7.2.2. 회계결제시스템 통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000323</td>
+</tr>
+<tr>
+<td>603Y001</td>
+<td>7.2.2.1. 한은금융망결제통계표</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000448</td>
+</tr>
+<tr>
+<td>603Y010</td>
+<td>7.2.2.2. 지급결제동향</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000448</td>
+</tr>
+<tr>
+<td>0000000422</td>
+<td>7.3. 지로시스템 및 금융공동망</td>
+<td>-</td>
+<td>N</td>
+<td>0000000313</td>
+</tr>
+<tr>
+<td>604Y003</td>
+<td>7.3.1. 지로시스템</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000422</td>
+</tr>
+<tr>
+<td>605Y012</td>
+<td>7.3.2. 금융공동망</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000422</td>
+</tr>
+<tr>
+<td>0000000423</td>
+<td>7.4. BIS기준통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000313</td>
+</tr>
+<tr>
+<td>602Y001</td>
+<td>7.4.1. 결제시스템별 통계</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000423</td>
+</tr>
+<tr>
+<td>602Y002</td>
+<td>7.4.2. 지급수단별 통계</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000423</td>
+</tr>
+<tr>
+<td>0000000425</td>
+<td>7.5. 신용카드</td>
+<td>-</td>
+<td>N</td>
+<td>0000000313</td>
+</tr>
+<tr>
+<td>601Y003</td>
+<td>7.5.1. 신용카드</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000425</td>
+</tr>
+<tr>
+<td>601Y002</td>
+<td>7.5.2. 지역별 소비유형별 개인 신용카드</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000425</td>
+</tr>
+<tr>
+<td>0000000302</td>
+<td>7.6. 전자금융통계/금융정보화통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000313</td>
+</tr>
+<tr>
+<td>0000000303</td>
+<td>7.6.1. 전자금융통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000302</td>
+</tr>
+<tr>
+<td>631Y001</td>
+<td>7.6.1.1. 인터넷뱅킹</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000303</td>
+</tr>
+<tr>
+<td>632Y001</td>
+<td>7.6.1.2. 전자어음</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000303</td>
+</tr>
+<tr>
+<td>633Y001</td>
+<td>7.6.1.3. 전자화폐</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000303</td>
+</tr>
+<tr>
+<td>0000000307</td>
+<td>7.6.1.4. 전자지급서비스</td>
+<td>-</td>
+<td>N</td>
+<td>0000000303</td>
+</tr>
+<tr>
+<td>633Y002</td>
+<td>7.6.1.4.1. 전자지급결제대행</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000307</td>
+</tr>
+<tr>
+<td>633Y003</td>
+<td>7.6.1.4.2. 결제대금예치</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000307</td>
+</tr>
+<tr>
+<td>633Y004</td>
+<td>7.6.1.4.3. 선불전자지급수단</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000307</td>
+</tr>
+<tr>
+<td>633Y005</td>
+<td>7.6.1.4.4. 전자고지결제</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000307</td>
+</tr>
+<tr>
+<td>633Y006</td>
+<td>7.6.1.4.5. 직불전자지급수단</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000307</td>
+</tr>
+<tr>
+<td>0000000308</td>
+<td>7.6.2. 금융정보화 통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000302</td>
+</tr>
+<tr>
+<td>0000000309</td>
+<td>7.6.2.1. 은행</td>
+<td>-</td>
+<td>N</td>
+<td>0000000308</td>
+</tr>
+<tr>
+<td>621Y001</td>
+<td>7.6.2.1.1. 전산직원 현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000309</td>
+</tr>
+<tr>
+<td>621Y002</td>
+<td>7.6.2.1.2. 전산사무기기 현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000309</td>
+</tr>
+<tr>
+<td>621Y003</td>
+<td>7.6.2.1.3. 전산예산현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000309</td>
+</tr>
+<tr>
+<td>621Y004</td>
+<td>7.6.2.1.4. 전자금융서비스현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000309</td>
+</tr>
+<tr>
+<td>621Y005</td>
+<td>7.6.2.1.5. CD/ATM 현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000309</td>
+</tr>
+<tr>
+<td>621Y006</td>
+<td>7.6.2.1.6. 직불카드 발급 및 이용현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000309</td>
+</tr>
+<tr>
+<td>621Y007</td>
+<td>7.6.2.1.7. 체크카드 발급 및 이용현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000309</td>
+</tr>
+<tr>
+<td>621Y008</td>
+<td>7.6.2.1.8. 금융공동망현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000309</td>
+</tr>
+<tr>
+<td>621Y009</td>
+<td>7.6.2.1.9. 금융공동망의 외부정보망과의 접속현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000309</td>
+</tr>
+<tr>
+<td>0000000310</td>
+<td>7.6.2.2. 증권</td>
+<td>-</td>
+<td>N</td>
+<td>0000000308</td>
+</tr>
+<tr>
+<td>621Y010</td>
+<td>7.6.2.2.1. 전산직원 현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000310</td>
+</tr>
+<tr>
+<td>621Y011</td>
+<td>7.6.2.2.2. 전산사무기기현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000310</td>
+</tr>
+<tr>
+<td>621Y012</td>
+<td>7.6.2.2.3. 전산예산현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000310</td>
+</tr>
+<tr>
+<td>621Y013</td>
+<td>7.6.2.2.4. 전자금융서비스현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000310</td>
+</tr>
+<tr>
+<td>621Y014</td>
+<td>7.6.2.2.5. 자체 CD/ATM</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000310</td>
+</tr>
+<tr>
+<td>621Y015</td>
+<td>7.6.2.2.6. 증권정보망</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000310</td>
+</tr>
+<tr>
+<td>0000000311</td>
+<td>7.6.2.3. 보험</td>
+<td>-</td>
+<td>N</td>
+<td>0000000308</td>
+</tr>
+<tr>
+<td>621Y016</td>
+<td>7.6.2.3.1. 전산직원현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000311</td>
+</tr>
+<tr>
+<td>621Y017</td>
+<td>7.6.2.3.2. 전산사무기기현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000311</td>
+</tr>
+<tr>
+<td>621Y018</td>
+<td>7.6.2.3.3. 전산예산현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000311</td>
+</tr>
+<tr>
+<td>621Y019</td>
+<td>7.6.2.3.4. 전자금융서비스현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000311</td>
+</tr>
+<tr>
+<td>621Y020</td>
+<td>7.6.2.3.5. 공동이용시스템이용실적</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000311</td>
+</tr>
+<tr>
+<td>0000000312</td>
+<td>7.6.2.4. 기타</td>
+<td>-</td>
+<td>N</td>
+<td>0000000308</td>
+</tr>
+<tr>
+<td>621Y021</td>
+<td>7.6.2.4.1. 전산직원현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000312</td>
+</tr>
+<tr>
+<td>621Y022</td>
+<td>7.6.2.4.2. 전산사무기기현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000312</td>
+</tr>
+<tr>
+<td>621Y023</td>
+<td>7.6.2.4.3. 전산예산현황</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000312</td>
+</tr>
+<tr>
+<td>0000000326</td>
+<td>8. 산업/가계/기타</td>
+<td>-</td>
+<td>N</td>
+<td>*</td>
+</tr>
+<tr>
+<td>0000000327</td>
+<td>8.1. 경제일반/경기</td>
+<td>-</td>
+<td>N</td>
+<td>0000000326</td>
+</tr>
+<tr>
+<td>901Y085</td>
+<td>8.1.1. 산업별 사업체수/종사자수</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000327</td>
+</tr>
+<tr>
+<td>901Y067</td>
+<td>8.1.2. 경기종합지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000327</td>
+</tr>
+<tr>
+<td>901Y066</td>
+<td>8.1.3. 설비투자지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000327</td>
+</tr>
+<tr>
+<td>901Y033</td>
+<td>8.1.4. 전산업생산지수(농림어업제외)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000327</td>
+</tr>
+<tr>
+<td>0000000383</td>
+<td>8.2. 농림어업</td>
+<td>-</td>
+<td>N</td>
+<td>0000000326</td>
+</tr>
+<tr>
+<td>901Y068</td>
+<td>8.2.1. 농어가 인구/가구수</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000383</td>
+</tr>
+<tr>
+<td>901Y016</td>
+<td>8.2.2. 농림생산지수</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000383</td>
+</tr>
+<tr>
+<td>901Y069</td>
+<td>8.2.3. 경지면적</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000383</td>
+</tr>
+<tr>
+<td>901Y017</td>
+<td>8.2.4. 어업생산량</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000383</td>
+</tr>
+<tr>
+<td>901Y070</td>
+<td>8.2.5. 농어가 자산 및 부채</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000383</td>
+</tr>
+<tr>
+<td>0000000437</td>
+<td>8.3. 광업/제조업</td>
+<td>-</td>
+<td>N</td>
+<td>0000000326</td>
+</tr>
+<tr>
+<td>901Y032</td>
+<td>8.3.1. 산업별 생산/출하/재고 지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000437</td>
+</tr>
+<tr>
+<td>901Y034</td>
+<td>8.3.2. 재별 제조업생산지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000437</td>
+</tr>
+<tr>
+<td>901Y036</td>
+<td>8.3.3. 설비용 기계류 생산지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000437</td>
+</tr>
+<tr>
+<td>901Y039</td>
+<td>8.3.4. 품목별 광공업 생산·출하·재고·내수·수출량</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000437</td>
+</tr>
+<tr>
+<td>901Y026</td>
+<td>8.3.5. 제조업 재고율</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000437</td>
+</tr>
+<tr>
+<td>901Y035</td>
+<td>8.3.6. 제조업 생산능력 및 가동률 지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000437</td>
+</tr>
+<tr>
+<td>901Y025</td>
+<td>8.3.7. 제조업 평균가동률</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000437</td>
+</tr>
+<tr>
+<td>901Y018</td>
+<td>8.3.8. 기계수주액</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000437</td>
+</tr>
+<tr>
+<td>0000000438</td>
+<td>8.4. 건설/에너지</td>
+<td>-</td>
+<td>N</td>
+<td>0000000326</td>
+</tr>
+<tr>
+<td>901Y020</td>
+<td>8.4.1. 국내건설수주액</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y104</td>
+<td>8.4.2. 건설기성액</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y103</td>
+<td>8.4.3. 건축착공현황</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y037</td>
+<td>8.4.4. 건축허가현황</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y074</td>
+<td>8.4.5. 미분양주택현황</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y105</td>
+<td>8.4.6. 주택건설인허가실적</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y106</td>
+<td>8.4.7. 주택보유수/주택보급률</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y071</td>
+<td>8.4.8. 발전전력량</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y019</td>
+<td>8.4.9. 부문별전력사용량</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y072</td>
+<td>8.4.10. 일차에너지 공급</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>901Y073</td>
+<td>8.4.11. 석유제품수급</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000438</td>
+</tr>
+<tr>
+<td>0000000439</td>
+<td>8.5. 서비스업</td>
+<td>-</td>
+<td>N</td>
+<td>0000000326</td>
+</tr>
+<tr>
+<td>901Y038</td>
+<td>8.5.1. 산업별 서비스업생산지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000439</td>
+</tr>
+<tr>
+<td>901Y100</td>
+<td>8.5.2. 재별 및 상품군별 판매액지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000439</td>
+</tr>
+<tr>
+<td>901Y098</td>
+<td>8.5.3. 소매업태별 판매액지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000439</td>
+</tr>
+<tr>
+<td>901Y101</td>
+<td>8.5.4. 도소매업 재고액지수</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000439</td>
+</tr>
+<tr>
+<td>901Y108</td>
+<td>8.5.5. 여객수송실적</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000439</td>
+</tr>
+<tr>
+<td>901Y099</td>
+<td>8.5.6. 자동차등록대수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000439</td>
+</tr>
+<tr>
+<td>901Y075</td>
+<td>8.5.7. 정보통신서비스 이용실적</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000439</td>
+</tr>
+<tr>
+<td>0000000440</td>
+<td>8.6. 인구/노동</td>
+<td>-</td>
+<td>N</td>
+<td>0000000326</td>
+</tr>
+<tr>
+<td>901Y028</td>
+<td>8.6.1. 추계인구/고령인구비율/합계출산율</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000440</td>
+</tr>
+<tr>
+<td>901Y027</td>
+<td>8.6.2. 경제활동인구</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000440</td>
+</tr>
+<tr>
+<td>901Y086</td>
+<td>8.6.3. 직종별평균임금</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000440</td>
+</tr>
+<tr>
+<td>901Y052</td>
+<td>8.6.4. 산업/규모별 임금 및 근로시간</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000440</td>
+</tr>
+<tr>
+<td>901Y107</td>
+<td>8.6.5. 노동생산성지수</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000440</td>
+</tr>
+<tr>
+<td>901Y088</td>
+<td>8.6.6. 단위노동비용지수</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000440</td>
+</tr>
+<tr>
+<td>901Y102</td>
+<td>8.6.7. 시간당 명목임금지수</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000440</td>
+</tr>
+<tr>
+<td>901Y083</td>
+<td>8.6.8. 고용보험 가입자수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000440</td>
+</tr>
+<tr>
+<td>901Y084</td>
+<td>8.6.9. 실업급여수급실적</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000440</td>
+</tr>
+<tr>
+<td>0000000700</td>
+<td>8.7. 가계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000326</td>
+</tr>
+<tr>
+<td>0000000701</td>
+<td>8.7.1. 가계금융복지조사(2017~)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000700</td>
+</tr>
+<tr>
+<td>903Y201</td>
+<td>8.7.1.1. 시도별 자산, 부채, 소득 현황(2017~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>903Y202</td>
+<td>8.7.1.2. 주택종류별 자산, 부채, 소득 현황(2017~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>903Y203</td>
+<td>8.7.1.3. 입주형태별 자산, 부채, 소득 현황(2017~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>903Y204</td>
+<td>8.7.1.4. 가구원수별 자산, 부채, 소득 현황(2017~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>903Y205</td>
+<td>8.7.1.5. 가구주연령계층별(10세) 자산 부채 소득 현황(2022~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>903Y206</td>
+<td>8.7.1.5. 가구주연령계층별(10세) 자산, 부채, 소득 현황(2017~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>903Y209</td>
+<td>8.7.1.6. 가구주 종사상지위별 자산, 부채, 소득 현황(2017~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>903Y210</td>
+<td>8.7.1.7. 소득5분위별 자산, 부채, 소득 현황(2017~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>903Y211</td>
+<td>8.7.1.8. 자산5분위별 자산, 부채, 소득 현황(2017~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>903Y212</td>
+<td>8.7.1.9. 순자산5분위별 자산, 부채, 소득 현황(2017~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000701</td>
+</tr>
+<tr>
+<td>0000000703</td>
+<td>8.7.2. 가계금융복지조사(2012~2017)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000700</td>
+</tr>
+<tr>
+<td>903Y001</td>
+<td>8.7.2.1. 시도별 자산, 부채, 소득 현황(2012~2017)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000703</td>
+</tr>
+<tr>
+<td>903Y002</td>
+<td>8.7.2.2. 주택종류별 자산, 부채, 소득 현황(2012~2017)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000703</td>
+</tr>
+<tr>
+<td>903Y003</td>
+<td>8.7.2.3. 입주형태별 자산, 부채, 소득 현황(2012~2017)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000703</td>
+</tr>
+<tr>
+<td>903Y004</td>
+<td>8.7.2.4. 가구원수별 자산, 부채, 소득 현황(2012~2017)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000703</td>
+</tr>
+<tr>
+<td>903Y006</td>
+<td>8.7.2.5. 가구주연령계층별(10세) 자산, 부채, 소득 현황(2012~2017)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000703</td>
+</tr>
+<tr>
+<td>903Y009</td>
+<td>8.7.2.6. 가구주 종사상지위별 자산, 부채, 소득 현황(2012~2017)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000703</td>
+</tr>
+<tr>
+<td>903Y010</td>
+<td>8.7.2.7. 소득5분위별 자산, 부채, 소득 현황(2012~2017)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000703</td>
+</tr>
+<tr>
+<td>903Y011</td>
+<td>8.7.2.8. 자산5분위별 자산, 부채, 소득 현황(2012~2017)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000703</td>
+</tr>
+<tr>
+<td>903Y012</td>
+<td>8.7.2.9. 순자산5분위별 자산, 부채, 소득 현황(2012~2017)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000703</td>
+</tr>
+<tr>
+<td>901Y112</td>
+<td>8.7.3. 소득분배지표(2011~)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000700</td>
+</tr>
+<tr>
+<td>0000000955</td>
+<td>8.7.4. 가구당 월평균 가계수지(전국, 2인이상)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000700</td>
+</tr>
+<tr>
+<td>901Y117</td>
+<td>8.7.4.1. 가구당 월평균 가계수지(전국, 2인이상)(2019년~)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000955</td>
+</tr>
+<tr>
+<td>901Y040</td>
+<td>8.7.4.2. 가구당 월평균 가계수지(전국, 2인이상)(구분류, 2019~2024년)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000955</td>
+</tr>
+<tr>
+<td>0000000956</td>
+<td>8.7.5. 가구당 월평균 가계수지(전국, 1인이상)</td>
+<td>-</td>
+<td>N</td>
+<td>0000000700</td>
+</tr>
+<tr>
+<td>901Y116</td>
+<td>8.7.5.1. 가구당 월평균 가계수지(전국, 1인이상)(2019년~)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000956</td>
+</tr>
+<tr>
+<td>901Y050</td>
+<td>8.7.5.2. 가구당 월평균 가계수지(전국, 1인이상)(구분류, 2019~2024년)</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000956</td>
+</tr>
+<tr>
+<td>901Y024</td>
+<td>8.7.6. 농가가계수지</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000700</td>
+</tr>
+<tr>
+<td>0000000394</td>
+<td>9. 해외/북한</td>
+<td>-</td>
+<td>N</td>
+<td>*</td>
+</tr>
+<tr>
+<td>0000000395</td>
+<td>9.1. 주요국제통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000394</td>
+</tr>
+<tr>
+<td>0000000441</td>
+<td>9.1.1. 통화·금융</td>
+<td>-</td>
+<td>N</td>
+<td>0000000395</td>
+</tr>
+<tr>
+<td>902Y004</td>
+<td>9.1.1.1. 국제 주요국 본원통화</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000441</td>
+</tr>
+<tr>
+<td>902Y005</td>
+<td>9.1.1.2. 국제 주요국 광의통화</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000441</td>
+</tr>
+<tr>
+<td>902Y006</td>
+<td>9.1.1.3. 국제 주요국 중앙은행 정책금리</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000441</td>
+</tr>
+<tr>
+<td>0000000442</td>
+<td>9.1.2. 물가</td>
+<td>-</td>
+<td>N</td>
+<td>0000000395</td>
+</tr>
+<tr>
+<td>902Y007</td>
+<td>9.1.2.1. 국제 주요국 생산자물가지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000442</td>
+</tr>
+<tr>
+<td>902Y008</td>
+<td>9.1.2.2. 국제 주요국 소비자물가지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000442</td>
+</tr>
+<tr>
+<td>0000000443</td>
+<td>9.1.3. 국제수지/외환</td>
+<td>-</td>
+<td>N</td>
+<td>0000000395</td>
+</tr>
+<tr>
+<td>902Y009</td>
+<td>9.1.3.1. 국제 주요국 경상수지</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000443</td>
+</tr>
+<tr>
+<td>902Y010</td>
+<td>9.1.3.2. 국제 주요국 상품수지</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000443</td>
+</tr>
+<tr>
+<td>902Y011</td>
+<td>9.1.3.3. 국제 주요국 서비스수지</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000443</td>
+</tr>
+<tr>
+<td>902Y012</td>
+<td>9.1.3.4. 국제 주요국 수출(통관기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000443</td>
+</tr>
+<tr>
+<td>902Y013</td>
+<td>9.1.3.5. 국제 주요국 수입(통관기준)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000443</td>
+</tr>
+<tr>
+<td>902Y014</td>
+<td>9.1.3.6. 국제 주요국 외환보유액</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000443</td>
+</tr>
+<tr>
+<td>0000000444</td>
+<td>9.1.4. 국민소득</td>
+<td>-</td>
+<td>N</td>
+<td>0000000395</td>
+</tr>
+<tr>
+<td>902Y015</td>
+<td>9.1.4.1. 국제 주요국 경제성장률</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000444</td>
+</tr>
+<tr>
+<td>902Y016</td>
+<td>9.1.4.2. 국제 주요국 국내총생산(GDP)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000444</td>
+</tr>
+<tr>
+<td>902Y019</td>
+<td>9.1.4.3. 국제 주요국 국내총생산(PPP적용)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000444</td>
+</tr>
+<tr>
+<td>902Y017</td>
+<td>9.1.4.4. 국제 주요국 국민총소득(GNI)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000444</td>
+</tr>
+<tr>
+<td>902Y018</td>
+<td>9.1.4.5. 국제 주요국 1인당 GDP</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000444</td>
+</tr>
+<tr>
+<td>0000000445</td>
+<td>9.1.5. 산업/고용</td>
+<td>-</td>
+<td>N</td>
+<td>0000000395</td>
+</tr>
+<tr>
+<td>902Y020</td>
+<td>9.1.5.1. 국제 주요국 산업생산지수(계절변동조정)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000445</td>
+</tr>
+<tr>
+<td>902Y021</td>
+<td>9.1.5.2. 국제 주요국 실업률(계절변동조정)</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000445</td>
+</tr>
+<tr>
+<td>902Y022</td>
+<td>9.1.5.3. 국제 주요국 취업자수(계절변동조정)</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000445</td>
+</tr>
+<tr>
+<td>0000000446</td>
+<td>9.1.6. 주요시장지표</td>
+<td>-</td>
+<td>N</td>
+<td>0000000395</td>
+</tr>
+<tr>
+<td>902Y023</td>
+<td>9.1.6.1. 주요국제금리</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000446</td>
+</tr>
+<tr>
+<td>902Y002</td>
+<td>9.1.6.2. 국제 주요국 주가지수</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000446</td>
+</tr>
+<tr>
+<td>902Y003</td>
+<td>9.1.6.3. 국제상품가격</td>
+<td>M</td>
+<td>Y</td>
+<td>0000000446</td>
+</tr>
+<tr>
+<td>0000000396</td>
+<td>9.2. 북한 관련 통계</td>
+<td>-</td>
+<td>N</td>
+<td>0000000394</td>
+</tr>
+<tr>
+<td>0000000447</td>
+<td>9.2.1. 남북한 주요지표 비교</td>
+<td>-</td>
+<td>N</td>
+<td>0000000396</td>
+</tr>
+<tr>
+<td>251Y003</td>
+<td>9.2.1.1. 총량</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000447</td>
+</tr>
+<tr>
+<td>251Y002</td>
+<td>9.2.1.2. 한국/북한 배율</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000447</td>
+</tr>
+<tr>
+<td>251Y001</td>
+<td>9.2.2. 북한의 경제활동별 국내총생산</td>
+<td>A</td>
+<td>Y</td>
+<td>0000000396</td>
+</tr>
+<tr>
+<td>0000000704</td>
+<td>9.2.3. 북한의 시장물가와 환율</td>
+<td>-</td>
+<td>N</td>
+<td>0000000396</td>
+</tr>
+<tr>
+<td>252Y001</td>
+<td>9.2.3.1. 시장물가지수</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000704</td>
+</tr>
+<tr>
+<td>252Y002</td>
+<td>9.2.3.2. 시장환율</td>
+<td>Q</td>
+<td>Y</td>
+<td>0000000704</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  맨위로
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/choo121600/ecos-reader" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
