@@ -85,7 +85,7 @@ class TestGetBaseRate:
             status=200,
         )
 
-        df = get_base_rate(start_date="20240101", end_date="20241231", frequency="D")
+        df = get_base_rate(start_date="20240101", end_date="20241231", frequency="daily")
 
         assert not df.empty
         # 일별 TIME(YYYYMMDD)이 일자 단위 date 로 파싱되는지 확인

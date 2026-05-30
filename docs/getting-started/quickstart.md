@@ -73,11 +73,11 @@ print(df.tail())
 
 ```python
 # 분기별 실질 GDP
-df = ecos.get_gdp(frequency="Q", basis="real")
+df = ecos.get_gdp(frequency="quarterly", basis="real")
 print(df.tail())
 
 # 연간 명목 GDP
-df = ecos.get_gdp(frequency="A", basis="nominal")
+df = ecos.get_gdp(frequency="annual", basis="nominal")
 print(df.tail())
 ```
 
@@ -127,7 +127,7 @@ df = ecos.get_treasury_yield(
 ```python
 # YYYYQN 형식
 df = ecos.get_gdp(
-    frequency="Q",
+    frequency="quarterly",
     start_date="2020Q1",
     end_date="2024Q4"
 )
@@ -138,7 +138,7 @@ df = ecos.get_gdp(
 ```python
 # YYYY 형식
 df = ecos.get_gdp(
-    frequency="A",
+    frequency="annual",
     start_date="2015",
     end_date="2024"
 )

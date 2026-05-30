@@ -25,13 +25,14 @@ from ..constants import (
 )
 from ..parser import normalize_stat_result, parse_response
 from ._dates import default_daily, default_monthly
+from ._frequency import normalize_frequency
 from ._registry import get_indicator
 
 
 def get_base_rate(
     start_date: str | None = None,
     end_date: str | None = None,
-    frequency: Literal["D", "M"] = "M",
+    frequency: Literal["daily", "monthly", "D", "M"] = "monthly",
 ) -> pd.DataFrame:
     """
     한국은행 기준금리를 조회합니다.
@@ -45,9 +46,13 @@ def get_base_rate(
         조회 종료일, 기본값: 현재. (형식은 ``start_date`` 와 동일)
     frequency : str
         조회 주기 (ECOS 통계표 ``722Y001`` 은 일별 원천)
-        - 'M': 월별 (기본값, 날짜 YYYYMM)
-        - 'D': 일별 (날짜 YYYYMMDD). 기준금리는 변경일에만 갱신되어
+        - 'monthly': 월별 (기본값, 날짜 YYYYMM)
+        - 'daily': 일별 (날짜 YYYYMMDD). 기준금리는 변경일에만 갱신되어
           결과가 sparse 합니다 (변경이 없는 날은 행이 없음).
+
+        레거시 단일 문자(``'M'``/``'D'``)도 당분간 허용되나
+        :class:`~ecos.EcosDeprecationWarning` 과 함께 deprecated이며
+        v0.4.0에서 제거됩니다.
 
     Returns
     -------
@@ -72,11 +77,12 @@ def get_base_rate(
     ...     start_date="20200101", end_date="20231231", frequency="D"
     ... )
     """
-    if frequency not in ("D", "M"):
-        raise ValueError("frequency는 'D' 또는 'M' 중 하나여야 합니다.")
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency, allowed=("daily", "monthly"), func_name="get_base_rate"
+    )
 
     # 월별(기본)은 선언적 레지스트리(#16)에 위임 — base_rate의 단일 진실원천.
-    if frequency == "M":
+    if frequency == "monthly":
         return get_indicator("base_rate", start_date=start_date, end_date=end_date)
 
     # 일별(변경일 단위, sparse)은 별도 포맷이라 직접 조회.
@@ -200,12 +206,12 @@ def get_yield_spread(
     """
     # 장기/단기 수익률 조회
     long_df = get_treasury_yield(
-        maturity=long_maturity,  # type: ignore
+        maturity=long_maturity,
         start_date=start_date,
         end_date=end_date,
     )
     short_df = get_treasury_yield(
-        maturity=short_maturity,  # type: ignore
+        maturity=short_maturity,
         start_date=start_date,
         end_date=end_date,
     )

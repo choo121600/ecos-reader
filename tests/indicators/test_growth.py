@@ -34,7 +34,7 @@ class TestGetGdp:
             status=200,
         )
 
-        df = get_gdp(frequency="Q", start_date="2024Q1", end_date="2024Q2")
+        df = get_gdp(frequency="quarterly", start_date="2024Q1", end_date="2024Q2")
 
         assert not df.empty
         assert "date" in df.columns
@@ -63,7 +63,7 @@ class TestGetGdp:
             status=200,
         )
 
-        df = get_gdp(frequency="A", start_date="2023", end_date="2023")
+        df = get_gdp(frequency="annual", start_date="2023", end_date="2023")
         assert not df.empty
 
     @responses.activate
@@ -89,7 +89,7 @@ class TestGetGdp:
             status=200,
         )
 
-        df = get_gdp(frequency="Q", basis="nominal", start_date="2024Q1", end_date="2024Q1")
+        df = get_gdp(frequency="quarterly", basis="nominal", start_date="2024Q1", end_date="2024Q1")
         assert not df.empty
 
 
@@ -152,7 +152,7 @@ class TestGetGdpGrowthRate:
             status=200,
         )
 
-        df = get_gdp_growth_rate(frequency="Q", start_date="2024Q1", end_date="2024Q1")
+        df = get_gdp_growth_rate(frequency="quarterly", start_date="2024Q1", end_date="2024Q1")
 
         assert not df.empty
         assert "date" in df.columns
@@ -183,7 +183,7 @@ class TestGetGdpGrowthRate:
             status=200,
         )
 
-        df = get_gdp_growth_rate(frequency="A", start_date="2023", end_date="2023")
+        df = get_gdp_growth_rate(frequency="annual", start_date="2023", end_date="2023")
 
         assert not df.empty
         assert df["value"].iloc[0] == 1.4
@@ -220,7 +220,7 @@ class TestGetGdpByIndustry:
             df = get_gdp_by_industry(
                 basis="real",
                 seasonal_adj=True,
-                frequency="Q",
+                frequency="quarterly",
                 start_date="2024Q1",
                 end_date="2024Q1",
             )
@@ -258,7 +258,7 @@ class TestGetGdpByIndustry:
             df = get_gdp_by_industry(
                 basis="real",
                 seasonal_adj=False,
-                frequency="A",
+                frequency="annual",
                 start_date="2023",
                 end_date="2023",
             )
@@ -269,7 +269,7 @@ class TestGetGdpByIndustry:
     def test_get_gdp_by_industry_invalid_seasonal_adj_annual(self):
         """계절조정=True + 연간 조합은 ValueError"""
         with pytest.raises(ValueError, match="seasonal_adj=True"):
-            get_gdp_by_industry(basis="real", seasonal_adj=True, frequency="A")
+            get_gdp_by_industry(basis="real", seasonal_adj=True, frequency="annual")
 
 
 @pytest.mark.usefixtures("set_api_key")
@@ -302,7 +302,7 @@ class TestGetGdpByExpenditure:
         with pytest.warns(EcosPartialCoverageWarning):
             df = get_gdp_by_expenditure(
                 basis="real",
-                frequency="Q",
+                frequency="quarterly",
                 start_date="2024Q1",
                 end_date="2024Q1",
             )
@@ -339,7 +339,7 @@ class TestGetGdpByExpenditure:
         with pytest.warns(EcosPartialCoverageWarning):
             df = get_gdp_by_expenditure(
                 basis="nominal",
-                frequency="A",
+                frequency="annual",
                 start_date="2023",
                 end_date="2023",
             )
@@ -377,7 +377,7 @@ class TestGetGdpDeflatorByIndustry:
 
         with pytest.warns(EcosPartialCoverageWarning):
             df = get_gdp_deflator_by_industry(
-                frequency="Q",
+                frequency="quarterly",
                 start_date="2024Q1",
                 end_date="2024Q1",
             )
@@ -413,7 +413,7 @@ class TestGetGdpDeflatorByIndustry:
 
         with pytest.warns(EcosPartialCoverageWarning):
             df = get_gdp_deflator_by_industry(
-                frequency="A",
+                frequency="annual",
                 start_date="2023",
                 end_date="2023",
             )

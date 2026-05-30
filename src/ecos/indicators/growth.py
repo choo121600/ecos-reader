@@ -27,13 +27,14 @@ from ..constants import (
 from ..parser import normalize_stat_result, parse_response
 from ._dates import default_annual, default_quarterly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
+from ._frequency import normalize_frequency
 
 if TYPE_CHECKING:
     import pandas as pd
 
 
 def get_gdp(
-    frequency: Literal["Q", "A"] = "Q",
+    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
     basis: Literal["real", "nominal"] = "real",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -45,8 +46,11 @@ def get_gdp(
     ----------
     frequency : str
         조회 주기
-        - 'Q': 분기 (기본값)
-        - 'A': 연간
+        - 'quarterly': 분기 (기본값)
+        - 'annual': 연간
+
+        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
+        deprecated이며 v0.4.0에서 제거됩니다.
     basis : str
         GDP 기준
         - 'real': 실질 GDP (기본값)
@@ -77,17 +81,19 @@ def get_gdp(
     >>> df = ecos.get_gdp()  # 분기별 실질 GDP
     >>> df.head()
 
-    >>> df = ecos.get_gdp(frequency="A", basis="nominal")  # 연간 명목 GDP
+    >>> df = ecos.get_gdp(frequency="annual", basis="nominal")  # 연간 명목 GDP
     """
+    frequency = normalize_frequency(frequency, allowed=("quarterly", "annual"), func_name="get_gdp")  # type: ignore[assignment]
+
     # 통계코드 선택
     stat_code = STAT_GDP_REAL if basis == "real" else STAT_GDP_NOMINAL
 
     # 주기 코드
-    period = PERIOD_QUARTERLY if frequency == "Q" else PERIOD_ANNUAL
+    period = PERIOD_QUARTERLY if frequency == "quarterly" else PERIOD_ANNUAL
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        if frequency == "Q":
+        if frequency == "quarterly":
             default_start, default_end = default_quarterly(5)
         else:
             default_start, default_end = default_annual(10)
@@ -108,7 +114,7 @@ def get_gdp(
 
 
 def get_gdp_deflator(
-    frequency: Literal["Q", "A"] = "Q",
+    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -122,8 +128,11 @@ def get_gdp_deflator(
     ----------
     frequency : str
         조회 주기
-        - 'Q': 분기 (기본값)
-        - 'A': 연간
+        - 'quarterly': 분기 (기본값)
+        - 'annual': 연간
+
+        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
+        deprecated이며 v0.4.0에서 제거됩니다.
     start_date : str, optional
         조회 시작일
     end_date : str, optional
@@ -149,12 +158,16 @@ def get_gdp_deflator(
     >>> df = ecos.get_gdp_deflator()
     >>> df.head()
     """
+    frequency = normalize_frequency(
+        frequency, allowed=("quarterly", "annual"), func_name="get_gdp_deflator"
+    )  # type: ignore[assignment]
+
     # 주기 코드
-    period = PERIOD_QUARTERLY if frequency == "Q" else PERIOD_ANNUAL
+    period = PERIOD_QUARTERLY if frequency == "quarterly" else PERIOD_ANNUAL
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        if frequency == "Q":
+        if frequency == "quarterly":
             default_start, default_end = default_quarterly(5)
         else:
             default_start, default_end = default_annual(10)
@@ -175,7 +188,7 @@ def get_gdp_deflator(
 
 
 def get_gdp_growth_rate(
-    frequency: Literal["Q", "A"] = "Q",
+    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -188,8 +201,11 @@ def get_gdp_growth_rate(
     ----------
     frequency : str
         조회 주기
-        - 'Q': 분기 (기본값)
-        - 'A': 연간
+        - 'quarterly': 분기 (기본값)
+        - 'annual': 연간
+
+        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
+        deprecated이며 v0.4.0에서 제거됩니다.
     start_date : str, optional
         조회 시작일
         - 분기: YYYYQN 형식 (예: 2020Q1)
@@ -220,12 +236,16 @@ def get_gdp_growth_rate(
             date  value unit
     0 2024-01-01   2.3    %
     """
+    frequency = normalize_frequency(
+        frequency, allowed=("quarterly", "annual"), func_name="get_gdp_growth_rate"
+    )  # type: ignore[assignment]
+
     # 주기 코드
-    period = PERIOD_QUARTERLY if frequency == "Q" else PERIOD_ANNUAL
+    period = PERIOD_QUARTERLY if frequency == "quarterly" else PERIOD_ANNUAL
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        if frequency == "Q":
+        if frequency == "quarterly":
             default_start, default_end = default_quarterly(5)
         else:
             default_start, default_end = default_annual(10)
@@ -233,7 +253,7 @@ def get_gdp_growth_rate(
         end_date = end_date or default_end
 
     # 계절조정 시리즈(200Y104)는 분기만 — 연간 조회 시 원계열(200Y106)로 fallback.
-    stat_code = STAT_GDP_GROWTH_RATE if frequency == "Q" else STAT_GDP_GROWTH_RATE_ANNUAL
+    stat_code = STAT_GDP_GROWTH_RATE if frequency == "quarterly" else STAT_GDP_GROWTH_RATE_ANNUAL
 
     client = get_client()
     response = client.get_statistic_search(
@@ -251,7 +271,7 @@ def get_gdp_growth_rate(
 def get_gdp_by_industry(
     basis: Literal["real", "nominal"] = "real",
     seasonal_adj: bool = True,
-    frequency: Literal["Q", "A"] = "Q",
+    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -270,8 +290,11 @@ def get_gdp_by_industry(
         계절조정 여부 (기본값: True)
     frequency : str
         조회 주기
-        - 'Q': 분기 (기본값)
-        - 'A': 연간
+        - 'quarterly': 분기 (기본값)
+        - 'annual': 연간
+
+        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
+        deprecated이며 v0.4.0에서 제거됩니다.
     start_date : str, optional
         조회 시작일
     end_date : str, optional
@@ -308,10 +331,14 @@ def get_gdp_by_industry(
 
     >>> df = ecos.get_gdp_by_industry(basis="nominal", seasonal_adj=False)
     """
+    frequency = normalize_frequency(
+        frequency, allowed=("quarterly", "annual"), func_name="get_gdp_by_industry"
+    )  # type: ignore[assignment]
+
     # 계절조정 시리즈는 ECOS에서 분기만 제공 — 연간 조회는 데이터 없음.
-    if seasonal_adj and frequency == "A":
+    if seasonal_adj and frequency == "annual":
         raise ValueError(
-            "seasonal_adj=True와 frequency='A' 조합은 ECOS에서 제공되지 않습니다. "
+            "seasonal_adj=True와 frequency='annual' 조합은 ECOS에서 제공되지 않습니다. "
             "연간 데이터가 필요하면 seasonal_adj=False(원계열)로 호출하세요."
         )
 
@@ -328,11 +355,11 @@ def get_gdp_by_industry(
     stat_code = GDP_BY_INDUSTRY_VARIANTS[variant_key]
 
     # 주기 코드
-    period = PERIOD_QUARTERLY if frequency == "Q" else PERIOD_ANNUAL
+    period = PERIOD_QUARTERLY if frequency == "quarterly" else PERIOD_ANNUAL
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        if frequency == "Q":
+        if frequency == "quarterly":
             default_start, default_end = default_quarterly(5)
         else:
             default_start, default_end = default_annual(10)
@@ -354,7 +381,7 @@ def get_gdp_by_industry(
 
 def get_gdp_by_expenditure(
     basis: Literal["real", "nominal"] = "real",
-    frequency: Literal["Q", "A"] = "Q",
+    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -371,8 +398,11 @@ def get_gdp_by_expenditure(
         - 'nominal': 명목 GDP
     frequency : str
         조회 주기
-        - 'Q': 분기 (기본값)
-        - 'A': 연간
+        - 'quarterly': 분기 (기본값)
+        - 'annual': 연간
+
+        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
+        deprecated이며 v0.4.0에서 제거됩니다.
     start_date : str, optional
         조회 시작일
     end_date : str, optional
@@ -412,8 +442,12 @@ def get_gdp_by_expenditure(
 
     >>> df = ecos.get_gdp_by_expenditure(basis="nominal")
     """
+    frequency = normalize_frequency(
+        frequency, allowed=("quarterly", "annual"), func_name="get_gdp_by_expenditure"
+    )  # type: ignore[assignment]
+
     # 계절조정 시리즈(200Y107/108)는 분기만 — 연간 조회 시 원계열(200Y109/110)로 fallback.
-    season = "계절조정" if frequency == "Q" else "원계열"
+    season = "계절조정" if frequency == "quarterly" else "원계열"
     variant_key = f"{season}_{'실질' if basis == 'real' else '명목'}"
 
     if variant_key not in GDP_BY_EXPENDITURE_VARIANTS:
@@ -424,11 +458,11 @@ def get_gdp_by_expenditure(
     stat_code = GDP_BY_EXPENDITURE_VARIANTS[variant_key]
 
     # 주기 코드
-    period = PERIOD_QUARTERLY if frequency == "Q" else PERIOD_ANNUAL
+    period = PERIOD_QUARTERLY if frequency == "quarterly" else PERIOD_ANNUAL
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        if frequency == "Q":
+        if frequency == "quarterly":
             default_start, default_end = default_quarterly(5)
         else:
             default_start, default_end = default_annual(10)
@@ -449,7 +483,7 @@ def get_gdp_by_expenditure(
 
 
 def get_gdp_deflator_by_industry(
-    frequency: Literal["Q", "A"] = "Q",
+    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -462,8 +496,11 @@ def get_gdp_deflator_by_industry(
     ----------
     frequency : str
         조회 주기
-        - 'Q': 분기 (기본값)
-        - 'A': 연간
+        - 'quarterly': 분기 (기본값)
+        - 'annual': 연간
+
+        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
+        deprecated이며 v0.4.0에서 제거됩니다.
     start_date : str, optional
         조회 시작일
     end_date : str, optional
@@ -498,16 +535,20 @@ def get_gdp_deflator_by_industry(
     >>> df = ecos.get_gdp_deflator_by_industry()
     >>> df.head()
 
-    >>> df = ecos.get_gdp_deflator_by_industry(frequency="A")
+    >>> df = ecos.get_gdp_deflator_by_industry(frequency="annual")
     """
+    frequency = normalize_frequency(
+        frequency, allowed=("quarterly", "annual"), func_name="get_gdp_deflator_by_industry"
+    )  # type: ignore[assignment]
+
     # 주기 코드
-    period = PERIOD_QUARTERLY if frequency == "Q" else PERIOD_ANNUAL
+    period = PERIOD_QUARTERLY if frequency == "quarterly" else PERIOD_ANNUAL
 
     _warn_partial_coverage("get_gdp_deflator_by_industry", "1101", "농림어업")
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        if frequency == "Q":
+        if frequency == "quarterly":
             default_start, default_end = default_quarterly(5)
         else:
             default_start, default_end = default_annual(10)

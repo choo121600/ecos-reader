@@ -88,6 +88,7 @@ from .indicators import (
 
 # Warnings
 from .indicators._deprecations import EcosPartialCoverageWarning
+from .indicators._frequency import EcosDeprecationWarning
 
 # Logging API
 from .logging import setup_logging
@@ -122,6 +123,7 @@ __all__ = [
     "EcosValidationError",
     # Warnings
     "EcosPartialCoverageWarning",
+    "EcosDeprecationWarning",
     # 재정 지표
     "get_fiscal_balance",
     # 주식시장 지표

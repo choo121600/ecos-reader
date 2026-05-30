@@ -24,4 +24,7 @@ repos:
     rev: v1.13.0
     hooks:
       - id: mypy
+        # mypy strict(#17)는 src 패키지에만 적용 — CI(ci.yml)의 `mypy src/ecos`와
+        # 동일 범위. 테스트는 무타입 함수가 정상이므로 strict 대상에서 제외.
+        files: ^src/ecos/
         additional_dependencies: [types-requests]

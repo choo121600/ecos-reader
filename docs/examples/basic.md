@@ -133,13 +133,13 @@ print("6. GDP")
 print("=" * 60)
 
 # 분기별 실질 GDP
-df_gdp_q = ecos.get_gdp(frequency="Q", basis="real")
+df_gdp_q = ecos.get_gdp(frequency="quarterly", basis="real")
 print("분기별 실질 GDP:")
 print(df_gdp_q.tail())
 print()
 
 # 연간 명목 GDP
-df_gdp_a = ecos.get_gdp(frequency="A", basis="nominal")
+df_gdp_a = ecos.get_gdp(frequency="annual", basis="nominal")
 print("연간 명목 GDP:")
 print(df_gdp_a.tail())
 print()
@@ -308,7 +308,7 @@ def fetch_all_indicators():
         futures = {
             'base_rate': executor.submit(ecos.get_base_rate),
             'cpi': executor.submit(ecos.get_cpi),
-            'gdp': executor.submit(ecos.get_gdp, "Q", "real"),
+            'gdp': executor.submit(ecos.get_gdp, "quarterly", "real"),
             'm2': executor.submit(ecos.get_money_supply, "M2")
         }
 
@@ -361,7 +361,7 @@ import pandas as pd
 # 여러 지표 조회
 base_rate = ecos.get_base_rate(start_date="202001")
 cpi = ecos.get_cpi(start_date="202001")
-gdp = ecos.get_gdp(frequency="Q", start_date="2020Q1")
+gdp = ecos.get_gdp(frequency="quarterly", start_date="2020Q1")
 
 # Excel 저장 (여러 시트)
 with pd.ExcelWriter('macro_indicators.xlsx', engine='openpyxl') as writer:
