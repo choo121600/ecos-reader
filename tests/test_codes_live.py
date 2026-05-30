@@ -36,9 +36,7 @@ KNOWN_DEFECTS: set[tuple[str, str, str]] = {
     ("forex", "CNY", audit.FAIL),  # 731Y003/0000053 항목 없음
     ("forex", "JPY", audit.WARN),  # 731Y003/0000002 = "원/달러(시가)" (엔 아님)
     ("forex", "EUR", audit.WARN),  # 731Y003/0000003 = "원/달러(종가 15:30)" (유로 아님)
-    # 실효환율: STAT_EFFECTIVE_RATE(731Y004)/0000001~2 = "원/미국달러(매매기준율)" 등 — 실효환율 아님.
-    ("effective_rate", "NEER", audit.WARN),
-    ("effective_rate", "REER", audit.WARN),
+    # effective_rate(731Y004) 스캐폴딩 제거 — #71 에서 해소 (감사 케이스 자체 제거).
     # 국제수지: 301Y017 의 실제 item 은 SA000(경상수지)/SA100(상품수지) 등 — CA/KA 아님.
     ("bop", "current_account", audit.FAIL),
     ("bop", "capital_account", audit.FAIL),
