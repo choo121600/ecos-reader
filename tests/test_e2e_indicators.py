@@ -434,14 +434,21 @@ class TestE2EHouseholdFinanceIndicators:
         assert len(df) > 0
 
     def test_get_household_lending_detail(self):
-        """예금취급기관 가계대출 용도별"""
+        """예금취급기관 가계대출 용도별 — 전체 분류 long-format (#62)."""
         df = ecos.get_household_lending_detail(start_date="202301", end_date="202312")
 
         assert not df.empty
-        assert "date" in df.columns
-        assert "value" in df.columns
-        assert "unit" in df.columns
-        assert len(df) > 0
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        # 주택관련/기타 × 기관별 분류가 다수 포함돼야 함.
+        assert df["category_value"].nunique() >= 3
+
+    def test_get_household_lending_detail_sub_category(self):
+        """sub_category(item_code)로 단일 분류 시계열 (#62)."""
+        df = ecos.get_household_lending_detail(
+            sub_category="11100A0", start_date="202301", end_date="202312"
+        )
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
 
     def test_get_borrower_loan_new(self):
         """차주별 가계대출 (신규)"""

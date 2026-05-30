@@ -31,7 +31,6 @@ from ..constants import (
 )
 from ..parser import normalize_stat_result, parse_response
 from ._dates import default_monthly, default_quarterly
-from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 from ._subcategory import select_subcategory
 
 if TYPE_CHECKING:
@@ -463,16 +462,24 @@ def get_household_credit(
 
 
 def get_household_lending_detail(
+    sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
     예금취급기관 가계대출(용도별)을 조회합니다.
 
-    주택담보대출, 기타대출 등 용도별 가계대출 잔액을 제공합니다.
+    주택관련대출/기타대출을 기관(예금취급기관/예금은행/비은행)별로 제공합니다.
+    partial-coverage 재설계 규약(#56)을 따릅니다 — ``sub_category`` 미지정 시
+    전체 분류를 long-format으로, 지정 시 해당 분류 단일 시계열만 반환합니다.
 
     Parameters
     ----------
+    sub_category : str, optional
+        세부 분류(항목명 또는 item_code1). 지정 시 해당 분류 단일 시계열만
+        반환합니다. 미지정 시 전체 분류를 long-format으로 반환합니다.
+        예) '주택관련대출-예금취급기관', '기타대출-예금은행', 또는 item_code
+        '11100A0'. 항목명은 길고 중복 가능하므로 유일 선택은 item_code를 권장합니다.
     start_date : str, optional
         조회 시작일 (YYYYMM 형식), 기본값: 3년 전
     end_date : str, optional
@@ -481,22 +488,22 @@ def get_household_lending_detail(
     Returns
     -------
     pd.DataFrame
-        컬럼: date, value, unit
-        - date: 날짜 (datetime)
-        - value: 가계대출 (조원)
-        - unit: 단위
+        - ``sub_category`` 미지정: 컬럼 ``date, category_value, value, unit``
+          (각 분류가 행으로 포함된 long-format, ``category_value``=분류명)
+        - ``sub_category`` 지정: 컬럼 ``date, value, unit`` (단일 시계열)
 
-    Warnings
-    --------
-    DeprecationWarning
-        현재 단일 항목(`item_code1="1110000"`, 예금취급기관(미확인))만 반환하며 함수명이
-        시사하는 전체 용도별 대출 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될
-        예정이며, 현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접
-        item_code1을 전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+    Raises
+    ------
+    ValueError
+        지정한 ``sub_category`` 가 존재하지 않는 경우 (사용 가능 항목을 함께 안내).
 
     Notes
     -----
     예금취급기관 = 은행 + 비은행 예금취급기관
+
+    이 통계표(151Y005)는 총계('예금취급기관')와 용도×기관 분류, [참고] 항목이
+    함께 있는 단일 분류축(item_code1)입니다. long-format에는 총계도 포함되므로
+    특정 시계열이 필요하면 ``sub_category`` 로 선택하세요(단순 합산 금지).
 
     용도별 가계대출 현황은 부동산 시장과 가계 소비 패턴을
     분석하는 데 활용됩니다.
@@ -504,8 +511,13 @@ def get_household_lending_detail(
     Examples
     --------
     >>> import ecos
+    >>> # 전체 분류 long-format
     >>> df = ecos.get_household_lending_detail()
     >>> df.head()
+            date category_value   value unit
+
+    >>> # 주택관련대출(예금취급기관) 단일 시계열
+    >>> df = ecos.get_household_lending_detail(sub_category="11100A0")
 
     >>> df = ecos.get_household_lending_detail(start_date="202201", end_date="202412")
     """
@@ -515,19 +527,20 @@ def get_household_lending_detail(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    _warn_partial_coverage("get_household_lending_detail", "1110000", "예금취급기관(미확인)")
-
+    # item_code1 미지정 → 전체 분류 수신 후 select_subcategory로 분류(#58 규약).
+    # 151Y005는 단일 분류축(item_code1)이라 prefix="" 로 전량 분류한다.
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_HOUSEHOLD_LENDING_PURPOSE,
         period=PERIOD_MONTHLY,
         start_date=start_date,
         end_date=end_date,
-        item_code1="1110000",  # 예금취급기관 (StatisticItemList로 확인 필요)
     )
 
     df = parse_response(response)
-    return normalize_stat_result(df)
+    return select_subcategory(
+        df, prefix="", sub_category=sub_category, context="get_household_lending_detail"
+    )
 
 
 def get_borrower_loan(

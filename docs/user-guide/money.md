@@ -344,10 +344,18 @@ df = ecos.get_household_credit(
 ```python
 import ecos
 
-# 예금취급기관 가계대출 용도별
+# 전체 분류 long-format (date, category_value, value, unit)
 df = ecos.get_household_lending_detail()
 print(df.tail())
+
+# 주택관련대출(예금취급기관) 단일 시계열 (item_code 사용 권장)
+df = ecos.get_household_lending_detail(sub_category="11100A0")
 ```
+
+!!! note "v0.3.0 재설계 (#62)"
+    이전에는 단일 항목만 반환했으나, 이제 용도×기관 전체 분류를 제공합니다.
+    long-format에는 총계('예금취급기관')도 포함되므로 단순 합산에 주의하세요.
+    항목명이 길고 중복될 수 있어 단일 선택은 item_code(예: `11100A0`)를 권장합니다.
 
 ### 기간 지정
 
