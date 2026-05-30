@@ -18,7 +18,7 @@
         <link rel="prev" href="../financial-markets/">
       
       
-        <link rel="next" href="../../api-reference/overview/">
+        <link rel="next" href="../migration-frequency/">
       
       
         
@@ -1218,6 +1218,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration-frequency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    frequency 마이그레이션
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2370,7 +2398,7 @@
 </span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>    <span class="n">futures</span> <span class="o">=</span> <span class="p">{</span>
 </span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>        <span class="s1">&#39;base_rate&#39;</span><span class="p">:</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">ecos</span><span class="o">.</span><span class="n">get_base_rate</span><span class="p">),</span>
 </span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>        <span class="s1">&#39;cpi&#39;</span><span class="p">:</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">),</span>
-</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>        <span class="s1">&#39;gdp&#39;</span><span class="p">:</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;real&quot;</span><span class="p">),</span>
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>        <span class="s1">&#39;gdp&#39;</span><span class="p">:</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">,</span> <span class="s2">&quot;quarterly&quot;</span><span class="p">,</span> <span class="s2">&quot;real&quot;</span><span class="p">),</span>
 </span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>        <span class="s1">&#39;m2&#39;</span><span class="p">:</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">ecos</span><span class="o">.</span><span class="n">get_money_supply</span><span class="p">,</span> <span class="s2">&quot;M2&quot;</span><span class="p">)</span>
 </span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>    <span class="p">}</span>
 </span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>

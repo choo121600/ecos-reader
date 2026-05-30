@@ -12,9 +12,13 @@
         <meta name="author" content="yeonguk">
       
       
-        <link rel="canonical" href="https://github.com/choo121600/ecos-reader/api-reference/statistic-table-list/">
+        <link rel="canonical" href="https://github.com/choo121600/ecos-reader/user-guide/migration-frequency/">
       
       
+        <link rel="prev" href="../advanced/">
+      
+      
+        <link rel="next" href="../../api-reference/overview/">
       
       
         
@@ -25,7 +29,7 @@
     
     
       
-        <title>서비스 통계 목록 개발 명세서 - ecos-reader</title>
+        <title>frequency 마이그레이션 - ecos-reader</title>
       
     
     
@@ -76,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#frequency-20" class="md-skip">
           콘텐츠로 이동
         </a>
       
@@ -110,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              서비스 통계 목록 개발 명세서
+              frequency 마이그레이션
             
           </span>
         </div>
@@ -260,11 +264,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../user-guide/basic-usage/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../basic-usage/" class="md-tabs__link">
           
   
   
@@ -284,7 +290,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../overview/" class="md-tabs__link">
+        <a href="../../api-reference/overview/" class="md-tabs__link">
           
   
   
@@ -527,26 +533,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -564,7 +575,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -582,7 +593,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/basic-usage/" class="md-nav__link">
+      <a href="../basic-usage/" class="md-nav__link">
         
   
   
@@ -610,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/interest-rates/" class="md-nav__link">
+      <a href="../interest-rates/" class="md-nav__link">
         
   
   
@@ -638,7 +649,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/prices/" class="md-nav__link">
+      <a href="../prices/" class="md-nav__link">
         
   
   
@@ -666,7 +677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/growth/" class="md-nav__link">
+      <a href="../growth/" class="md-nav__link">
         
   
   
@@ -694,7 +705,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/money/" class="md-nav__link">
+      <a href="../money/" class="md-nav__link">
         
   
   
@@ -722,7 +733,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/fiscal/" class="md-nav__link">
+      <a href="../fiscal/" class="md-nav__link">
         
   
   
@@ -750,7 +761,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/financial-markets/" class="md-nav__link">
+      <a href="../financial-markets/" class="md-nav__link">
         
   
   
@@ -778,7 +789,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/advanced/" class="md-nav__link">
+      <a href="../advanced/" class="md-nav__link">
         
   
   
@@ -803,10 +814,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../user-guide/migration-frequency/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    frequency 마이그레이션
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -822,6 +860,131 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        배경
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        레거시 → 정식 매핑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deprecation 정책
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-after" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before / After 코드 예시
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        경고 끄는 법
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        영향 함수 목록
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="영향 함수 목록">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#growthpy-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        growth.py — 6개 함수
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interest_ratepy-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        interest_rate.py — 1개 함수
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stockpy-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        stock.py — 1개 함수 (이미 정식 어휘 사용)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -893,7 +1056,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../overview/" class="md-nav__link">
+      <a href="../../api-reference/overview/" class="md-nav__link">
         
   
   
@@ -921,7 +1084,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../client/" class="md-nav__link">
+      <a href="../../api-reference/client/" class="md-nav__link">
         
   
   
@@ -949,7 +1112,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../indicators/" class="md-nav__link">
+      <a href="../../api-reference/indicators/" class="md-nav__link">
         
   
   
@@ -977,7 +1140,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../exceptions/" class="md-nav__link">
+      <a href="../../api-reference/exceptions/" class="md-nav__link">
         
   
   
@@ -1262,10 +1425,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        배경
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        개요
+        레거시 → 정식 매핑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deprecation 정책
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-after" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before / After 코드 예시
       
     </span>
   </a>
@@ -1276,7 +1472,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        상세주소
+        경고 끄는 법
       
     </span>
   </a>
@@ -1287,19 +1483,41 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        요청인자
+        영향 함수 목록
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="요청인자">
+    <nav class="md-nav" aria-label="영향 함수 목록">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#growthpy-6" class="md-nav__link">
     <span class="md-ellipsis">
       
-        요청인자 설명
+        growth.py — 6개 함수
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interest_ratepy-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        interest_rate.py — 1개 함수
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stockpy-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        stock.py — 1개 함수 (이미 정식 어휘 사용)
       
     </span>
   </a>
@@ -1308,184 +1526,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        출력값
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="출력값">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        출력값 설명
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#url" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        샘플 URL
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="샘플 URL">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#url_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        URL 구성 요소
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        메시지 설명
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="메시지 설명">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        정보 메시지
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_10" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        에러 메시지
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_11" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        사용 예제
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="사용 예제">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#xml" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        XML 형식 요청
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#json" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        JSON 형식 요청
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_12" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        특정 통계표코드 필터링
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_13" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        페이징 처리
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_14" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        주의사항
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_15" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        관련 서비스
-      
-    </span>
-  </a>
   
 </li>
       
@@ -1509,263 +1549,142 @@
   
 
 
-<h1 id="_1">서비스 통계 목록 개발 명세서<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<h2 id="_2">개요<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>한국은행 경제통계 Open API의 통계표 목록을 조회하는 서비스입니다.</p>
-<h2 id="_3">상세주소<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h1 id="frequency-20">frequency 어휘 통일 마이그레이션 (#20)<a class="headerlink" href="#frequency-20" title="Permanent link">&para;</a></h1>
+<h2 id="_1">배경<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>과거 ecos-reader는 카테고리마다 <code>frequency</code> 파라미터의 표기가 달랐습니다.</p>
 <ul>
-<li><a href="https://ecos.bok.or.kr/api/">https://ecos.bok.or.kr/api/</a></li>
-<li>HTTP와 HTTPS 모두 사용 가능합니다.</li>
+<li><strong>성장 지표</strong> (<code>growth.py</code>): <code>"Q"</code> (분기), <code>"A"</code> (연간)</li>
+<li><strong>금리 지표</strong> (<code>interest_rate.py</code>): <code>"D"</code> (일), <code>"M"</code> (월)</li>
+<li><strong>주가 지표</strong> (<code>stock.py</code>): <code>"daily"</code>, <code>"monthly"</code> (이미 풀네임 사용)</li>
 </ul>
-<h2 id="_4">요청인자<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>항목명(국문)</th>
-<th>필수여부</th>
-<th>샘플데이터</th>
-<th>항목설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>서비스명</td>
-<td>Y</td>
-<td>StatisticTableList</td>
-<td>API 서비스명</td>
-</tr>
-<tr>
-<td>인증키</td>
-<td>Y</td>
-<td>sample</td>
-<td>한국은행에서 발급받은 오픈API 인증키</td>
-</tr>
-<tr>
-<td>요청유형</td>
-<td>Y</td>
-<td>xml</td>
-<td>결과값의 파일 형식 - xml, json</td>
-</tr>
-<tr>
-<td>언어구분</td>
-<td>Y</td>
-<td>kr</td>
-<td>결과값의 언어 - kr(국문), en(영문)</td>
-</tr>
-<tr>
-<td>요청시작건수</td>
-<td>Y</td>
-<td>1</td>
-<td>전체 결과값 중 시작 번호</td>
-</tr>
-<tr>
-<td>요청종료건수</td>
-<td>Y</td>
-<td>10</td>
-<td>전체 결과값 중 끝 번호</td>
-</tr>
-<tr>
-<td>통계표코드</td>
-<td>N</td>
-<td>102Y004</td>
-<td>통계표코드 (선택사항)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="_5">요청인자 설명<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>서비스명</strong>: 고정값 <code>StatisticTableList</code></li>
-<li><strong>인증키</strong>: 한국은행 Open API에서 발급받은 인증키</li>
-<li><strong>요청유형</strong>: 응답 형식 (<code>xml</code> 또는 <code>json</code>)</li>
-<li><strong>언어구분</strong>: 응답 언어 (<code>kr</code>: 국문, <code>en</code>: 영문)</li>
-<li><strong>요청시작건수</strong>: 페이징을 위한 시작 번호 (1부터 시작)</li>
-<li><strong>요청종료건수</strong>: 페이징을 위한 종료 번호</li>
-<li><strong>통계표코드</strong>: 특정 통계표만 조회할 경우 사용 (선택사항)</li>
-</ul>
-<h2 id="_6">출력값<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>항목명(국문)</th>
-<th>항목명(영문)</th>
-<th>항목크기</th>
-<th>샘플데이터</th>
-<th>항목설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>상위통계표코드</td>
-<td>P_STAT_CODE</td>
-<td>8</td>
-<td>0000000442</td>
-<td>상위통계표코드</td>
-</tr>
-<tr>
-<td>통계표코드</td>
-<td>STAT_CODE</td>
-<td>8</td>
-<td>102Y004</td>
-<td>통계표코드</td>
-</tr>
-<tr>
-<td>통계명</td>
-<td>STAT_NAME</td>
-<td>200</td>
-<td>1.1.1.1.2. 본원통화 구성내역(평잔, 원계열)</td>
-<td>통계명</td>
-</tr>
-<tr>
-<td>주기</td>
-<td>CYCLE</td>
-<td>2</td>
-<td>M</td>
-<td>주기(년, 분기, 월)</td>
-</tr>
-<tr>
-<td>검색가능여부</td>
-<td>SRCH_YN</td>
-<td>1</td>
-<td>Y</td>
-<td>검색가능여부</td>
-</tr>
-<tr>
-<td>출처</td>
-<td>ORG_NAME</td>
-<td>50</td>
-<td>한국은행</td>
-<td>출처</td>
-</tr>
-</tbody>
-</table>
-<h3 id="_7">출력값 설명<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>상위통계표코드</strong>: 상위 분류 코드</li>
-<li><strong>통계표코드</strong>: 통계표를 식별하는 고유 코드</li>
-<li><strong>통계명</strong>: 통계표의 이름</li>
-<li><strong>주기</strong>: 데이터 수집 주기 (연, 분기, 월 등)</li>
-<li><strong>검색가능여부</strong>: 해당 통계표 검색 가능 여부 (<code>Y</code>/<code>N</code>)</li>
-<li><strong>출처</strong>: 통계 데이터 제공 기관명</li>
-</ul>
-<h2 id="url">샘플 URL<a class="headerlink" href="#url" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>https://ecos.bok.or.kr/api/StatisticTableList/{인증키}/xml/kr/1/10/
+<p>이 불일치를 해소하기 위해 이슈 #20에서 <strong>풀네임 어휘</strong>로 통일했습니다.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>daily | monthly | quarterly | annual
 </span></code></pre></div>
-<p>또는 통계표코드 필터링:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>https://ecos.bok.or.kr/api/StatisticTableList/{인증키}/xml/kr/1/10/102Y004
-</span></code></pre></div>
-<h3 id="url_1">URL 구성 요소<a class="headerlink" href="#url_1" title="Permanent link">&para;</a></h3>
-<ol>
-<li>기본 URL: <code>https://ecos.bok.or.kr/api/</code></li>
-<li>서비스명: <code>StatisticTableList</code></li>
-<li>인증키: <code>{인증키}</code> (실제 인증키로 대체)</li>
-<li>요청유형: <code>xml</code> 또는 <code>json</code></li>
-<li>언어구분: <code>kr</code> 또는 <code>en</code></li>
-<li>요청시작건수: <code>1</code></li>
-<li>요청종료건수: <code>10</code></li>
-<li>통계표코드: 선택사항 (예: <code>102Y004</code>)</li>
-</ol>
-<h2 id="_8">메시지 설명<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
-<h3 id="_9">정보 메시지<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<h2 id="_2">레거시 → 정식 매핑<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>코드</th>
+<th>레거시 (구)</th>
+<th>정식 (신)</th>
 <th>설명</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>100</td>
-<td>인증키가 유효하지 않습니다. 인증키를 확인하십시오! 인증키가 없는 경우 인증키를 신청하십시오!</td>
+<td><code>"D"</code></td>
+<td><code>"daily"</code></td>
+<td>일별</td>
 </tr>
 <tr>
-<td>200</td>
-<td>해당하는 데이터가 없습니다.</td>
+<td><code>"M"</code></td>
+<td><code>"monthly"</code></td>
+<td>월별</td>
+</tr>
+<tr>
+<td><code>"Q"</code></td>
+<td><code>"quarterly"</code></td>
+<td>분기별</td>
+</tr>
+<tr>
+<td><code>"A"</code></td>
+<td><code>"annual"</code></td>
+<td>연간</td>
 </tr>
 </tbody>
 </table>
-<h3 id="_10">에러 메시지<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<h2 id="deprecation">Deprecation 정책<a class="headerlink" href="#deprecation" title="Permanent link">&para;</a></h2>
+<p>레거시 단일 문자(<code>"D"</code>, <code>"M"</code>, <code>"Q"</code>, <code>"A"</code>)는 <strong>당분간 계속 동작</strong>하지만,
+호출 시 <code>EcosDeprecationWarning</code>이 발생합니다.</p>
+<ul>
+<li><code>EcosDeprecationWarning</code>은 <code>UserWarning</code>의 하위 클래스이며 기본 필터로도 표시됩니다.</li>
+<li><strong>v0.4.0</strong>에서 레거시 단일 문자 지원이 완전히 제거될 예정입니다.</li>
+</ul>
+<h2 id="before-after">Before / After 코드 예시<a class="headerlink" href="#before-after" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Before (레거시 — 동작하지만 경고 발생)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;Q&quot;</span><span class="p">)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_base_rate</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;M&quot;</span><span class="p">)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># After (정식 — 권장)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span><span class="p">)</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">)</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_base_rate</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;monthly&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="_3">경고 끄는 법<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>마이그레이션 전까지 임시로 경고를 억제하려면:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ecos</span><span class="w"> </span><span class="kn">import</span> <span class="n">EcosDeprecationWarning</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">EcosDeprecationWarning</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="_4">영향 함수 목록<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="growthpy-6"><code>growth.py</code> — 6개 함수<a class="headerlink" href="#growthpy-6" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>코드</th>
-<th>설명</th>
+<th>함수</th>
+<th>지원 frequency</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>100</td>
-<td>필수 값이 누락되어 있습니다. 필수 값을 확인하십시오! 필수 값이 누락되어 있으면 오류를 발생합니다. 요청 변수를 참고 하십시오!</td>
+<td><code>get_gdp()</code></td>
+<td><code>quarterly</code>, <code>annual</code></td>
 </tr>
 <tr>
-<td>101</td>
-<td>주기와 다른 형식의 날짜 형식입니다.</td>
+<td><code>get_gdp_deflator()</code></td>
+<td><code>quarterly</code>, <code>annual</code></td>
 </tr>
 <tr>
-<td>200</td>
-<td>파일타입 값이 누락 혹은 유효하지 않습니다. 파일타입 값을 확인하십시오! 파일타입 값이 누락 혹은 유효하지 않으면 오류를 발생합니다. 요청 변수를 참고 하십시오!</td>
+<td><code>get_gdp_growth_rate()</code></td>
+<td><code>quarterly</code>, <code>annual</code></td>
 </tr>
 <tr>
-<td>300</td>
-<td>조회건수 값이 누락되어 있습니다. 조회시작건수/조회종료건수 값을 확인하십시오! 조회시작건수/조회종료건수 값이 누락되어 있으면 오류를 발생합니다.</td>
+<td><code>get_gdp_by_industry()</code></td>
+<td><code>quarterly</code>, <code>annual</code></td>
 </tr>
 <tr>
-<td>301</td>
-<td>조회건수 값의 타입이 유효하지 않습니다. 조회건수 값을 확인하십시오! 조회건수 값의 타입이 유효하지 않으면 오류를 발생합니다. 정수를 입력하세요.</td>
+<td><code>get_gdp_by_expenditure()</code></td>
+<td><code>quarterly</code>, <code>annual</code></td>
 </tr>
 <tr>
-<td>400</td>
-<td>검색범위가 적정범위를 초과하여 60초 TIMEOUT이 발생하였습니다. 요청조건 조정하여 다시 요청하시기 바랍니다.</td>
-</tr>
-<tr>
-<td>500</td>
-<td>서버 오류입니다. OpenAPI 호출시 서버에서 오류가 발생하였습니다. 해당 서비스를 찾을 수 없습니다.</td>
-</tr>
-<tr>
-<td>600</td>
-<td>DB Connection 오류입니다. OpenAPI 호출시 서버에서 DB접속 오류가 발생했습니다.</td>
-</tr>
-<tr>
-<td>601</td>
-<td>SQL 오류입니다. OpenAPI 호출시 서버에서 SQL 오류가 발생했습니다.</td>
-</tr>
-<tr>
-<td>602</td>
-<td>과도한 OpenAPI호출로 이용이 제한되었습니다. 잠시후 이용해주시기 바랍니다.</td>
+<td><code>get_gdp_deflator_by_industry()</code></td>
+<td><code>quarterly</code>, <code>annual</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="_11">사용 예제<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h2>
-<h3 id="xml">XML 형식 요청<a class="headerlink" href="#xml" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticTableList/YOUR_API_KEY/xml/kr/1/10/&quot;</span>
-</span></code></pre></div>
-<h3 id="json">JSON 형식 요청<a class="headerlink" href="#json" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticTableList/YOUR_API_KEY/json/kr/1/10/&quot;</span>
-</span></code></pre></div>
-<h3 id="_12">특정 통계표코드 필터링<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticTableList/YOUR_API_KEY/xml/kr/1/10/102Y004&quot;</span>
-</span></code></pre></div>
-<h3 id="_13">페이징 처리<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># 첫 10개 결과</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticTableList/YOUR_API_KEY/xml/kr/1/10/&quot;</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># 다음 10개 결과</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticTableList/YOUR_API_KEY/xml/kr/11/20/&quot;</span>
-</span></code></pre></div>
-<h2 id="_14">주의사항<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>인증키</strong>: 모든 요청에 유효한 인증키가 필요합니다.</li>
-<li><strong>페이징</strong>: 요청시작건수와 요청종료건수는 필수이며, 정수값이어야 합니다.</li>
-<li><strong>타임아웃</strong>: 검색 범위가 너무 넓으면 60초 타임아웃이 발생할 수 있습니다.</li>
-<li><strong>호출 제한</strong>: 과도한 호출 시 일시적으로 이용이 제한될 수 있습니다.</li>
-<li><strong>통계표코드</strong>: 선택사항이지만 특정 통계표만 조회할 때 유용합니다.</li>
-</ol>
-<h2 id="_15">관련 서비스<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="../statistic-item-list/">통계 세부항목 목록</a></li>
-<li><a href="../statistic-search/">통계 조회 조건 설정</a></li>
-<li><a href="../statistic-top-100/">100대 통계지표</a></li>
-</ul>
+<h3 id="interest_ratepy-1"><code>interest_rate.py</code> — 1개 함수<a class="headerlink" href="#interest_ratepy-1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>함수</th>
+<th>지원 frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>get_base_rate()</code></td>
+<td><code>daily</code>, <code>monthly</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="stockpy-1"><code>stock.py</code> — 1개 함수 (이미 정식 어휘 사용)<a class="headerlink" href="#stockpy-1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>함수</th>
+<th>지원 frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>get_stock_index()</code></td>
+<td><code>daily</code>, <code>monthly</code></td>
+</tr>
+</tbody>
+</table>
 
 
 
