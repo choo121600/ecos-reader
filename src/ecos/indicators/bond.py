@@ -10,13 +10,15 @@ from typing import TYPE_CHECKING, Literal
 
 from ..client import get_client
 from ..constants import (
+    BOND_MARKET_MEASURE_CODE,
+    BOND_YIELD_TYPE_MEASURE_CODE,
     PERIOD_MONTHLY,
     STAT_BOND_MARKET,
     STAT_BOND_YIELD_TYPE,
 )
-from ..parser import normalize_stat_result, parse_response
+from ..parser import parse_response
 from ._dates import default_monthly
-from ._deprecations import warn_partial_coverage as _warn_partial_coverage
+from ._subcategory import select_subcategory
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -24,20 +26,32 @@ if TYPE_CHECKING:
 
 def get_bond_yield(
     bond_type: Literal["종류별", "시장별"] = "종류별",
+    measure: Literal["거래대금", "거래량", "상장잔액", "상장종목수"] = "거래대금",
+    sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
-    채권 수익률을 조회합니다.
+    채권 거래를 종류별 또는 시장별로 조회합니다.
 
-    국채, 회사채 등 채권 종류별 또는 시장별 거래 정보를 제공합니다.
+    국채/회사채 등 채권 종류별, 또는 국채전문/일반채권 등 시장별 거래를 제공합니다.
+    partial-coverage 재설계 규약(#56)을 따릅니다 — ``sub_category`` 미지정 시 전체
+    분류를 long-format으로, 지정 시 해당 분류 단일 시계열만 반환합니다.
 
     Parameters
     ----------
     bond_type : str
         채권 분류 기준
-        - '종류별': 국채, 회사채 등 채권 종류별 (기본값)
-        - '시장별': 채권 시장별 거래
+        - '종류별': 합계/국채/지방채/특수채/회사채/외국채 (기본값, 901Y015)
+        - '시장별': 합계/국채전문/일반채권/소액채권/신고매매 (901Y120)
+    measure : str
+        측정 지표 (한 차원을 이 값으로 고정한 뒤 분류축을 분류합니다)
+        - '거래대금' (기본값), '거래량'
+        - '상장잔액', '상장종목수' (``bond_type='종류별'`` 에서만 지원)
+    sub_category : str, optional
+        세부 분류(분류명 또는 item_code). 지정 시 해당 분류 단일 시계열만
+        반환합니다. 미지정 시 전체 분류를 long-format으로 반환합니다.
+        예) 종류별: '국채' 또는 '4' / 시장별: '국채전문 유통시장' 또는 '0202'
     start_date : str, optional
         조회 시작일 (YYYYMM 형식), 기본값: 2년 전
     end_date : str, optional
@@ -46,46 +60,55 @@ def get_bond_yield(
     Returns
     -------
     pd.DataFrame
-        컬럼: date, value, unit
-        - date: 날짜 (datetime)
-        - value: 채권 거래액 또는 수익률
-        - unit: 단위
+        - ``sub_category`` 미지정: 컬럼 ``date, category_value, value, unit``
+          (각 분류가 행으로 포함된 long-format, ``category_value``=분류명)
+        - ``sub_category`` 지정: 컬럼 ``date, value, unit`` (단일 시계열)
 
-    Warnings
-    --------
-    EcosPartialCoverageWarning
-        두 분기 모두 단일 항목만 반환합니다.
-        - `bond_type="종류별"`: 채권종류별 통계(901Y015)에서 `item_code1="1"`(합계),
-          `item_code2="2040000"`(거래대금)으로 고정. 다른 종목 분류(국채/회사채 등)나
-          다른 measure(상장종목수/잔액/거래량)는 v0.1.6에서 직접 노출되지 않습니다.
-        - `bond_type="시장별"`: 채권시장별 통계(901Y120)에서 `item_code1="AMT"`
-          (거래대금)으로 고정.
-        함수명이 시사하는 전체 채권 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가
-        변경될 예정이며, 현재 동작에 의존한다면 `EcosClient.get_statistic_search`로
-        직접 item_code를 지정해 호출하세요. (이슈 #8)
+    Raises
+    ------
+    ValueError
+        bond_type/measure가 허용 값이 아니거나, 지정한 ``sub_category`` 가
+        존재하지 않는 경우 (사용 가능 항목을 함께 안내).
 
     Notes
     -----
     - 국채: 정부가 발행하는 채권, 가장 안전한 자산
     - 회사채: 기업이 발행하는 채권, 신용등급에 따라 수익률 차이
-    - 채권 수익률 상승 = 채권 가격 하락
+    - 두 통계표 모두 분류축에 '합계' 행이 포함되므로 long-format을 단순 합산하면
+      중복 집계됩니다. 특정 시계열은 ``sub_category`` 로 선택하세요.
 
-    채권 수익률은 금리 정책과 밀접한 관련이 있으며,
-    경기 전망과 인플레이션 기대를 반영합니다.
+    채권 거래 동향은 금리 정책·경기 전망·인플레이션 기대를 반영합니다.
 
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_bond_yield()  # 종류별 채권 거래
+    >>> # 종류별 거래대금 전체 (long-format)
+    >>> df = ecos.get_bond_yield()
     >>> df.head()
-            date  value    unit
-    0 2024-01-01   45.2  조원
-    1 2024-02-01   38.7  조원
+            date category_value  value unit
 
-    >>> df = ecos.get_bond_yield(bond_type="시장별")  # 시장별 채권 거래
+    >>> # 국채만
+    >>> df = ecos.get_bond_yield(sub_category="국채")
+
+    >>> # 시장별 거래량
+    >>> df = ecos.get_bond_yield(bond_type="시장별", measure="거래량")
     """
-    if bond_type not in ["종류별", "시장별"]:
+    if bond_type not in ("종류별", "시장별"):
         raise ValueError("bond_type은 '종류별' 또는 '시장별' 중 하나여야 합니다.")
+
+    # 입력 검증은 네트워크 호출 전에 수행한다 (잘못된 measure는 즉시 ValueError).
+    # 두 통계표는 measure가 놓인 축이 다르다:
+    #   종류별(901Y015): measure=item_code2, 분류축=item_code1(채권종류)
+    #   시장별(901Y120): measure=item_code1, 분류축=item_code2(시장)
+    if bond_type == "종류별":
+        stat_code = STAT_BOND_YIELD_TYPE
+        measure_map = BOND_YIELD_TYPE_MEASURE_CODE
+    else:
+        stat_code = STAT_BOND_MARKET
+        measure_map = BOND_MARKET_MEASURE_CODE
+    if measure not in measure_map:
+        raise ValueError(f"{bond_type} measure는 {list(measure_map.keys())} 중 하나여야 합니다.")
+    measure_code = measure_map[measure]
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
@@ -93,31 +116,26 @@ def get_bond_yield(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    # 채권 분류에 따른 stat_code 및 item_code 선택
-    # 종류별(901Y015)은 item_code1만 지정하면 item_code2 차원(상장종목수/잔액/거래량/거래대금)이
-    # 모두 섞여 반환되어 value 컬럼이 의미 불명이 된다. v0.1.6에서는 거래대금 한 measure로
-    # 고정해 일관된 시계열을 반환.
-    item_code2 = ""
-    if bond_type == "종류별":
-        stat_code = STAT_BOND_YIELD_TYPE
-        item_code = "1"  # 합계
-        item_code2 = "2040000"  # 거래대금 measure만 선택
-        _warn_partial_coverage("get_bond_yield(종류별)", "1/2040000", "합계 거래대금")
-    else:  # 시장별
-        stat_code = STAT_BOND_MARKET
-        item_code = "AMT"  # 거래대금
-        item_code2 = "020101"  # 시장 합계만 (국채전문/일반/소액/신고매매 분리는 제외)
-        _warn_partial_coverage("get_bond_yield(시장별)", "AMT/020101", "거래대금 합계")
-
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
         period=PERIOD_MONTHLY,
         start_date=start_date,
         end_date=end_date,
-        item_code1=item_code,
-        item_code2=item_code2,
     )
-
     df = parse_response(response)
-    return normalize_stat_result(df)
+
+    # measure로 한 차원을 고정한 뒤 분류축(category_value)을 select_subcategory로 분류한다.
+    if bond_type == "종류별":
+        if "item_code2" in df.columns:
+            df = df[df["item_code2"] == measure_code]
+    else:  # 시장별: measure로 item_code1을 고정한 뒤 시장 축(item_code2)을 item_code1로 승격.
+        if "item_code1" in df.columns:
+            df = df[df["item_code1"] == measure_code]
+        df = df.drop(columns=["item_code1", "item_name1"], errors="ignore").rename(
+            columns={"item_code2": "item_code1", "item_name2": "item_name1"}
+        )
+
+    return select_subcategory(
+        df, prefix="", sub_category=sub_category, context=f"bond_type='{bond_type}'"
+    )

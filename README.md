@@ -135,24 +135,15 @@ print(df)
 | `get_fiscal_balance()` | 통합재정수지 | 월 |
 | `get_stock_index(frequency, sub_category)` | 주가지수 KOSPI (일별/월별) | 일/월 |
 | `get_investor_trading(action, metric, sub_category)` | 투자자별 주식거래 | 월 |
-| `get_bond_yield(bond_type)` | 채권 수익률 (종류별/시장별) | 월 |
+| `get_bond_yield(bond_type, measure, sub_category)` | 채권 거래 (종류별/시장별) | 월 |
 
-> ⚠️ 다음 함수들은 단일 ECOS item만 반환하며 호출 시
-> `ecos.EcosPartialCoverageWarning`(`UserWarning` 서브클래스, 기본 필터로도 표시)이
-> 발생합니다. v0.3.0에서 시그니처가 변경됩니다(전체 시리즈 long-format + `sub_category`):
-> `get_bond_yield`. 자세한 내용은 이슈 #8.
->
-> `get_gdp_by_industry`, `get_gdp_by_expenditure`, `get_gdp_deflator_by_industry`
-> (v0.3.0 #59), `get_stock_index(monthly)`, `get_investor_trading`(v0.3.0 #60),
-> `get_cpi_monthly`(v0.3.0 #61), `get_household_lending_detail`(v0.3.0 #62),
-> `get_borrower_loan`(v0.2.0 #29)는 이미 재설계되어 경고 없이 전체 시리즈/
-> `sub_category` 선택을 제공합니다.
->
-> 경고를 끄려면:
-> ```python
-> import warnings, ecos
-> warnings.simplefilter("ignore", ecos.EcosPartialCoverageWarning)
-> ```
+> ℹ️ v0.3.0(#59~#63)에서 과거 단일 ECOS item만 반환하던 함수들이 모두 전체 시리즈
+> long-format + `sub_category` 선택으로 재설계되었습니다:
+> `get_gdp_by_industry`, `get_gdp_by_expenditure`, `get_gdp_deflator_by_industry`,
+> `get_stock_index(monthly)`, `get_investor_trading`, `get_cpi_monthly`,
+> `get_household_lending_detail`, `get_bond_yield`, `get_borrower_loan`(v0.2.0 #29).
+> `EcosPartialCoverageWarning`은 더 이상 발생하지 않으며, 마이그레이션 가이드는 #64에서
+> 제공됩니다.
 
 ## 상세 사용법
 

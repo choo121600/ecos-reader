@@ -271,23 +271,27 @@ class TestE2EBondIndicators:
     """채권시장 지표 E2E 테스트"""
 
     def test_get_bond_yield_type(self):
-        """채권 수익률 조회 (종류별)"""
+        """채권 거래 (종류별) — 채권종류 long-format (#63)."""
         df = ecos.get_bond_yield(bond_type="종류별", start_date="202301", end_date="202312")
 
         assert not df.empty
-        assert "date" in df.columns
-        assert "value" in df.columns
-        assert "unit" in df.columns
-        assert len(df) > 0
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        # 합계 + 국채/회사채 등 복수 종류가 포함돼야 함.
+        assert {"합계", "국채"} <= set(df["category_value"])
+
+    def test_get_bond_yield_type_sub_category(self):
+        """sub_category로 단일 채권종류 시계열 (#63)."""
+        df = ecos.get_bond_yield(sub_category="국채", start_date="202301", end_date="202312")
+        assert not df.empty
+        assert list(df.columns) == ["date", "value", "unit"]
 
     def test_get_bond_yield_market(self):
-        """채권 수익률 조회 (시장별)"""
+        """채권 거래 (시장별) — 시장 long-format, 축이 종류별과 반대 (#63)."""
         df = ecos.get_bond_yield(bond_type="시장별", start_date="202301", end_date="202312")
 
         assert not df.empty
-        assert "date" in df.columns
-        assert "value" in df.columns
-        assert len(df) > 0
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        assert df["category_value"].nunique() >= 3
 
 
 class TestE2EBankRateIndicators:
@@ -822,17 +826,32 @@ class TestE2ERegressionV016:
     # ---- 채권 수익률 월별 1행 (#28) ----
 
     @pytest.mark.parametrize("bond_type", ["종류별", "시장별"])
-    def test_bond_yield_one_row_per_month(self, bond_type):
-        """혼합 measure 버그 회귀: 결과는 월별 1행이어야 함 (한 달에 여러 행 금지)."""
+    def test_bond_yield_single_measure_per_category_month(self, bond_type):
+        """혼합 measure 버그 회귀 (#63 재설계 반영).
+
+        long-format은 분류별 다행이지만, measure 차원은 고정되므로
+        (month, category_value) 조합은 유일해야 한다(혼합 measure 중복 금지).
+        """
         df = ecos.get_bond_yield(bond_type=bond_type, start_date="202301", end_date="202312")
 
         assert not df.empty
-        # 같은 달에 여러 row가 섞이면 nunique(month) < len(df)
-        months = df["date"].dt.to_period("M")
-        assert months.nunique() == len(df), (
-            f"bond_type='{bond_type}': 월별 1행이 아님 "
-            f"(rows={len(df)}, unique_months={months.nunique()})"
+        assert "category_value" in df.columns
+        key = list(zip(df["date"].dt.to_period("M"), df["category_value"], strict=True))
+        assert len(set(key)) == len(key), (
+            f"bond_type='{bond_type}': (월, 분류) 중복 — 혼합 measure 누수 가능 "
+            f"(rows={len(df)}, unique_keys={len(set(key))})"
         )
+
+    @pytest.mark.parametrize("bond_type", ["종류별", "시장별"])
+    def test_bond_yield_sub_category_one_row_per_month(self, bond_type):
+        """단일 sub_category 선택 시에는 월별 1행이어야 한다 (#63)."""
+        sub = "국채" if bond_type == "종류별" else "0202"
+        df = ecos.get_bond_yield(
+            bond_type=bond_type, sub_category=sub, start_date="202301", end_date="202312"
+        )
+        assert not df.empty
+        months = df["date"].dt.to_period("M")
+        assert months.nunique() == len(df)
 
     # ---- 차주별 가계대출: v0.1.6 차단 조합이 #29 재설계로 정상화 ----
 
