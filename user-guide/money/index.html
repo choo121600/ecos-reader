@@ -3015,10 +3015,19 @@
 <h3 id="_26">기본 사용법<a class="headerlink" href="#_26" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1"># 예금취급기관 가계대출 용도별</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1"># 전체 분류 long-format (date, category_value, value, unit)</span>
 </span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_household_lending_detail</span><span class="p">()</span>
 </span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># 주택관련대출(예금취급기관) 단일 시계열 (item_code 사용 권장)</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_household_lending_detail</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;11100A0&quot;</span><span class="p">)</span>
 </span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">v0.3.0 재설계 (#62)</p>
+<p>이전에는 단일 항목만 반환했으나, 이제 용도×기관 전체 분류를 제공합니다.
+long-format에는 총계('예금취급기관')도 포함되므로 단순 합산에 주의하세요.
+항목명이 길고 중복될 수 있어 단일 선택은 item_code(예: <code>11100A0</code>)를 권장합니다.</p>
+</div>
 <h3 id="_27">기간 지정<a class="headerlink" href="#_27" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_household_lending_detail</span><span class="p">(</span>
 </span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">,</span>
