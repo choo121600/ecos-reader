@@ -17,17 +17,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
         with:
-          python-version: '3.10'
+          enable-cache: true
 
-      - name: Install dependencies
-        run: |
-          pip install mkdocs mkdocs-material
+      - name: Set up Python
+        run: uv python install 3.12
 
-      - name: Build documentation
-        run: mkdocs build
+      # docs extras(mkdocstrings 포함)로 빌드. --strict로 깨진 링크/누락을
+      # 빌드 실패로 검출 (#18). PR에서도 동일 검증이 실행된다.
+      - name: Build documentation (strict)
+        run: uv run --extra docs --python 3.12 mkdocs build --strict
 
       - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
