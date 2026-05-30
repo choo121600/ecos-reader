@@ -15,7 +15,6 @@ import warnings
 import pytest
 import responses
 
-from ecos.indicators._deprecations import EcosPartialCoverageWarning
 from ecos.indicators.bond import get_bond_yield
 
 
@@ -107,10 +106,11 @@ class TestGetBondYieldByType:
             get_bond_yield(sub_category="없는종류", start_date="202401", end_date="202401")
 
     @responses.activate
-    def test_no_partial_coverage_warning(self):
+    def test_emits_no_warning(self):
+        """재설계 후 어떤 경고도 발생시키지 않는다 (partial-coverage 경고 제거, #64)."""
         self._add_mock()
         with warnings.catch_warnings():
-            warnings.simplefilter("error", EcosPartialCoverageWarning)
+            warnings.simplefilter("error")
             get_bond_yield(start_date="202401", end_date="202401")
 
 

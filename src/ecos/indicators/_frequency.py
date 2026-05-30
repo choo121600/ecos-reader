@@ -14,13 +14,12 @@ frequency 어휘 통일 + deprecation 경로 (#20).
 기존 단일 문자 표기(``D/M/Q/A``)는 한동안 함께 허용하되
 :class:`EcosDeprecationWarning` 을 발생시키고, v0.4.0에서 제거한다.
 
-경고 클래스 설계 (#19 _deprecations.py와 동일한 근거)
-----------------------------------------------------
+경고 클래스 설계 (#19)
+----------------------
 파이썬의 기본 경고 필터는 ``DeprecationWarning`` 을 ``__main__`` 밖
 호출자에게는 **숨긴다**. 노트북/스크립트 사용자가 마이그레이션 안내를
 보지 못하면 deprecation의 의미가 사라지므로, 가시성이 보장되는
-``UserWarning`` 하위 클래스를 사용한다. (``EcosPartialCoverageWarning``
-과 동일한 판단.)
+``UserWarning`` 하위 클래스를 사용한다.
 
 경고를 끄려면::
 

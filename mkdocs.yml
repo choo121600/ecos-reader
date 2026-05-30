@@ -107,6 +107,7 @@ nav:
       - 금융시장 지표: user-guide/financial-markets.md
       - 고급 기능: user-guide/advanced.md
       - frequency 마이그레이션: user-guide/migration-frequency.md
+      - v0.3.0 마이그레이션: user-guide/migration-v0.3.0.md
   - API 레퍼런스:
       - 개요: api-reference/overview.md
       - 클라이언트: api-reference/client.md

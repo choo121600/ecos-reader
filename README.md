@@ -142,8 +142,8 @@ print(df)
 > `get_gdp_by_industry`, `get_gdp_by_expenditure`, `get_gdp_deflator_by_industry`,
 > `get_stock_index(monthly)`, `get_investor_trading`, `get_cpi_monthly`,
 > `get_household_lending_detail`, `get_bond_yield`, `get_borrower_loan`(v0.2.0 #29).
-> `EcosPartialCoverageWarning`은 더 이상 발생하지 않으며, 마이그레이션 가이드는 #64에서
-> 제공됩니다.
+> 과거의 `EcosPartialCoverageWarning`은 제거되었습니다(#64). 자세한 변경·마이그레이션은
+> [v0.3.0 마이그레이션 가이드](docs/user-guide/migration-v0.3.0.md)를 참고하세요.
 
 ## 상세 사용법
 

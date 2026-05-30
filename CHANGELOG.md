@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - Unreleased
+
+> Epic #56(Partial-coverage 재설계)의 **BREAKING** 릴리스. 함수명이 전체 시리즈를
+> 시사하지만 단일 ECOS 항목만 반환하던 함수들을 전체 시리즈 long-format +
+> `sub_category` 선택으로 재설계했습니다. 마이그레이션: 사용자 가이드 > v0.3.0 마이그레이션.
+
+### Changed (BREAKING)
+- partial-coverage 함수들의 기본 반환이 **단일 시계열 → 전체 분류 long-format**
+  (`date, category_value, value, unit`)으로 변경. 단일 시계열은 `sub_category` 로 선택.
+  - `get_gdp_by_industry` / `get_gdp_by_expenditure` / `get_gdp_deflator_by_industry` — PR #85 (#59)
+  - `get_stock_index(monthly)`(item_code 1010000 회사수 → 1070000 KOSPI 종가 정정) /
+    `get_investor_trading`(`action`·`metric` 인자 추가) — PR #86 (#60)
+  - `get_cpi_monthly` — PR #87 (#61)
+  - `get_household_lending_detail` — PR #88 (#62)
+  - `get_bond_yield`(`measure` 인자 추가, 종류별/시장별 분류) — PR #89 (#63)
+- 공통 헬퍼 `select_subcategory` 도입(규약: 개발 > Partial-coverage 재설계 규약). PR #68 (#58).
+
+### Removed (BREAKING)
+- `EcosPartialCoverageWarning` 클래스 및 내부 `ecos.indicators._deprecations` 모듈 제거.
+  모든 partial-coverage 함수가 재설계되어 더 이상 경고를 내지 않습니다. (#64)
+
+### Added
+- v0.3.0 마이그레이션 가이드(사용자 가이드). (#64)
+
 ## [0.2.2] - 2026-05-30
 
 > Epic #3(Extensibility & Long-term Design)의 하위 작업을 정리한 릴리스.

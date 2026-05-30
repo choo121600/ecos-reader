@@ -10,7 +10,6 @@ import warnings
 import pytest
 import responses
 
-from ecos.indicators._deprecations import EcosPartialCoverageWarning
 from ecos.indicators.prices import (
     get_core_cpi,
     get_cpi,
@@ -167,11 +166,11 @@ class TestGetCpiMonthly:
             get_cpi_monthly(sub_category="없는품목", start_date="202401", end_date="202402")
 
     @responses.activate
-    def test_no_partial_coverage_warning(self):
-        """재설계 후에는 EcosPartialCoverageWarning을 발생시키지 않는다."""
+    def test_emits_no_warning(self):
+        """재설계 후 어떤 경고도 발생시키지 않는다 (partial-coverage 경고 제거, #64)."""
         self._add_mock()
         with warnings.catch_warnings():
-            warnings.simplefilter("error", EcosPartialCoverageWarning)
+            warnings.simplefilter("error")
             get_cpi_monthly(start_date="202401", end_date="202402")
 
 

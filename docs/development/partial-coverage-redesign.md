@@ -4,7 +4,7 @@
 
 ## 배경
 
-일부 지표 함수는 함수명이 **전체 시리즈**(예: "산업별 GDP", "투자자별 거래")를 시사하지만, 실제로는 ECOS `item_code1` 단일 항목만 조회해 반환합니다. 이들은 `EcosPartialCoverageWarning`([#8](https://github.com/choo121600/ecos-reader/issues/8))과 함께 동작하며, v0.3.0 에서 함수 시그니처를 바꿔 전체 시리즈 또는 sub-category 선택을 제공하도록 재설계됩니다.
+일부 지표 함수는 함수명이 **전체 시리즈**(예: "산업별 GDP", "투자자별 거래")를 시사하지만, v0.2.x 까지는 실제로 ECOS `item_code1` 단일 항목만 조회해 반환했습니다. 이들은 한동안 `EcosPartialCoverageWarning`([#8](https://github.com/choo121600/ecos-reader/issues/8))과 함께 동작했고, v0.3.0([#56](https://github.com/choo121600/ecos-reader/issues/56))에서 함수 시그니처를 바꿔 전체 시리즈 또는 sub-category 선택을 제공하도록 재설계되었습니다. 재설계 완료 후 경고 클래스는 [#64](https://github.com/choo121600/ecos-reader/issues/64)에서 제거되었습니다.
 
 레퍼런스는 v0.2.0 의 [`get_borrower_loan`](https://github.com/choo121600/ecos-reader/pull/29) 재설계입니다. 이 규약은 그 패턴을 일반화한 것입니다.
 
@@ -66,4 +66,4 @@ def get_something(sub_category=None, start_date=None, end_date=None):
 
 ## 마이그레이션 영향
 
-이 재설계는 **BREAKING** 변경입니다. 단일 시계열을 반환하던 함수가 기본적으로 long-format 을 반환하게 됩니다. 기존 동작을 원하는 호출자는 `sub_category` 를 명시하거나 `EcosClient.get_statistic_search` 를 직접 사용해야 합니다. 전체 함수별 변경 내역과 마이그레이션 가이드는 [#64](https://github.com/choo121600/ecos-reader/issues/64) cleanup 에서 정리합니다.
+이 재설계는 **BREAKING** 변경입니다. 단일 시계열을 반환하던 함수가 기본적으로 long-format 을 반환하게 됩니다. 기존 동작을 원하는 호출자는 `sub_category` 를 명시하거나 `EcosClient.get_statistic_search` 를 직접 사용해야 합니다. 함수별 변경 내역과 마이그레이션 방법은 [v0.3.0 마이그레이션 가이드](../user-guide/migration-v0.3.0.md)를 참고하세요.
