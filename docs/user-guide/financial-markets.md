@@ -169,14 +169,23 @@ df.set_index('date')['value'].plot(
 - `종류별` - 채권 종류별 수익률 (기본값)
 - `시장별` - 시장별 채권 거래 현황
 
-### 종류별 채권 수익률
+### 매개변수
+
+- `bond_type`: 분류 기준 — `종류별`(기본값, 합계/국채/지방채/특수채/회사채/외국채) / `시장별`(합계/국채전문/일반채권/소액채권/신고매매)
+- `measure`: 측정 지표 — `거래대금`(기본값) / `거래량` / `상장잔액`·`상장종목수`(종류별 전용)
+- `sub_category`: 세부 분류(분류명 또는 item_code). 미지정 시 전체 분류 long-format 반환.
+
+### 종류별 채권 거래
 
 ```python
 import ecos
 
-# 채권 종류별 수익률
+# 종류별 거래대금 전체 (long-format: date, category_value, value, unit)
 df = ecos.get_bond_yield(bond_type="종류별")
 print(df.tail())
+
+# 국채만
+df = ecos.get_bond_yield(sub_category="국채")
 ```
 
 ### 시장별 채권 거래
@@ -184,10 +193,18 @@ print(df.tail())
 ```python
 import ecos
 
-# 시장별 채권 거래
+# 시장별 거래대금 전체
 df = ecos.get_bond_yield(bond_type="시장별")
-print(df.tail())
+
+# 시장별 거래량, 국채전문 유통시장만
+df = ecos.get_bond_yield(bond_type="시장별", measure="거래량", sub_category="0202")
 ```
+
+!!! note "v0.3.0 재설계 (#63)"
+    이전에는 합계 단일 시계열만 반환했으나, 이제 종류/시장 전체 분류를 제공합니다.
+    long-format에는 '합계' 행도 포함되므로 단순 합산에 주의하세요. 분류명이 길거나
+    중복될 수 있어 단일 선택은 item_code(종류별 `4`=국채, 시장별 `0202`=국채전문)를
+    권장합니다.
 
 ### 기간 지정
 
@@ -208,7 +225,8 @@ df = ecos.get_bond_yield(
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | `date` | datetime | 조회 월 |
-| `value` | float | 수익률 (%) 또는 거래대금 |
+| `category_value` | str | 분류명 (sub_category 미지정 시) |
+| `value` | float | 거래대금/거래량 등 measure 값 |
 | `unit` | str | 단위 |
 
 ### 채권 수익률 시각화

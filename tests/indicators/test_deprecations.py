@@ -31,26 +31,26 @@ def _empty_mock():
 
 
 # (func_name, callable that invokes the indicator with valid default args)
-_PARTIAL_COVERAGE_CASES = [
-    # get_gdp_by_industry / by_expenditure / deflator_by_industry는 v0.3.0(#59)에서,
-    # get_stock_index(monthly) / get_investor_trading는 v0.3.0(#60)에서
-    # 전체 시리즈/sub_category 선택으로 재설계되어 더 이상 partial-coverage 경고를
-    # 내지 않으므로 제외.
-    ("get_bond_yield(종류별)", lambda: ecos.get_bond_yield(bond_type="종류별")),
-    ("get_bond_yield(시장별)", lambda: ecos.get_bond_yield(bond_type="시장별")),
-    # get_borrower_loan은 v0.2.0(#29)에서, get_cpi_monthly(#61) /
-    # get_household_lending_detail(#62)은 v0.3.0에서
-    # 전체 시리즈 long-format + sub_category 선택으로 재설계되어 더 이상
-    # partial-coverage 경고를 내지 않으므로 제외.
-    # get_cpi_by_category는 v0.1.6에서 (stat_code, item_code) 매핑이 수정되어
-    # 정상 데이터를 반환하므로 partial-coverage 목록에서 제외 (PR #27).
-]
+#
+# v0.3.0(#59~#63)에서 모든 partial-coverage 함수가 전체 시리즈 long-format +
+# sub_category 선택으로 재설계되어 더 이상 EcosPartialCoverageWarning을 내지
+# 않는다. 따라서 이 목록은 비어 있다. 각 함수의 "경고 없음"은 해당 모듈 테스트
+# (test_growth/stock/prices/money/bond의 test_no_partial_coverage_warning)에서
+# 검증한다. 경고 인프라(_deprecations) 자체는 #64 cleanup에서 제거 예정.
+#   - get_gdp_* (#59), get_stock_index(monthly)/get_investor_trading (#60),
+#     get_cpi_monthly (#61), get_household_lending_detail (#62),
+#     get_bond_yield(종류별/시장별) (#63), get_borrower_loan (#29 v0.2.0)
+_PARTIAL_COVERAGE_CASES: list[tuple[str, object]] = []
 
 
+@pytest.mark.skipif(
+    not _PARTIAL_COVERAGE_CASES,
+    reason="모든 partial-coverage 함수가 재설계됨 (#59~#63); #64에서 경고 인프라 제거 예정.",
+)
 @pytest.mark.parametrize(
     ("func_name", "call"),
-    _PARTIAL_COVERAGE_CASES,
-    ids=[name for name, _ in _PARTIAL_COVERAGE_CASES],
+    _PARTIAL_COVERAGE_CASES or [("none", lambda: None)],
+    ids=lambda c: c if isinstance(c, str) else "",
 )
 @pytest.mark.usefixtures("_empty_mock")
 def test_partial_coverage_emits_visible_warning(func_name, call):
