@@ -42,8 +42,7 @@ KNOWN_DEFECTS: set[tuple[str, str, str]] = {
     # 국제수지: 301Y017 의 실제 item 은 SA000(경상수지)/SA100(상품수지) 등 — CA/KA 아님.
     ("bop", "current_account", audit.FAIL),
     ("bop", "capital_account", audit.FAIL),
-    # 실물: STAT_FACILITY_INVESTMENT(901Y049) 항목 목록 비어있음 — stat_code 오류.
-    ("real_economy", "facility_invest", audit.FAIL),
+    # real_economy facility_invest(901Y049→901Y066) 정정 완료 — #72 에서 해소.
     # 심리: 512Y014(BSI) 실제 item 은 99988/C0000/X5000 등 — A001/B001/C001 아님.
     ("sentiment", "bsi_manufacturing", audit.FAIL),
     ("sentiment", "bsi_non_manufacturing", audit.FAIL),
