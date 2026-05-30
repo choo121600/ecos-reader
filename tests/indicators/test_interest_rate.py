@@ -109,7 +109,7 @@ class TestGetBaseRate:
 
     def test_get_base_rate_invalid_frequency_raises(self):
         """잘못된 frequency 지정 시 에러."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="frequency"):
             get_base_rate(frequency="W")  # type: ignore
 
 
@@ -146,7 +146,7 @@ class TestGetTreasuryYield:
 
     def test_invalid_maturity_raises(self):
         """잘못된 만기 지정 시 에러"""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="maturity"):
             get_treasury_yield(maturity="2Y")  # type: ignore
 
 
@@ -259,7 +259,7 @@ class TestGetBankDepositRate:
 
     def test_invalid_basis_raises(self):
         """잘못된 basis 지정 시 에러"""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="basis"):
             get_bank_deposit_rate(basis="invalid")  # type: ignore
 
 
@@ -331,5 +331,5 @@ class TestGetBankLendingRate:
 
     def test_invalid_basis_raises(self):
         """잘못된 basis 지정 시 에러"""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="basis"):
             get_bank_lending_rate(basis="invalid")  # type: ignore

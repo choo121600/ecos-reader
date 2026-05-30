@@ -72,7 +72,7 @@ class TestDefaultQuarterly:
         assert end == "2024Q4"
 
     @pytest.mark.parametrize(
-        "month,quarter",
+        ("month", "quarter"),
         [(1, 1), (3, 1), (4, 2), (6, 2), (7, 3), (9, 3), (10, 4), (12, 4)],
     )
     def test_quarter_mapping(self, month, quarter):

@@ -6,9 +6,7 @@ GDP(국내총생산), GDP 디플레이터 등 성장 관련 지표를 조회합�
 
 from __future__ import annotations
 
-from typing import Literal
-
-import pandas as pd
+from typing import TYPE_CHECKING, Literal
 
 from ..client import get_client
 from ..constants import (
@@ -30,6 +28,9 @@ from ..parser import normalize_stat_result, parse_response
 from ._dates import default_annual, default_quarterly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 from ._frequency import normalize_frequency
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
 def get_gdp(

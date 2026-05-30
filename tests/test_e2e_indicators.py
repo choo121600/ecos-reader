@@ -7,6 +7,7 @@ E2E 테스트 - High-level Indicator 함수들
 from __future__ import annotations
 
 import os
+from typing import ClassVar
 
 import pytest
 
@@ -755,7 +756,7 @@ class TestE2ERegressionV016:
 
     def test_gdp_by_industry_seasonal_annual_raises(self):
         """계절조정 시리즈는 ECOS에서 분기만 제공 → seasonal_adj=True+연간은 차단."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="seasonal_adj"):
             ecos.get_gdp_by_industry(
                 seasonal_adj=True, frequency="annual", start_date="2020", end_date="2023"
             )
@@ -803,7 +804,7 @@ class TestE2ERegressionV016:
 
     # v0.1.6에서 stat_code 매핑이 ECOS와 일치하지 않아 ValueError로 차단했던 7개 조합.
     # #29 재설계(181Y001/181Y002 + item_code prefix 필터)로 이제 정상 데이터를 반환한다.
-    _PREVIOUSLY_BROKEN_BORROWER_COMBINATIONS = [
+    _PREVIOUSLY_BROKEN_BORROWER_COMBINATIONS: ClassVar = [
         ("신규", "연령별"),
         ("신규", "지역별"),
         ("신규", "담보유형별"),

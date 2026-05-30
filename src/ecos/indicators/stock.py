@@ -6,9 +6,7 @@
 
 from __future__ import annotations
 
-from typing import Literal
-
-import pandas as pd
+from typing import TYPE_CHECKING, Literal
 
 from ..client import get_client
 from ..constants import (
@@ -22,6 +20,9 @@ from ..parser import normalize_stat_result, parse_response
 from ._dates import default_daily, default_monthly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 from ._frequency import normalize_frequency
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
 def get_stock_index(

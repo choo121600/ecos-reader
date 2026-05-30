@@ -74,9 +74,18 @@ select = [
     "UP",     # pyupgrade
     "ARG",    # flake8-unused-arguments
     "SIM",    # flake8-simplify
+    "S",      # flake8-bandit (보안 스캔)
+    "RUF",    # Ruff 고유 규칙
+    "PT",     # flake8-pytest-style
+    "TC",     # flake8-type-checking
+    "N",      # pep8-naming
 ]
 ignore = [
     "E501",   # line too long (handled by formatter)
+    # 한국어 docstring/주석의 전각·수학기호(×, 전각괄호 등)를 ASCII 혼동 문자로
+    # 오탐. 한국어 코드베이스 전반에 걸친 false positive이므로 비활성화.
+    "RUF002", # ambiguous-unicode-character-docstring
+    "RUF003", # ambiguous-unicode-character-comment
 ]
 
 [tool.ruff.lint.isort]
@@ -85,7 +94,12 @@ known-first-party = ["ecos"]
 [tool.ruff.lint.per-file-ignores]
 # __init__.py는 공개 API re-export 모듈. __all__을 동적 생성(#16)하므로
 # 정적 분석이 re-export를 인식하지 못해 F401이 오탐된다.
-"__init__.py" = ["F401"]
+# __all__은 카테고리별 주석으로 의도적으로 그룹핑되어 있어 RUF022(알파벳 정렬)는
+# 그 가독성 구조를 훼손하므로 제외.
+"__init__.py" = ["F401", "RUF022"]
+# 테스트는 assert 사용이 정상(S101)이고, 지표 한글명을 그대로 쓴 서술적
+# 테스트 함수명(N802)을 의도적으로 허용한다.
+"tests/**" = ["S101", "N802"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
