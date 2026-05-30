@@ -149,6 +149,18 @@ class TestGetBondYieldByMarket:
         )
         assert set(df["category_value"]) == {"합계", "국채전문 유통시장", "일반채권 시장"}
 
+    @responses.activate
+    def test_empty_response_returns_empty(self):
+        """빈 응답에서도 축 승격(drop+rename)이 안전하게 빈 DataFrame을 반환한다."""
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json={"StatisticSearch": {"row": []}},
+            status=200,
+        )
+        df = get_bond_yield(bond_type="시장별", start_date="202401", end_date="202401")
+        assert df.empty
+
 
 @pytest.mark.usefixtures("set_api_key")
 class TestGetBondYieldValidation:
