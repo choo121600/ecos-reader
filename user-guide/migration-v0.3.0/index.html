@@ -12,13 +12,13 @@
         <meta name="author" content="yeonguk">
       
       
-        <link rel="canonical" href="https://github.com/choo121600/ecos-reader/user-guide/migration-frequency/">
+        <link rel="canonical" href="https://github.com/choo121600/ecos-reader/user-guide/migration-v0.3.0/">
       
       
-        <link rel="prev" href="../advanced/">
+        <link rel="prev" href="../migration-frequency/">
       
       
-        <link rel="next" href="../migration-v0.3.0/">
+        <link rel="next" href="../../api-reference/overview/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>frequency 마이그레이션 - ecos-reader</title>
+        <title>v0.3.0 마이그레이션 - ecos-reader</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#frequency-20" class="md-skip">
+        <a href="#v030-partial-coverage" class="md-skip">
           콘텐츠로 이동
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              frequency 마이그레이션
+              v0.3.0 마이그레이션
             
           </span>
         </div>
@@ -816,6 +816,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration-frequency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    frequency 마이그레이션
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -835,7 +863,7 @@
   <span class="md-ellipsis">
     
   
-    frequency 마이그레이션
+    v0.3.0 마이그레이션
   
 
     
@@ -853,7 +881,7 @@
   <span class="md-ellipsis">
     
   
-    frequency 마이그레이션
+    v0.3.0 마이그레이션
   
 
     
@@ -882,7 +910,7 @@
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        배경
+        한눈에 보기
       
     </span>
   </a>
@@ -893,29 +921,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        레거시 → 정식 매핑
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deprecation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Deprecation 정책
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#before-after" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Before / After 코드 예시
+        경고 클래스 제거
       
     </span>
   </a>
@@ -926,30 +932,19 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        경고 끄는 법
+        함수별 변경
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        영향 함수 목록
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="영향 함수 목록">
+    <nav class="md-nav" aria-label="함수별 변경">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#growthpy-6" class="md-nav__link">
+  <a href="#59" class="md-nav__link">
     <span class="md-ellipsis">
       
-        growth.py — 6개 함수
+        성장 (#59)
       
     </span>
   </a>
@@ -957,10 +952,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#interest_ratepy-1" class="md-nav__link">
+  <a href="#60" class="md-nav__link">
     <span class="md-ellipsis">
       
-        interest_rate.py — 1개 함수
+        주식 (#60)
       
     </span>
   </a>
@@ -968,10 +963,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#stockpy-1" class="md-nav__link">
+  <a href="#61" class="md-nav__link">
     <span class="md-ellipsis">
       
-        stock.py — 1개 함수 (이미 정식 어휘 사용)
+        물가 (#61)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        통화 (#62)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        채권 (#63)
       
     </span>
   </a>
@@ -983,38 +1000,21 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        기존 단일 항목 동작이 꼭 필요하다면
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../migration-v0.3.0/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    v0.3.0 마이그레이션
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1682,7 +1682,7 @@
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        배경
+        한눈에 보기
       
     </span>
   </a>
@@ -1693,29 +1693,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        레거시 → 정식 매핑
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deprecation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Deprecation 정책
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#before-after" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Before / After 코드 예시
+        경고 클래스 제거
       
     </span>
   </a>
@@ -1726,30 +1704,19 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        경고 끄는 법
+        함수별 변경
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        영향 함수 목록
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="영향 함수 목록">
+    <nav class="md-nav" aria-label="함수별 변경">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#growthpy-6" class="md-nav__link">
+  <a href="#59" class="md-nav__link">
     <span class="md-ellipsis">
       
-        growth.py — 6개 함수
+        성장 (#59)
       
     </span>
   </a>
@@ -1757,10 +1724,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#interest_ratepy-1" class="md-nav__link">
+  <a href="#60" class="md-nav__link">
     <span class="md-ellipsis">
       
-        interest_rate.py — 1개 함수
+        주식 (#60)
       
     </span>
   </a>
@@ -1768,10 +1735,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#stockpy-1" class="md-nav__link">
+  <a href="#61" class="md-nav__link">
     <span class="md-ellipsis">
       
-        stock.py — 1개 함수 (이미 정식 어휘 사용)
+        물가 (#61)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        통화 (#62)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        채권 (#63)
       
     </span>
   </a>
@@ -1780,6 +1769,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        기존 단일 항목 동작이 꼭 필요하다면
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1803,142 +1803,100 @@
   
 
 
-<h1 id="frequency-20">frequency 어휘 통일 마이그레이션 (#20)<a class="headerlink" href="#frequency-20" title="Permanent link">&para;</a></h1>
-<h2 id="_1">배경<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>과거 ecos-reader는 카테고리마다 <code>frequency</code> 파라미터의 표기가 달랐습니다.</p>
-<ul>
-<li><strong>성장 지표</strong> (<code>growth.py</code>): <code>"Q"</code> (분기), <code>"A"</code> (연간)</li>
-<li><strong>금리 지표</strong> (<code>interest_rate.py</code>): <code>"D"</code> (일), <code>"M"</code> (월)</li>
-<li><strong>주가 지표</strong> (<code>stock.py</code>): <code>"daily"</code>, <code>"monthly"</code> (이미 풀네임 사용)</li>
-</ul>
-<p>이 불일치를 해소하기 위해 이슈 #20에서 <strong>풀네임 어휘</strong>로 통일했습니다.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>daily | monthly | quarterly | annual
-</span></code></pre></div>
-<h2 id="_2">레거시 → 정식 매핑<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h1 id="v030-partial-coverage">v0.3.0 마이그레이션 가이드 (Partial-coverage 재설계)<a class="headerlink" href="#v030-partial-coverage" title="Permanent link">&para;</a></h1>
+<p>v0.3.0은 <strong>BREAKING</strong> 릴리스입니다. 함수명이 전체 시리즈를 시사하지만 실제로는 단일
+ECOS 항목만 반환하던 함수들(<a href="https://github.com/choo121600/ecos-reader/issues/56">#56</a>)이
+모두 <strong>전체 시리즈 long-format + <code>sub_category</code> 선택</strong>으로 재설계되었습니다.</p>
+<h2 id="_1">한눈에 보기<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>레거시 (구)</th>
-<th>정식 (신)</th>
-<th>설명</th>
+<th>변경</th>
+<th>내용</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>"D"</code></td>
-<td><code>"daily"</code></td>
-<td>일별</td>
+<td>기본 반환</td>
+<td>단일 시계열(<code>date, value, unit</code>) → <strong>전체 분류 long-format</strong>(<code>date, category_value, value, unit</code>)</td>
 </tr>
 <tr>
-<td><code>"M"</code></td>
-<td><code>"monthly"</code></td>
-<td>월별</td>
+<td>단일 시계열</td>
+<td><code>sub_category=</code> 인자로 명시 선택</td>
 </tr>
 <tr>
-<td><code>"Q"</code></td>
-<td><code>"quarterly"</code></td>
-<td>분기별</td>
-</tr>
-<tr>
-<td><code>"A"</code></td>
-<td><code>"annual"</code></td>
-<td>연간</td>
+<td><code>EcosPartialCoverageWarning</code></td>
+<td><strong>제거됨</strong> (더 이상 발생하지 않음)</td>
 </tr>
 </tbody>
 </table>
-<h2 id="deprecation">Deprecation 정책<a class="headerlink" href="#deprecation" title="Permanent link">&para;</a></h2>
-<p>레거시 단일 문자(<code>"D"</code>, <code>"M"</code>, <code>"Q"</code>, <code>"A"</code>)는 <strong>당분간 계속 동작</strong>하지만,
-호출 시 <code>EcosDeprecationWarning</code>이 발생합니다.</p>
-<ul>
-<li><code>EcosDeprecationWarning</code>은 <code>UserWarning</code>의 하위 클래스이며 기본 필터로도 표시됩니다.</li>
-<li><strong>v0.4.0</strong>에서 레거시 단일 문자 지원이 완전히 제거될 예정입니다.</li>
-</ul>
-<h2 id="before-after">Before / After 코드 예시<a class="headerlink" href="#before-after" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Before (레거시 — 동작하지만 경고 발생)</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
+<p><code>sub_category</code> 미지정 시 long-format은 통계표의 <strong>모든 항목(총계·소계 포함)</strong> 을 담습니다.
+계층형 통계표는 <code>category_value</code>를 단순 합산하면 중복 집계되므로, 특정 시계열은
+<code>sub_category</code>로 선택하세요. 분류명이 길거나 중복될 수 있어 안정적 선택에는 <code>item_code</code>를
+권장합니다.</p>
+<h2 id="_2">경고 클래스 제거<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p><code>ecos.EcosPartialCoverageWarning</code> 및 내부 <code>ecos.indicators._deprecations</code> 모듈이
+제거되었습니다(<a href="https://github.com/choo121600/ecos-reader/issues/64">#64</a>). 아래처럼 경고를
+억제하던 코드는 더 이상 필요하지 않으므로 삭제하세요.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 제거: v0.3.0부터 불필요</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span><span class="o">,</span><span class="w"> </span><span class="nn">ecos</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">ecos</span><span class="o">.</span><span class="n">EcosPartialCoverageWarning</span><span class="p">)</span>  <span class="c1"># AttributeError</span>
+</span></code></pre></div>
+<h2 id="_3">함수별 변경<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h3 id="59">성장 (#59)<a class="headerlink" href="#59" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Before (v0.2.x): 농림어업 단일 시계열 + 경고</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">()</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;Q&quot;</span><span class="p">)</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">)</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_base_rate</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;M&quot;</span><span class="p">)</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># After (정식 — 권장)</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;quarterly&quot;</span><span class="p">)</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="s2">&quot;nominal&quot;</span><span class="p">)</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_base_rate</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;monthly&quot;</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># After (v0.3.0): 전체 산업 long-format</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">()</span>                      <span class="c1"># 전체 산업</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_gdp_by_industry</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;제조업&quot;</span><span class="p">)</span>  <span class="c1"># 단일 산업</span>
 </span></code></pre></div>
-<h2 id="_3">경고 끄는 법<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>마이그레이션 전까지 임시로 경고를 억제하려면:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ecos</span><span class="w"> </span><span class="kn">import</span> <span class="n">EcosDeprecationWarning</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">EcosDeprecationWarning</span><span class="p">)</span>
+<p><code>get_gdp_by_expenditure</code>, <code>get_gdp_deflator_by_industry</code>도 동일하게 <code>sub_category</code>를 지원합니다.</p>
+<h3 id="60">주식 (#60)<a class="headerlink" href="#60" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># get_stock_index(monthly): 1010000(회사수, 오류) → 1070000(KOSPI 종가, 지수)로 정정</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_stock_index</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;monthly&quot;</span><span class="p">)</span>                         <span class="c1"># KOSPI 지수</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_stock_index</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;monthly&quot;</span><span class="p">,</span> <span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;KOSPI_시가총액&quot;</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># get_investor_trading: 기타법인 매도 단일 → 투자자별 전체</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">()</span>                                       <span class="c1"># 투자자별 순매수 거래대금</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;매수&quot;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;거래량&quot;</span><span class="p">)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;S22CC&quot;</span><span class="p">)</span>                   <span class="c1"># 외국인 순매수</span>
 </span></code></pre></div>
-<h2 id="_4">영향 함수 목록<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<h3 id="growthpy-6"><code>growth.py</code> — 6개 함수<a class="headerlink" href="#growthpy-6" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>함수</th>
-<th>지원 frequency</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>get_gdp()</code></td>
-<td><code>quarterly</code>, <code>annual</code></td>
-</tr>
-<tr>
-<td><code>get_gdp_deflator()</code></td>
-<td><code>quarterly</code>, <code>annual</code></td>
-</tr>
-<tr>
-<td><code>get_gdp_growth_rate()</code></td>
-<td><code>quarterly</code>, <code>annual</code></td>
-</tr>
-<tr>
-<td><code>get_gdp_by_industry()</code></td>
-<td><code>quarterly</code>, <code>annual</code></td>
-</tr>
-<tr>
-<td><code>get_gdp_by_expenditure()</code></td>
-<td><code>quarterly</code>, <code>annual</code></td>
-</tr>
-<tr>
-<td><code>get_gdp_deflator_by_industry()</code></td>
-<td><code>quarterly</code>, <code>annual</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="interest_ratepy-1"><code>interest_rate.py</code> — 1개 함수<a class="headerlink" href="#interest_ratepy-1" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>함수</th>
-<th>지원 frequency</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>get_base_rate()</code></td>
-<td><code>daily</code>, <code>monthly</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="stockpy-1"><code>stock.py</code> — 1개 함수 (이미 정식 어휘 사용)<a class="headerlink" href="#stockpy-1" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>함수</th>
-<th>지원 frequency</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>get_stock_index()</code></td>
-<td><code>daily</code>, <code>monthly</code></td>
-</tr>
-</tbody>
-</table>
+<h3 id="61">물가 (#61)<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># get_cpi_monthly: 총지수 단일 → 전체 COICOP 품목</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_monthly</span><span class="p">()</span>                          <span class="c1"># 전체 품목 long-format</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_monthly</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;총지수&quot;</span><span class="p">)</span>      <span class="c1"># 기존 동작</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_monthly</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;A01101&quot;</span><span class="p">)</span>     <span class="c1"># 쌀</span>
+</span></code></pre></div>
+<p>특수분류(상품/서비스/근원 등)는 기존 <code>get_cpi_by_category</code>를 그대로 사용합니다.</p>
+<h3 id="62">통화 (#62)<a class="headerlink" href="#62" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># get_household_lending_detail: 단일 항목 → 용도×기관 전체 분류</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_household_lending_detail</span><span class="p">()</span>                       <span class="c1"># 전체 분류 long-format</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_household_lending_detail</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;11100A0&quot;</span><span class="p">)</span>  <span class="c1"># 주택관련대출-예금취급기관</span>
+</span></code></pre></div>
+<h3 id="63">채권 (#63)<a class="headerlink" href="#63" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># get_bond_yield: 합계 단일 → 채권종류/시장 전체 분류 + measure 선택</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_yield</span><span class="p">()</span>                                    <span class="c1"># 종류별 거래대금 전체</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_yield</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;국채&quot;</span><span class="p">)</span>                  <span class="c1"># 국채만</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_yield</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">&quot;시장별&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;거래량&quot;</span><span class="p">)</span>  <span class="c1"># 시장별 거래량</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_yield</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">&quot;시장별&quot;</span><span class="p">,</span> <span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;0202&quot;</span><span class="p">)</span>  <span class="c1"># 국채전문 유통시장</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">위치 인자 주의</p>
+<p>재설계된 함수들은 새 인자(<code>sub_category</code>, <code>action</code>, <code>measure</code> 등)가 <code>start_date</code>
+앞에 추가되었습니다. <code>start_date</code>/<code>end_date</code>는 <strong>키워드 인자</strong>로 넘기세요.
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202401&quot;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s2">&quot;202412&quot;</span><span class="p">)</span>  <span class="c1"># OK</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">(</span><span class="s2">&quot;202401&quot;</span><span class="p">,</span> <span class="s2">&quot;202412&quot;</span><span class="p">)</span>                      <span class="c1"># 잘못된 바인딩</span>
+</span></code></pre></div></p>
+</div>
+<h2 id="_4">기존 단일 항목 동작이 꼭 필요하다면<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p><code>sub_category</code>로 동일 항목을 선택하거나, 저수준 API로 직접 조회할 수 있습니다.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">client</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">EcosClient</span><span class="p">()</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_statistic_search</span><span class="p">(</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">stat_code</span><span class="o">=</span><span class="s2">&quot;200Y104&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;2024Q1&quot;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s2">&quot;2024Q4&quot;</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">item_code1</span><span class="o">=</span><span class="s2">&quot;1101&quot;</span><span class="p">,</span>  <span class="c1"># 농림어업</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">)</span>
+</span></code></pre></div>
 
 
 

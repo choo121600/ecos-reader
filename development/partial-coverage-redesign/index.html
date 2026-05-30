@@ -833,6 +833,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/migration-v0.3.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v0.3.0 마이그레이션
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1712,7 +1740,7 @@
 <p>v0.3.0 마일스톤(epic <a href="https://github.com/choo121600/ecos-reader/issues/56">#56</a>)의 공통 설계 규약입니다. 카테고리별 하위 이슈(#59~#63)는 모두 이 규약을 따릅니다.</p>
 </blockquote>
 <h2 id="_1">배경<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>일부 지표 함수는 함수명이 <strong>전체 시리즈</strong>(예: "산업별 GDP", "투자자별 거래")를 시사하지만, 실제로는 ECOS <code>item_code1</code> 단일 항목만 조회해 반환합니다. 이들은 <code>EcosPartialCoverageWarning</code>(<a href="https://github.com/choo121600/ecos-reader/issues/8">#8</a>)과 함께 동작하며, v0.3.0 에서 함수 시그니처를 바꿔 전체 시리즈 또는 sub-category 선택을 제공하도록 재설계됩니다.</p>
+<p>일부 지표 함수는 함수명이 <strong>전체 시리즈</strong>(예: "산업별 GDP", "투자자별 거래")를 시사하지만, v0.2.x 까지는 실제로 ECOS <code>item_code1</code> 단일 항목만 조회해 반환했습니다. 이들은 한동안 <code>EcosPartialCoverageWarning</code>(<a href="https://github.com/choo121600/ecos-reader/issues/8">#8</a>)과 함께 동작했고, v0.3.0(<a href="https://github.com/choo121600/ecos-reader/issues/56">#56</a>)에서 함수 시그니처를 바꿔 전체 시리즈 또는 sub-category 선택을 제공하도록 재설계되었습니다. 재설계 완료 후 경고 클래스는 <a href="https://github.com/choo121600/ecos-reader/issues/64">#64</a>에서 제거되었습니다.</p>
 <p>레퍼런스는 v0.2.0 의 <a href="https://github.com/choo121600/ecos-reader/pull/29"><code>get_borrower_loan</code></a> 재설계입니다. 이 규약은 그 패턴을 일반화한 것입니다.</p>
 <h2 id="ecos-item_code1">핵심 사실: ECOS <code>item_code1</code> 은 정확 일치 필터<a class="headerlink" href="#ecos-item_code1" title="Permanent link">&para;</a></h2>
 <p>ECOS 의 한 통계표(<code>stat_code</code>)는 여러 세부 항목을 <code>item_code1</code> 으로 묶어 제공합니다. 분류축(연령·지역·업권 등)은 별도 <code>stat_code</code> 가 아니라 <code>item_code1</code> <strong>prefix</strong> 로 표현되는 경우가 많습니다.</p>
@@ -1784,7 +1812,7 @@
 <li><strong>항목명 결측</strong>: <code>item_name1</code> 이 결측인 행은 long-format 의 <code>category_value</code> 가 결측으로 남습니다. 그대로 두는 것이 기본이며, 결측이 잦은 통계표는 함수 단에서 보정합니다.</li>
 </ul>
 <h2 id="_4">마이그레이션 영향<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p>이 재설계는 <strong>BREAKING</strong> 변경입니다. 단일 시계열을 반환하던 함수가 기본적으로 long-format 을 반환하게 됩니다. 기존 동작을 원하는 호출자는 <code>sub_category</code> 를 명시하거나 <code>EcosClient.get_statistic_search</code> 를 직접 사용해야 합니다. 전체 함수별 변경 내역과 마이그레이션 가이드는 <a href="https://github.com/choo121600/ecos-reader/issues/64">#64</a> cleanup 에서 정리합니다.</p>
+<p>이 재설계는 <strong>BREAKING</strong> 변경입니다. 단일 시계열을 반환하던 함수가 기본적으로 long-format 을 반환하게 됩니다. 기존 동작을 원하는 호출자는 <code>sub_category</code> 를 명시하거나 <code>EcosClient.get_statistic_search</code> 를 직접 사용해야 합니다. 함수별 변경 내역과 마이그레이션 방법은 <a href="../../user-guide/migration-v0.3.0/">v0.3.0 마이그레이션 가이드</a>를 참고하세요.</p>
 
 
 
