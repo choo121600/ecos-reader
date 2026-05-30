@@ -26,8 +26,8 @@ from ..constants import (
 )
 from ..parser import normalize_stat_result, parse_response
 from ._dates import default_annual, default_quarterly
-from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 from ._frequency import normalize_frequency
+from ._subcategory import select_subcategory
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -272,13 +272,16 @@ def get_gdp_by_industry(
     basis: Literal["real", "nominal"] = "real",
     seasonal_adj: bool = True,
     frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
+    sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
     경제활동별(산업별) GDP를 조회합니다.
 
-    농림어업, 광공업, 서비스업 등 경제활동별 부가가치를 제공합니다.
+    농림어업, 광공업, 서비스업 등 경제활동별 부가가치 전체 시리즈를 제공합니다.
+    partial-coverage 재설계 규약(#56)을 따릅니다 — ``sub_category`` 미지정 시
+    전체 산업을 long-format으로, 지정 시 해당 산업 단일 시계열만 반환합니다.
 
     Parameters
     ----------
@@ -295,6 +298,9 @@ def get_gdp_by_industry(
 
         레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
         deprecated이며 v0.4.0에서 제거됩니다.
+    sub_category : str, optional
+        세부 산업(항목명 또는 item_code1). 지정 시 해당 산업 단일 시계열만
+        반환합니다. 미지정 시 전체 산업을 long-format으로 반환합니다.
     start_date : str, optional
         조회 시작일
     end_date : str, optional
@@ -303,31 +309,36 @@ def get_gdp_by_industry(
     Returns
     -------
     pd.DataFrame
-        컬럼: date, value, unit
-        - date: 날짜 (datetime)
-        - value: 산업별 GDP (조원)
-        - unit: 단위
+        - ``sub_category`` 미지정: 컬럼 ``date, category_value, value, unit``
+          (각 산업이 행으로 포함된 long-format, ``category_value``=산업명)
+        - ``sub_category`` 지정: 컬럼 ``date, value, unit`` (단일 시계열)
 
-    Warnings
-    --------
-    DeprecationWarning
-        현재 단일 항목(`item_code1="1101"`, 농림어업)만 반환하며 함수명이 시사하는
-        전체 산업 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
-        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
-        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+    Raises
+    ------
+    ValueError
+        지원하지 않는 basis/seasonal_adj/frequency 조합이거나, 지정한
+        ``sub_category`` 가 존재하지 않는 경우 (사용 가능 항목을 함께 안내).
 
     Notes
     -----
     - 계절조정: 계절적 요인 제거
     - 원계열: 계절조정하지 않은 원자료
+    - 이 통계표는 계층형입니다 — long-format에는 총계·소계(예: '총부가가치')와
+      세부 산업이 함께 포함되므로, ``category_value`` 를 단순 합산하면 중복
+      집계됩니다. 특정 시계열이 필요하면 ``sub_category`` 로 선택하세요.
 
     산업별 GDP는 경제 구조와 각 산업의 기여도를 파악하는 데 활용됩니다.
 
     Examples
     --------
     >>> import ecos
+    >>> # 전체 산업 long-format
     >>> df = ecos.get_gdp_by_industry()
     >>> df.head()
+            date category_value     value   unit
+
+    >>> # 제조업 단일 시계열
+    >>> df = ecos.get_gdp_by_industry(sub_category="제조업")
 
     >>> df = ecos.get_gdp_by_industry(basis="nominal", seasonal_adj=False)
     """
@@ -350,8 +361,6 @@ def get_gdp_by_industry(
     if variant_key not in GDP_BY_INDUSTRY_VARIANTS:
         raise ValueError(f"지원하지 않는 조합입니다: basis={basis}, seasonal_adj={seasonal_adj}")
 
-    _warn_partial_coverage("get_gdp_by_industry", "1101", "농림어업")
-
     stat_code = GDP_BY_INDUSTRY_VARIANTS[variant_key]
 
     # 주기 코드
@@ -366,29 +375,37 @@ def get_gdp_by_industry(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
+    # 이 통계표는 분류축이 item_code1 하나뿐이라 prefix="" 로 전체 항목을 분류한다
+    # (money.py의 다축 prefix 필터와 달리 단일 축이므로 필터 없이 전량 long-format화, #58 규약).
+    # 확인됨(라이브 e2e): 이 테이블들은 계층형이라 총계·소계·세부 항목이 long-format에
+    # 함께 포함된다. 특정 시계열만 필요하면 sub_category로 선택할 것(축 간 단순 합산 금지).
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
         period=period,
         start_date=start_date,
         end_date=end_date,
-        item_code1="1101",  # 농림어업
     )
 
     df = parse_response(response)
-    return normalize_stat_result(df)
+    return select_subcategory(
+        df, prefix="", sub_category=sub_category, context="get_gdp_by_industry"
+    )
 
 
 def get_gdp_by_expenditure(
     basis: Literal["real", "nominal"] = "real",
     frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
+    sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
     지출항목별 GDP를 조회합니다.
 
-    민간소비, 정부소비, 투자, 수출입 등 지출항목별 GDP를 제공합니다.
+    민간소비, 정부소비, 투자, 수출입 등 지출항목별 GDP 전체 시리즈를 제공합니다.
+    partial-coverage 재설계 규약(#56)을 따릅니다 — ``sub_category`` 미지정 시
+    전체 지출항목을 long-format으로, 지정 시 해당 항목 단일 시계열만 반환합니다.
 
     Parameters
     ----------
@@ -403,6 +420,9 @@ def get_gdp_by_expenditure(
 
         레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
         deprecated이며 v0.4.0에서 제거됩니다.
+    sub_category : str, optional
+        세부 지출항목(항목명 또는 item_code1). 지정 시 해당 항목 단일 시계열만
+        반환합니다. 미지정 시 전체 지출항목을 long-format으로 반환합니다.
     start_date : str, optional
         조회 시작일
     end_date : str, optional
@@ -411,18 +431,15 @@ def get_gdp_by_expenditure(
     Returns
     -------
     pd.DataFrame
-        컬럼: date, value, unit
-        - date: 날짜 (datetime)
-        - value: 지출항목별 GDP (조원)
-        - unit: 단위
+        - ``sub_category`` 미지정: 컬럼 ``date, category_value, value, unit``
+          (각 지출항목이 행으로 포함된 long-format, ``category_value``=항목명)
+        - ``sub_category`` 지정: 컬럼 ``date, value, unit`` (단일 시계열)
 
-    Warnings
-    --------
-    DeprecationWarning
-        현재 단일 항목(`item_code1="10601"`, 지출항목별 전체(미확인))만 반환하며 함수명이
-        시사하는 전체 지출 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
-        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
-        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+    Raises
+    ------
+    ValueError
+        지원하지 않는 basis 조합이거나, 지정한 ``sub_category`` 가 존재하지
+        않는 경우 (사용 가능 항목을 함께 안내).
 
     Notes
     -----
@@ -432,13 +449,22 @@ def get_gdp_by_expenditure(
     - 총고정자본형성: 기업 및 정부의 투자
     - 수출 - 수입: 순수출
 
+    이 통계표는 계층형입니다 — long-format에는 총계('국내총생산에 대한 지출')와
+    소계('총고정자본형성', '최종소비지출' 등) 및 그 구성요소('민간', '정부' 등)가
+    함께 포함되므로 ``category_value`` 를 단순 합산하면 중복 집계됩니다. 특정
+    시계열이 필요하면 ``sub_category`` 로 선택하세요.
+
     지출항목별 GDP는 경제 성장의 원천을 파악하는 데 활용됩니다.
 
     Examples
     --------
     >>> import ecos
+    >>> # 전체 지출항목 long-format
     >>> df = ecos.get_gdp_by_expenditure()
     >>> df.head()
+
+    >>> # 민간소비 단일 시계열
+    >>> df = ecos.get_gdp_by_expenditure(sub_category="민간소비지출")
 
     >>> df = ecos.get_gdp_by_expenditure(basis="nominal")
     """
@@ -452,8 +478,6 @@ def get_gdp_by_expenditure(
 
     if variant_key not in GDP_BY_EXPENDITURE_VARIANTS:
         raise ValueError(f"지원하지 않는 조합입니다: basis={basis}")
-
-    _warn_partial_coverage("get_gdp_by_expenditure", "10601", "지출항목별 전체(미확인)")
 
     stat_code = GDP_BY_EXPENDITURE_VARIANTS[variant_key]
 
@@ -469,28 +493,36 @@ def get_gdp_by_expenditure(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
+    # 이 통계표는 분류축이 item_code1 하나뿐이라 prefix="" 로 전체 항목을 분류한다
+    # (money.py의 다축 prefix 필터와 달리 단일 축이므로 필터 없이 전량 long-format화, #58 규약).
+    # 확인됨(라이브 e2e): 이 테이블들은 계층형이라 총계·소계·세부 항목이 long-format에
+    # 함께 포함된다. 특정 시계열만 필요하면 sub_category로 선택할 것(축 간 단순 합산 금지).
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
         period=period,
         start_date=start_date,
         end_date=end_date,
-        item_code1="10601",  # 지출항목별 전체 (StatisticItemList로 확인 필요)
     )
 
     df = parse_response(response)
-    return normalize_stat_result(df)
+    return select_subcategory(
+        df, prefix="", sub_category=sub_category, context="get_gdp_by_expenditure"
+    )
 
 
 def get_gdp_deflator_by_industry(
     frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
+    sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
     경제활동별(산업별) GDP 디플레이터를 조회합니다.
 
-    산업별 물가 변화를 나타내는 GDP 디플레이터를 제공합니다.
+    산업별 물가 변화를 나타내는 GDP 디플레이터 전체 시리즈를 제공합니다.
+    partial-coverage 재설계 규약(#56)을 따릅니다 — ``sub_category`` 미지정 시
+    전체 산업을 long-format으로, 지정 시 해당 산업 단일 시계열만 반환합니다.
 
     Parameters
     ----------
@@ -501,6 +533,9 @@ def get_gdp_deflator_by_industry(
 
         레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
         deprecated이며 v0.4.0에서 제거됩니다.
+    sub_category : str, optional
+        세부 산업(항목명 또는 item_code1). 지정 시 해당 산업 단일 시계열만
+        반환합니다. 미지정 시 전체 산업을 long-format으로 반환합니다.
     start_date : str, optional
         조회 시작일
     end_date : str, optional
@@ -509,31 +544,34 @@ def get_gdp_deflator_by_industry(
     Returns
     -------
     pd.DataFrame
-        컬럼: date, value, unit
-        - date: 날짜 (datetime)
-        - value: GDP 디플레이터
-        - unit: 단위
+        - ``sub_category`` 미지정: 컬럼 ``date, category_value, value, unit``
+          (각 산업이 행으로 포함된 long-format, ``category_value``=산업명)
+        - ``sub_category`` 지정: 컬럼 ``date, value, unit`` (단일 시계열)
 
-    Warnings
-    --------
-    DeprecationWarning
-        현재 단일 항목(`item_code1="1101"`, 농림어업)만 반환하며 함수명이 시사하는
-        전체 산업 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
-        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
-        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+    Raises
+    ------
+    ValueError
+        지정한 ``sub_category`` 가 존재하지 않는 경우 (사용 가능 항목을 함께 안내).
 
     Notes
     -----
     - GDP 디플레이터 = (명목 GDP / 실질 GDP) × 100
     - 각 산업별로 물가 변화를 측정
+    - 이 통계표는 계층형입니다 — long-format에는 총계('국내총생산(시장가격)',
+      '총부가가치(기초가격)')와 세부 산업이 함께 포함되므로, 특정 시계열이
+      필요하면 ``sub_category`` 로 선택하세요.
 
     산업별 GDP 디플레이터는 산업별 물가 동향을 파악하는 데 활용됩니다.
 
     Examples
     --------
     >>> import ecos
+    >>> # 전체 산업 long-format
     >>> df = ecos.get_gdp_deflator_by_industry()
     >>> df.head()
+
+    >>> # 제조업 단일 시계열
+    >>> df = ecos.get_gdp_deflator_by_industry(sub_category="제조업")
 
     >>> df = ecos.get_gdp_deflator_by_industry(frequency="annual")
     """
@@ -544,8 +582,6 @@ def get_gdp_deflator_by_industry(
     # 주기 코드
     period = PERIOD_QUARTERLY if frequency == "quarterly" else PERIOD_ANNUAL
 
-    _warn_partial_coverage("get_gdp_deflator_by_industry", "1101", "농림어업")
-
     # 기본 날짜 설정
     if start_date is None or end_date is None:
         if frequency == "quarterly":
@@ -555,14 +591,19 @@ def get_gdp_deflator_by_industry(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
+    # 이 통계표는 분류축이 item_code1 하나뿐이라 prefix="" 로 전체 항목을 분류한다
+    # (money.py의 다축 prefix 필터와 달리 단일 축이므로 필터 없이 전량 long-format화, #58 규약).
+    # 확인됨(라이브 e2e): 이 테이블들은 계층형이라 총계·소계·세부 항목이 long-format에
+    # 함께 포함된다. 특정 시계열만 필요하면 sub_category로 선택할 것(축 간 단순 합산 금지).
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_GDP_DEFLATOR_BY_INDUSTRY,
         period=period,
         start_date=start_date,
         end_date=end_date,
-        item_code1="1101",  # 농림어업
     )
 
     df = parse_response(response)
-    return normalize_stat_result(df)
+    return select_subcategory(
+        df, prefix="", sub_category=sub_category, context="get_gdp_deflator_by_industry"
+    )
