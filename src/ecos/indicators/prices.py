@@ -12,11 +12,12 @@ from ..client import get_client
 from ..constants import (
     CPI_CATEGORY_CODES,
     PERIOD_MONTHLY,
+    STAT_CPI_MONTHLY,
 )
 from ..parser import normalize_stat_result, parse_response
 from ._dates import default_monthly
-from ._deprecations import warn_partial_coverage as _warn_partial_coverage
 from ._registry import get_indicator
+from ._subcategory import select_subcategory
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -143,16 +144,23 @@ def get_ppi(
 
 
 def get_cpi_monthly(
+    sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
-    CPI 월별 원지수를 조회합니다.
+    CPI 월별 원지수를 품목/분류별로 조회합니다.
 
-    전년동월비가 아닌 원지수(index)를 제공합니다.
+    전년동월비가 아닌 원지수(index)를 COICOP 품목 분류 전체로 제공합니다.
+    partial-coverage 재설계 규약(#56)을 따릅니다 — ``sub_category`` 미지정 시
+    전체 품목을 long-format으로, 지정 시 해당 품목 단일 시계열만 반환합니다.
 
     Parameters
     ----------
+    sub_category : str, optional
+        세부 품목/분류(항목명 또는 item_code1). 지정 시 해당 품목 단일 시계열만
+        반환합니다. 미지정 시 전체 품목을 long-format으로 반환합니다.
+        예) '총지수', '식료품 및 비주류음료', '쌀', 또는 item_code 'A01101'
     start_date : str, optional
         조회 시작일 (YYYYMM 형식), 기본값: 2년 전
     end_date : str, optional
@@ -161,37 +169,56 @@ def get_cpi_monthly(
     Returns
     -------
     pd.DataFrame
-        컬럼: date, value, unit
-        - date: 날짜 (datetime)
-        - value: CPI 원지수
-        - unit: 단위
+        - ``sub_category`` 미지정: 컬럼 ``date, category_value, value, unit``
+          (각 품목이 행으로 포함된 long-format, ``category_value``=품목명)
+        - ``sub_category`` 지정: 컬럼 ``date, value, unit`` (단일 시계열)
 
-    Warnings
-    --------
-    DeprecationWarning
-        현재 단일 항목(`item_code1="0"`, 전체(미확인))만 반환하며 함수명이 시사하는
-        전체 CPI 시리즈를 다루지 않습니다. v0.3.0에서 시그니처가 변경될 예정이며,
-        현재 동작에 의존한다면 `EcosClient.get_statistic_search`로 직접 item_code1을
-        전달하는 방식으로 마이그레이션하세요. (이슈 #8)
+    Raises
+    ------
+    ValueError
+        지정한 ``sub_category`` 가 존재하지 않는 경우 (사용 가능 항목을 함께 안내).
 
     Notes
     -----
     - 원지수는 기준년도(2020=100)를 100으로 한 지수값
     - 전년동월비는 get_cpi() 함수 사용
+    - CPI 통계표(901Y009)는 계층형입니다 — long-format에는 총지수(item_code '0'),
+      COICOP 대분류(A=식료품 등), 중·소분류, 개별 품목(쌀 등)이 모두 포함됩니다.
+      특정 시계열이 필요하면 ``sub_category`` 로 선택하세요(축 간 단순 합산 금지).
+    - 특수분류(상품/서비스/근원 등) 선택은 ``get_cpi_by_category`` 를 사용하세요.
 
     Examples
     --------
     >>> import ecos
+    >>> # 전체 품목 long-format
     >>> df = ecos.get_cpi_monthly()
     >>> df.head()
-            date   value  unit
-    0 2023-01-01  105.20  지수
-    """
-    # 부분 커버리지 경고는 이 함수의 고유 동작이므로 alias 위임 전에 유지.
-    _warn_partial_coverage("get_cpi_monthly", "0", "총지수")
+            date category_value   value unit
 
-    # 선언적 레지스트리(#16)에 위임하는 얇은 alias.
-    return get_indicator("cpi_monthly", start_date=start_date, end_date=end_date)
+    >>> # 총지수만
+    >>> df = ecos.get_cpi_monthly(sub_category="총지수")
+
+    >>> # 쌀 가격지수 (item_code도 허용)
+    >>> df = ecos.get_cpi_monthly(sub_category="쌀")
+    """
+    # 기본 날짜 설정
+    if start_date is None or end_date is None:
+        default_start, default_end = default_monthly(24)
+        start_date = start_date or default_start
+        end_date = end_date or default_end
+
+    # item_code1 미지정 → 전체 품목 수신 후 select_subcategory로 분류(#58 규약).
+    # 901Y009는 단일 분류축(item_code1)이라 prefix="" 로 전량 분류한다.
+    client = get_client()
+    response = client.get_statistic_search(
+        stat_code=STAT_CPI_MONTHLY,
+        period=PERIOD_MONTHLY,
+        start_date=start_date,
+        end_date=end_date,
+    )
+
+    df = parse_response(response)
+    return select_subcategory(df, prefix="", sub_category=sub_category, context="get_cpi_monthly")
 
 
 def get_cpi_by_category(
