@@ -57,7 +57,8 @@ class TestCatalog:
             assert len(entry) == 3, code
             exc_class, message, retryable = entry
             assert isinstance(exc_class, type)
-            assert isinstance(message, str) and message
+            assert isinstance(message, str)
+            assert message
             assert isinstance(retryable, bool)
 
     def test_retryable_set_derived_from_catalog(self):

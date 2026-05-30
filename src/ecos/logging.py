@@ -9,11 +9,13 @@ from __future__ import annotations
 import logging
 import re
 import time
-from collections.abc import Callable
 from functools import wraps
-from typing import ParamSpec, TypeVar
+from typing import TYPE_CHECKING, ParamSpec, TypeVar
 
 from .metrics import record_api_request
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 # ECOS URL 패턴에서 API 키를 ***으로 대체.
 # 예) /api/StatisticSearch/ABC123DEF/json/kr/... -> /api/StatisticSearch/***/json/kr/...

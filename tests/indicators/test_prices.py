@@ -234,5 +234,5 @@ class TestGetCpiByCategory:
 
     def test_get_cpi_by_category_invalid_category(self):
         """잘못된 category 값에 대해 ValueError 발생"""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="category"):
             get_cpi_by_category(category="invalid_category")  # type: ignore[arg-type]

@@ -55,11 +55,12 @@ _PARTIAL_COVERAGE_CASES = [
 
 
 @pytest.mark.parametrize(
-    "func_name, call",
+    ("func_name", "call"),
     _PARTIAL_COVERAGE_CASES,
     ids=[name for name, _ in _PARTIAL_COVERAGE_CASES],
 )
-def test_partial_coverage_emits_visible_warning(func_name, call, _empty_mock):
+@pytest.mark.usefixtures("_empty_mock")
+def test_partial_coverage_emits_visible_warning(func_name, call):
     """Every documented partial-coverage helper must warn (#8 review).
 
     - Warning must be visible by default (UserWarning subclass), not
