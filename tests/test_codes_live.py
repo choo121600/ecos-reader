@@ -35,9 +35,7 @@ KNOWN_DEFECTS: set[tuple[str, str, str]] = {
     # 실효환율: STAT_EFFECTIVE_RATE(731Y004)/0000001~2 = "원/미국달러(매매기준율)" 등 — 실효환율 아님.
     ("effective_rate", "NEER", audit.WARN),
     ("effective_rate", "REER", audit.WARN),
-    # 국제수지: 301Y017 의 실제 item 은 SA000(경상수지)/SA100(상품수지) 등 — CA/KA 아님.
-    ("bop", "current_account", audit.FAIL),
-    ("bop", "capital_account", audit.FAIL),
+    # bop(301Y017→301Y013, CA/KA→000000/BOPC...) 정정 완료 — #74 에서 해소.
     # real_economy facility_invest(901Y049→901Y066) 정정 완료 — #72 에서 해소.
     # 심리: 512Y014(BSI) 실제 item 은 99988/C0000/X5000 등 — A001/B001/C001 아님.
     ("sentiment", "bsi_manufacturing", audit.FAIL),
