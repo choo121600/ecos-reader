@@ -55,7 +55,7 @@ GdpBasis = Literal["real", "nominal"]
 
 # 환율 지표
 Currency = Literal["USD", "JPY", "EUR", "CNY"]
-EffectiveRateBasis = Literal["nominal", "real"]
+# EffectiveRateBasis 제거 — 실효환율 원천 미확정 (#71/#67)
 
 # 심리 지표
 BsiSector = Literal["manufacturing", "non_manufacturing", "all"]
