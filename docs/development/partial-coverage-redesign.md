@@ -58,6 +58,12 @@ def get_something(sub_category=None, start_date=None, end_date=None):
 
 분류축 메타데이터(`{분류축: prefix}` 매핑 등)는 함수가 속한 카테고리 모듈 또는 `constants.py` 에 선언합니다. 레퍼런스: `constants.BORROWER_LOAN_CATEGORY_PREFIX`.
 
+### 경계 동작 (하위 이슈가 지켜야 할 계약)
+
+- **빈 결과**: 매칭되는 항목이 없으면 빈 DataFrame 을 반환합니다. 컬럼 구성은 보장하지 않으므로 호출자는 `.empty` 로 판별합니다.
+- **항목명 중복**: `item_name1` 은 분류축 내에서 유일하지 않을 수 있습니다. 이름이 겹치는 통계표라면 사용자가 `item_code1` 으로 단일 시계열을 선택할 수 있도록 안내하고, 가능하면 docstring 의 사용 가능 항목 예시에 코드를 함께 노출합니다.
+- **항목명 결측**: `item_name1` 이 결측인 행은 long-format 의 `category_value` 가 결측으로 남습니다. 그대로 두는 것이 기본이며, 결측이 잦은 통계표는 함수 단에서 보정합니다.
+
 ## 마이그레이션 영향
 
 이 재설계는 **BREAKING** 변경입니다. 단일 시계열을 반환하던 함수가 기본적으로 long-format 을 반환하게 됩니다. 기존 동작을 원하는 호출자는 `sub_category` 를 명시하거나 `EcosClient.get_statistic_search` 를 직접 사용해야 합니다. 전체 함수별 변경 내역과 마이그레이션 가이드는 [#64](https://github.com/choo121600/ecos-reader/issues/64) cleanup 에서 정리합니다.

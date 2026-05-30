@@ -105,6 +105,19 @@ def select_subcategory(
     ValueError
         지정한 ``sub_category`` 가 분류축에 존재하지 않을 때. 사용 가능한
         항목 목록을 함께 안내합니다.
+
+    Notes
+    -----
+    규약(#58)으로 고정된 경계 동작:
+
+    - **빈 결과**: 입력이 비었거나(``df.empty``) ``item_code1`` 컬럼이 없거나
+      분류축에 매칭되는 항목이 없으면 빈 DataFrame 을 반환합니다. 이때 컬럼
+      구성은 보장되지 않으므로 호출자는 ``.empty`` 로 판별해야 합니다.
+    - **항목명 중복**: ``item_name1`` 은 분류축 내에서 유일하지 않을 수 있습니다.
+      이름이 겹치면 ``sub_category`` (이름) 매칭이 복수 시계열을 반환하므로,
+      유일 선택이 필요하면 ``item_code1`` 을 ``sub_category`` 로 넘기세요.
+    - **항목명 결측**: ``item_name1`` 이 결측인 행은 long-format 의
+      ``category_value`` 가 결측으로 남습니다.
     """
     if df.empty or "item_code1" not in df.columns:
         return df
