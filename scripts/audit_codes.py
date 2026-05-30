@@ -377,7 +377,9 @@ def audit_case(client: EcosClient, case: Case, *, do_search: bool) -> Result:
     note = ""
 
     # 의미 검증: item_code 는 존재하나 ITEM_NAME 이 의도와 다른 "silent wrong" 탐지.
-    if case.expect and not any(tok in name for tok in case.expect):
+    # ECOS ITEM_NAME 은 "제 조 업" 처럼 자간 공백이 섞이므로 공백 제거 후 비교.
+    _name_ns = name.replace(" ", "")
+    if case.expect and not any(tok.replace(" ", "") in _name_ns for tok in case.expect):
         return Result(
             case,
             WARN,
