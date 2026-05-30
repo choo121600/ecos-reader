@@ -31,11 +31,7 @@ import audit_codes as audit  # noqa: E402
 # (group, label, status) — 2026-05-30 라이브 대조 기준 알려진 코드 매핑 결함.
 # 정정 PR 마다 해당 항목을 제거할 것 (#67 후속).
 KNOWN_DEFECTS: set[tuple[str, str, str]] = {
-    # 환율: STAT_EXCHANGE_RATE(731Y003)은 원/달러 장중 OHLC 전용 — 다통화 매매기준율은 731Y001.
-    ("forex", "USD", audit.FAIL),  # 731Y003/0000001 항목 없음
-    ("forex", "CNY", audit.FAIL),  # 731Y003/0000053 항목 없음
-    ("forex", "JPY", audit.WARN),  # 731Y003/0000002 = "원/달러(시가)" (엔 아님)
-    ("forex", "EUR", audit.WARN),  # 731Y003/0000003 = "원/달러(종가 15:30)" (유로 아님)
+    # forex(731Y003→731Y001) 정정 완료 — #70 에서 해소.
     # 실효환율: STAT_EFFECTIVE_RATE(731Y004)/0000001~2 = "원/미국달러(매매기준율)" 등 — 실효환율 아님.
     ("effective_rate", "NEER", audit.WARN),
     ("effective_rate", "REER", audit.WARN),
