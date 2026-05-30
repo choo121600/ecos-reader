@@ -164,29 +164,7 @@ def build_cases() -> list[Case]:
                 _forex_expect.get(cur, ()),
             )
         )
-    # 실효환율 NEER/REER (731Y004) — ITEM_NAME 에 "실효" 가 있어야 함
-    cases.append(
-        Case(
-            "effective_rate",
-            "NEER",
-            const.STAT_EFFECTIVE_RATE,
-            const.ITEM_NEER,
-            "명목실효환율",
-            False,
-            ("실효",),
-        )
-    )
-    cases.append(
-        Case(
-            "effective_rate",
-            "REER",
-            const.STAT_EFFECTIVE_RATE,
-            const.ITEM_REER,
-            "실질실효환율",
-            False,
-            ("실효",),
-        )
-    )
+    # 실효환율(NEER/REER) 스캐폴딩 제거됨 — ECOS 원천 미확정 (#71/#67).
     # 국제수지
     cases.append(
         Case(
