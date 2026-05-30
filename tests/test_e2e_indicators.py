@@ -109,7 +109,9 @@ class TestE2EGrowthIndicators:
 
     def test_get_gdp_quarterly_real(self):
         """실질 GDP (분기) 조회"""
-        df = ecos.get_gdp(frequency="Q", basis="real", start_date="2020Q1", end_date="2023Q4")
+        df = ecos.get_gdp(
+            frequency="quarterly", basis="real", start_date="2020Q1", end_date="2023Q4"
+        )
 
         assert not df.empty
         assert "date" in df.columns
@@ -119,7 +121,7 @@ class TestE2EGrowthIndicators:
 
     def test_get_gdp_annual_real(self):
         """실질 GDP (연간) 조회"""
-        df = ecos.get_gdp(frequency="A", basis="real", start_date="2020", end_date="2023")
+        df = ecos.get_gdp(frequency="annual", basis="real", start_date="2020", end_date="2023")
 
         assert not df.empty
         assert "date" in df.columns
@@ -128,7 +130,9 @@ class TestE2EGrowthIndicators:
 
     def test_get_gdp_quarterly_nominal(self):
         """명목 GDP (분기) 조회"""
-        df = ecos.get_gdp(frequency="Q", basis="nominal", start_date="2020Q1", end_date="2023Q4")
+        df = ecos.get_gdp(
+            frequency="quarterly", basis="nominal", start_date="2020Q1", end_date="2023Q4"
+        )
 
         assert not df.empty
         assert "date" in df.columns
@@ -444,7 +448,7 @@ class TestE2EGrowthDetailIndicators:
 
     def test_get_gdp_growth_rate_quarterly(self):
         """실질 GDP 성장률 (분기)"""
-        df = ecos.get_gdp_growth_rate(frequency="Q", start_date="2023Q1", end_date="2023Q4")
+        df = ecos.get_gdp_growth_rate(frequency="quarterly", start_date="2023Q1", end_date="2023Q4")
 
         assert not df.empty
         assert "date" in df.columns
@@ -455,7 +459,7 @@ class TestE2EGrowthDetailIndicators:
     @pytest.mark.skip(reason="stat_code 200Y104는 분기 데이터만 제공 (연간 미지원)")
     def test_get_gdp_growth_rate_annual(self):
         """실질 GDP 성장률 (연간) - 미지원"""
-        df = ecos.get_gdp_growth_rate(frequency="A", start_date="2020", end_date="2023")
+        df = ecos.get_gdp_growth_rate(frequency="annual", start_date="2020", end_date="2023")
 
         assert not df.empty
         assert "date" in df.columns
@@ -465,7 +469,11 @@ class TestE2EGrowthDetailIndicators:
     def test_get_gdp_by_industry_real_seasonal(self):
         """산업별 GDP (실질, 계절조정)"""
         df = ecos.get_gdp_by_industry(
-            basis="real", seasonal_adj=True, frequency="Q", start_date="2023Q1", end_date="2023Q4"
+            basis="real",
+            seasonal_adj=True,
+            frequency="quarterly",
+            start_date="2023Q1",
+            end_date="2023Q4",
         )
 
         assert not df.empty
@@ -479,7 +487,7 @@ class TestE2EGrowthDetailIndicators:
         df = ecos.get_gdp_by_industry(
             basis="nominal",
             seasonal_adj=True,
-            frequency="Q",
+            frequency="quarterly",
             start_date="2023Q1",
             end_date="2023Q4",
         )
@@ -492,7 +500,11 @@ class TestE2EGrowthDetailIndicators:
     def test_get_gdp_by_industry_real_raw(self):
         """산업별 GDP (실질, 원계열)"""
         df = ecos.get_gdp_by_industry(
-            basis="real", seasonal_adj=False, frequency="Q", start_date="2023Q1", end_date="2023Q4"
+            basis="real",
+            seasonal_adj=False,
+            frequency="quarterly",
+            start_date="2023Q1",
+            end_date="2023Q4",
         )
 
         assert not df.empty
@@ -503,7 +515,7 @@ class TestE2EGrowthDetailIndicators:
     def test_get_gdp_by_expenditure_real(self):
         """지출항목별 GDP (실질)"""
         df = ecos.get_gdp_by_expenditure(
-            basis="real", frequency="Q", start_date="2023Q1", end_date="2023Q4"
+            basis="real", frequency="quarterly", start_date="2023Q1", end_date="2023Q4"
         )
 
         assert not df.empty
@@ -515,7 +527,7 @@ class TestE2EGrowthDetailIndicators:
     def test_get_gdp_by_expenditure_nominal(self):
         """지출항목별 GDP (명목)"""
         df = ecos.get_gdp_by_expenditure(
-            basis="nominal", frequency="Q", start_date="2023Q1", end_date="2023Q4"
+            basis="nominal", frequency="quarterly", start_date="2023Q1", end_date="2023Q4"
         )
 
         assert not df.empty
@@ -526,7 +538,7 @@ class TestE2EGrowthDetailIndicators:
     def test_get_gdp_deflator_by_industry_quarterly(self):
         """산업별 GDP 디플레이터 (분기)"""
         df = ecos.get_gdp_deflator_by_industry(
-            frequency="Q", start_date="2023Q1", end_date="2023Q4"
+            frequency="quarterly", start_date="2023Q1", end_date="2023Q4"
         )
 
         assert not df.empty
@@ -537,7 +549,9 @@ class TestE2EGrowthDetailIndicators:
 
     def test_get_gdp_deflator_by_industry_annual(self):
         """산업별 GDP 디플레이터 (연간)"""
-        df = ecos.get_gdp_deflator_by_industry(frequency="A", start_date="2020", end_date="2023")
+        df = ecos.get_gdp_deflator_by_industry(
+            frequency="annual", start_date="2020", end_date="2023"
+        )
 
         assert not df.empty
         assert "date" in df.columns
@@ -583,7 +597,9 @@ class TestE2EIntegrationWorkflow:
         assert not cpi.empty
 
         # 성장
-        gdp = ecos.get_gdp(frequency="Q", basis="real", start_date="2023Q1", end_date="2023Q4")
+        gdp = ecos.get_gdp(
+            frequency="quarterly", basis="real", start_date="2023Q1", end_date="2023Q4"
+        )
         assert not gdp.empty
 
         # 통화
@@ -718,7 +734,7 @@ class TestE2ERegressionV016:
 
     def test_gdp_growth_rate_annual_fallback(self):
         """frequency='A'는 계절조정(분기 전용) 대신 원계열 200Y106으로 fallback해야 함."""
-        df = ecos.get_gdp_growth_rate(frequency="A", start_date="2020", end_date="2023")
+        df = ecos.get_gdp_growth_rate(frequency="annual", start_date="2020", end_date="2023")
 
         assert not df.empty
         assert "date" in df.columns
@@ -727,9 +743,9 @@ class TestE2ERegressionV016:
 
     @pytest.mark.parametrize("basis", ["real", "nominal"])
     def test_gdp_by_expenditure_annual_fallback(self, basis):
-        """frequency='A'는 원계열(real→200Y110 / nominal→200Y109)로 fallback해야 함."""
+        """frequency='annual'은 원계열(real→200Y110 / nominal→200Y109)로 fallback해야 함."""
         df = ecos.get_gdp_by_expenditure(
-            basis=basis, frequency="A", start_date="2020", end_date="2023"
+            basis=basis, frequency="annual", start_date="2020", end_date="2023"
         )
 
         assert not df.empty
@@ -741,7 +757,7 @@ class TestE2ERegressionV016:
         """계절조정 시리즈는 ECOS에서 분기만 제공 → seasonal_adj=True+연간은 차단."""
         with pytest.raises(ValueError):
             ecos.get_gdp_by_industry(
-                seasonal_adj=True, frequency="A", start_date="2020", end_date="2023"
+                seasonal_adj=True, frequency="annual", start_date="2020", end_date="2023"
             )
 
     # ---- M2 보유주체별 말잔 (#28) ----

@@ -406,7 +406,7 @@ with ThreadPoolExecutor(max_workers=4) as executor:
     futures = {
         'base_rate': executor.submit(ecos.get_base_rate),
         'cpi': executor.submit(ecos.get_cpi),
-        'gdp': executor.submit(ecos.get_gdp, "Q", "real"),
+        'gdp': executor.submit(ecos.get_gdp, "quarterly", "real"),
         'm2': executor.submit(ecos.get_money_supply, "M2")
     }
 

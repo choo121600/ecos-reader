@@ -270,7 +270,7 @@ def plot_key_indicators():
     ax2.grid(True, alpha=0.3)
 
     # 3. GDP
-    df = ecos.get_gdp(frequency="Q", start_date="2020Q1")
+    df = ecos.get_gdp(frequency="quarterly", start_date="2020Q1")
     ax3.bar(range(len(df)), df['value'], color='green', alpha=0.7)
     ax3.set_title('GDP 성장률 (분기)')
     ax3.set_ylabel('%')

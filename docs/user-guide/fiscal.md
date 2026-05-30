@@ -183,7 +183,7 @@ import pandas as pd
 
 # 데이터 조회
 fiscal = ecos.get_fiscal_balance(start_date="202001")
-gdp = ecos.get_gdp(frequency="Q", basis="nominal", start_date="2020Q1")
+gdp = ecos.get_gdp(frequency="quarterly", basis="nominal", start_date="2020Q1")
 
 # 조원 단위로 변환
 fiscal['value_trillion'] = fiscal['value'] / 1000

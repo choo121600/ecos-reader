@@ -564,7 +564,7 @@ import pandas as pd
 
 # 데이터 조회
 lending = ecos.get_bank_lending(sector="household", start_date="202001")
-gdp_annual = ecos.get_gdp(frequency="A", basis="nominal", start_date="2020")
+gdp_annual = ecos.get_gdp(frequency="annual", basis="nominal", start_date="2020")
 
 # 가계대출을 연간으로 집계 (연말 기준)
 lending['year'] = lending['date'].dt.year

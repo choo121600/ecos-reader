@@ -21,6 +21,7 @@ from ..constants import (
 from ..parser import normalize_stat_result, parse_response
 from ._dates import default_daily, default_monthly
 from ._deprecations import warn_partial_coverage as _warn_partial_coverage
+from ._frequency import normalize_frequency
 
 
 def get_stock_index(
@@ -82,8 +83,9 @@ def get_stock_index(
 
     >>> df = ecos.get_stock_index(frequency="monthly")  # 월별 KOSPI
     """
-    if frequency not in ["daily", "monthly"]:
-        raise ValueError("frequency는 'daily' 또는 'monthly' 중 하나여야 합니다.")
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency, allowed=("daily", "monthly"), func_name="get_stock_index"
+    )
 
     # 주기별 stat_code 및 period 선택
     if frequency == "daily":
