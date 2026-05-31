@@ -250,6 +250,83 @@ class TestGetSeriesRawAndErrors:
 
 
 # ---------------------------------------------------------------------------
+# get_series — 자동 페이지네이션 (#101)
+# ---------------------------------------------------------------------------
+
+
+class _PagedStubClient:
+    """start/end 윈도우로 슬라이스해 list_total_count와 함께 반환하는 스텁."""
+
+    def __init__(self, total: int) -> None:
+        # 연도 TIME으로 고유 행 생성(tidy 변환 가능하도록 유효 시간 표기).
+        self.all_rows = [
+            {
+                "STAT_CODE": "TESTPAGE",
+                "ITEM_CODE1": "X",
+                "ITEM_NAME1": "항목",
+                "TIME": str(1500 + i),  # 1500.. 고유 연도
+                "DATA_VALUE": str(i),
+                "UNIT_NAME": "u",
+            }
+            for i in range(total)
+        ]
+        self.calls: list[tuple[int, int]] = []
+
+    def get_statistic_search(self, *, start: int, end: int, **_kwargs):
+        self.calls.append((start, end))
+        page = self.all_rows[start - 1 : end]  # 1-based inclusive
+        return {"StatisticSearch": {"list_total_count": len(self.all_rows), "row": page}}
+
+
+class TestGetSeriesPagination:
+    def test_single_page_when_within_window(self):
+        client = _PagedStubClient(total=5)
+        df = ecos.get_series(
+            "TESTPAGE", "A", start_date="1500", end_date="3000", client=client, page_size=10
+        )
+        assert len(df) == 5
+        assert client.calls == [(1, 10)]  # 한 번만 호출
+
+    def test_multi_page_fetches_all(self):
+        client = _PagedStubClient(total=25)
+        df = ecos.get_series(
+            "TESTPAGE", "A", start_date="1500", end_date="3000", client=client, page_size=10
+        )
+        assert len(df) == 25  # 전량 수신
+        assert client.calls == [(1, 10), (11, 20), (21, 30)]
+
+    def test_exact_multiple_stops_via_total(self):
+        # 정확히 2페이지(20행)일 때 list_total_count로 종료(빈 3페이지 호출 안 함)
+        client = _PagedStubClient(total=20)
+        df = ecos.get_series(
+            "TESTPAGE", "A", start_date="1500", end_date="3000", client=client, page_size=10
+        )
+        assert len(df) == 20
+        assert client.calls == [(1, 10), (11, 20)]
+
+    def test_max_rows_guard_truncates_and_warns(self):
+        client = _PagedStubClient(total=25)
+        with pytest.warns(UserWarning, match="max_rows"):
+            df = ecos.get_series(
+                "TESTPAGE",
+                "A",
+                start_date="1500",
+                end_date="3000",
+                client=client,
+                page_size=10,
+                max_rows=15,
+            )
+        assert len(df) == 15  # 가드까지만
+
+    def test_invalid_pagination_params(self):
+        client = _PagedStubClient(total=5)
+        with pytest.raises(ValueError, match="max_rows와 page_size"):
+            ecos.get_series(
+                "TESTPAGE", "A", start_date="1500", end_date="3000", client=client, page_size=0
+            )
+
+
+# ---------------------------------------------------------------------------
 # list_items — 항목 탐색 (#104)
 # ---------------------------------------------------------------------------
 

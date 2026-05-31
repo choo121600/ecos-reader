@@ -367,6 +367,29 @@ class TestE2EGetSeries:
         assert not df.empty
         assert "time" in df.columns
 
+    def test_pagination_fetches_window_exceeding_table(self, e2e_client):
+        """윈도우 초과 표(#101) — 작은 page_size로 강제 순회 후 전량 수신."""
+        # 한 번에 전량(기준)
+        full = ecos.get_series(
+            "817Y002",
+            "D",
+            start_date="20230101",
+            end_date="20231231",
+            client=e2e_client,
+        )
+        assert len(full) > 2000  # page_size보다 큰 대형 표
+
+        # 작은 페이지로 자동 순회 → 동일 행수(전량 수신)
+        paged = ecos.get_series(
+            "817Y002",
+            "D",
+            start_date="20230101",
+            end_date="20231231",
+            client=e2e_client,
+            page_size=2000,
+        )
+        assert len(paged) == len(full)
+
 
 class TestE2EListItems:
     """항목 탐색 API(list_items) E2E 스모크 테스트 (#104)."""
