@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-05-31
+
+> Epic #98(Full ECOS Coverage)의 기능 릴리스. 범용 조회 `get_series` 로 ECOS
+> 전체 통계표에 도달 가능해졌고, 오프라인 카탈로그 탐색·항목 탐색·대량수집
+> 안전장치·주요 도메인 큐레이션이 추가되었습니다. 기존 도메인 함수 API는
+> 변경되지 않았습니다(비파괴적, 추가만).
+
+### Added
+- **범용 조회** `get_series(stat_code, period, *, item_code, start_date, end_date, tidy, max_rows, page_size)`
+  — 임의 통계표를 long-format tidy로 조회. period 어휘(정식 + 반기/반월 + 원시코드
+  passthrough), 다축 항목코드, 윈도우 초과 시 자동 페이지네이션. (#99, #100, #101)
+- **항목 탐색** `list_items(stat_code)` — 표의 세부 항목/주기 탐색. (#104)
+- **카탈로그 탐색(오프라인)** `search_tables` / `list_tables` / `get_table_tree` /
+  `load_catalog` — 패키지 동봉 스냅샷(834표/검색가능 609) 기반, 네트워크 불필요.
+  재생성 스크립트(`scripts/audit_codes.py snapshot`)·CI 포함. (#103, #105)
+- **대량수집 안전장치** — 선제 rate limiter(`RateLimiter` / `get_rate_limiter`,
+  300 calls/3분 sliding window, 기본 on) + opt-in 디스크 캐시(`DiskCache` /
+  `get_disk_cache`, `EcosClient(disk_cache=True)`). (#102)
+- **도메인 큐레이션** — `get_exchange_rate`(#106), `get_balance_of_payments`(#107),
+  `get_business_sentiment` / `get_consumer_sentiment`(#108),
+  `get_industrial_production` / `get_facility_investment`(#109).
+- **파서 헬퍼 export** `parse_response` / `normalize_stat_result`. (#100)
+- 범용 조회 & 탐색 가이드 문서, 커버리지 검증 테스트, 설계 ADR(0001). (#99, #111)
+
 ## [0.4.0] - 2026-05-31
 
 > Epic #57(Deprecation 정리)의 **BREAKING** 릴리스. v0.2.2(#20)에서
@@ -336,6 +360,7 @@ v0.1.6 라이브 e2e 검증에서 드러난 follow-up(#2 Reliability epic)을 �
   - 기본 사용법 (`examples/basic_usage.py`)
   - 거시경제 대시보드 (`examples/macro_dashboard.py`)
 
+[0.5.0]: https://github.com/choo121600/ecos-reader/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/choo121600/ecos-reader/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/choo121600/ecos-reader/compare/v0.2.2...v0.3.0
 [0.1.2]: https://github.com/choo121600/ecos-reader/compare/v0.1.1...v0.1.2
