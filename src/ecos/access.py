@@ -13,7 +13,8 @@ DataFrame을 반환하는 공개 함수 :func:`get_series` 를 제공한다. ECO
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import warnings
+from typing import TYPE_CHECKING, Any
 
 from .client import get_client
 from .parser import normalize_stat_result, parse_response
@@ -48,6 +49,13 @@ _PERIOD_CANONICAL = ("daily", "monthly", "quarterly", "annual", "semiannual", "s
 
 # ECOS StatisticSearch가 지원하는 항목축 개수.
 _MAX_ITEM_AXES = 4
+
+# 페이지네이션 기본값 (#101).
+# ECOS는 한 요청에서 start~end 윈도우(end-start+1행)만큼 반환하고 응답에
+# list_total_count(전체 행수)를 함께 준다. 이를 이용해 윈도우를 넘는 표를
+# 자동 순회한다.
+_PAGE_SIZE = 100_000  # 한 요청당 행 수(ECOS 윈도우)
+_DEFAULT_MAX_ROWS = 1_000_000  # 안전 가드: 자동 순회로 모을 최대 행수
 
 # list_items 정규화 출력의 선호 컬럼 순서(StatisticItemList 기준).
 # stat_code/stat_name은 입력과 중복이라 제외하며, 전부 비어있는 컬럼은 동적으로 제거한다.
@@ -150,6 +158,68 @@ def _to_tidy(df: pd.DataFrame) -> pd.DataFrame:
     return normalize_stat_result(df, columns=columns, date_col="time")
 
 
+def _fetch_search_rows(
+    client: EcosClient,
+    *,
+    stat_code: str,
+    raw_period: str,
+    start_date: str,
+    end_date: str,
+    item_codes: list[str],
+    max_rows: int,
+    page_size: int,
+) -> list[dict[str, Any]]:
+    """``list_total_count`` 기반으로 페이지를 자동 순회하며 전체 row를 모은다 (#101).
+
+    ECOS는 요청 윈도우(``start``~``end``)만큼만 반환하므로, 응답의
+    ``list_total_count`` 와 실제 수신 행수를 비교해 다음 페이지를 이어 받는다.
+    ``max_rows`` 를 초과하는 표는 앞쪽 ``max_rows`` 행만 모으고 경고한다.
+    """
+    all_rows: list[dict[str, Any]] = []
+    total: int | None = None
+    page_start = 1
+
+    while page_start <= max_rows:
+        page_end = min(page_start + page_size - 1, max_rows)
+        response = client.get_statistic_search(
+            stat_code=stat_code,
+            period=raw_period,
+            start_date=start_date,
+            end_date=end_date,
+            item_code1=item_codes[0],
+            item_code2=item_codes[1],
+            item_code3=item_codes[2],
+            item_code4=item_codes[3],
+            start=page_start,
+            end=page_end,
+        )
+        block = response.get("StatisticSearch", {})
+        rows = block.get("row", [])
+        if not rows:
+            break
+
+        all_rows.extend(rows)
+        if block.get("list_total_count") is not None:
+            total = int(block["list_total_count"])
+
+        window = page_end - page_start + 1
+        # 윈도우보다 적게 왔으면 마지막 페이지. total을 모두 모았어도 종료.
+        if len(rows) < window:
+            break
+        if total is not None and len(all_rows) >= total:
+            break
+        page_start = page_end + 1
+
+    if total is not None and total > max_rows:
+        warnings.warn(
+            f"get_series(): 결과가 max_rows({max_rows:,})를 초과했습니다 "
+            f"(list_total_count={total:,}). 앞쪽 {len(all_rows):,}행만 반환합니다. "
+            f"max_rows를 늘리거나 기간/항목을 좁히세요.",
+            stacklevel=3,
+        )
+    return all_rows
+
+
 def get_series(
     stat_code: str,
     period: str,
@@ -158,6 +228,8 @@ def get_series(
     end_date: str,
     item_code: str | list[str] | None = None,
     tidy: bool = True,
+    max_rows: int = _DEFAULT_MAX_ROWS,
+    page_size: int = _PAGE_SIZE,
     client: EcosClient | None = None,
 ) -> pd.DataFrame:
     """임의의 ECOS 통계표를 조회해 정규화 DataFrame으로 반환한다 (ADR 0001).
@@ -186,6 +258,12 @@ def get_series(
         ``True`` 면 long-format tidy 스키마로 정규화(ADR §2.2). ``False`` 면
         :func:`~ecos.parser.parse_response` 의 원본 컬럼(snake_case)을 그대로
         반환(이스케이프 해치). 키워드 전용.
+    max_rows : int, default 1_000_000
+        자동 페이지네이션(#101)으로 모을 최대 행수 안전 가드. 결과가 이를
+        초과하면 앞쪽 ``max_rows`` 행만 반환하고 경고한다. 키워드 전용.
+    page_size : int, default 100_000
+        한 요청당 받을 행수(ECOS 윈도우). 윈도우를 넘는 표는 여러 페이지로
+        자동 순회한다. 키워드 전용.
     client : EcosClient, optional
         사용할 클라이언트. 생략 시 전역 클라이언트(:func:`~ecos.get_client`).
 
@@ -231,20 +309,22 @@ def get_series(
     # 입력 검증은 네트워크 비용 이전에 fail-fast (ADR §2.4).
     raw_period = normalize_period(period)
     item_codes = _resolve_item_codes(item_code)
+    if max_rows < 1 or page_size < 1:
+        raise ValueError("get_series(): max_rows와 page_size는 1 이상이어야 합니다.")
 
     client = client or get_client()
-    response = client.get_statistic_search(
+    rows = _fetch_search_rows(
+        client,
         stat_code=stat_code,
-        period=raw_period,
+        raw_period=raw_period,
         start_date=start_date,
         end_date=end_date,
-        item_code1=item_codes[0],
-        item_code2=item_codes[1],
-        item_code3=item_codes[2],
-        item_code4=item_codes[3],
+        item_codes=item_codes,
+        max_rows=max_rows,
+        page_size=page_size,
     )
 
-    df = parse_response(response)
+    df = parse_response({"StatisticSearch": {"row": rows}})
 
     if not tidy or df.empty:
         return df
