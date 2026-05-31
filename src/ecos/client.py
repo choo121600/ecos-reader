@@ -150,6 +150,11 @@ class EcosClient:
             self._resolved_cache_api_key = cached
         return cached
 
+    @staticmethod
+    def _url_path_params(path_params: tuple[str, ...]) -> list[str]:
+        """경로 파라미터(통계코드/주기/날짜 등) 중 빈 값을 제외해 인코딩한다."""
+        return [quote(str(p), safe="") for p in path_params if p]
+
     def _build_url(
         self,
         service: EcosService,
@@ -157,38 +162,61 @@ class EcosClient:
         end: int,
         *path_params: str,
     ) -> str:
-        """
-        ECOS API 요청 URL을 구성합니다.
+        """실제 요청용 URL(인증키 포함)을 구성합니다.
 
         URL 형식: {BASE_URL}/{service}/{api_key}/{format}/{lang}/{start}/{end}/{params...}/
         """
-        api_key = self._get_api_key()
         parts = [
             self.BASE_URL.rstrip("/"),
             service,
-            api_key,
+            self._get_api_key(),
             Settings.DEFAULT_FORMAT,
             Settings.DEFAULT_LANG,
             str(start),
             str(end),
+            *self._url_path_params(path_params),
         ]
+        return "/".join(parts)
 
-        # 추가 파라미터 (통계코드, 주기, 날짜 등)
-        for param in path_params:
-            if param:  # 빈 문자열은 제외
-                parts.append(quote(str(param), safe=""))
+    def _build_log_url(
+        self,
+        service: EcosService,
+        start: int,
+        end: int,
+        *path_params: str,
+    ) -> str:
+        """로깅/에러 메시지용 URL을 구성합니다(인증키 자리는 ``***``). (#125)
 
+        실제 요청 URL과 **코드 경로를 공유하지 않고** 키 자리에 ``"***"`` 리터럴을
+        직접 넣어 조립한다. 평문 키가 로그 문자열의 데이터 흐름에 전혀 연결되지
+        않으므로, 정적 분석(CodeQL)의 clear-text logging 오탐을 원천 차단한다.
+        (``_build_url`` 과 공유 헬퍼를 쓰면 CodeQL이 두 호출 경로를 구분하지 못해
+        로그 URL까지 오탐하므로, 의도적으로 분리한다.)
+        """
+        parts = [
+            self.BASE_URL.rstrip("/"),
+            service,
+            "***",  # 인증키 자리 — 실제 키와 데이터 흐름 분리
+            Settings.DEFAULT_FORMAT,
+            Settings.DEFAULT_LANG,
+            str(start),
+            str(end),
+            *self._url_path_params(path_params),
+        ]
         return "/".join(parts)
 
     @log_api_request
-    def _make_request(self, url: str) -> dict[str, Any]:
+    def _make_request(self, url: str, log_url: str) -> dict[str, Any]:
         """
         HTTP GET 요청을 수행합니다.
 
         Parameters
         ----------
         url : str
-            요청 URL
+            실제 요청 URL (인증키 포함).
+        log_url : str
+            로깅/에러 메시지용 URL (인증키 자리는 ``***``). 평문 키가 로그
+            데이터 흐름에 등장하지 않도록 호출부에서 키 없이 구성한다(#125).
 
         Returns
         -------
@@ -216,13 +244,14 @@ class EcosClient:
                 if self._rate_limiter is not None:
                     self._rate_limiter.acquire()
 
-                logger.debug(f"API 요청 전송: {mask_api_key(url)}")
+                # log_url은 키가 없는 URL이므로 추가 마스킹 없이 그대로 로깅한다.
+                logger.debug(f"API 요청 전송: {log_url}")
                 response = self.session.get(url, timeout=self.timeout)
                 response.raise_for_status()
                 data = cast("dict[str, Any]", response.json())
 
-                # 에러 응답 확인
-                self._check_error_response(data, url)
+                # 에러 응답 확인 (로그용 키 없는 URL 전달)
+                self._check_error_response(data, log_url)
 
                 logger.debug(f"API 응답 성공: {len(data)} 바이트 수신")
                 return data
@@ -263,7 +292,7 @@ class EcosClient:
 
         raise EcosNetworkError("알 수 없는 네트워크 오류")
 
-    def _check_error_response(self, data: dict[str, Any], url: str = "") -> None:
+    def _check_error_response(self, data: dict[str, Any], log_url: str = "") -> None:
         """
         API 응답에서 에러를 확인합니다.
 
@@ -271,8 +300,8 @@ class EcosClient:
         ----------
         data : dict
             API 응답 데이터
-        url : str, optional
-            요청 URL (로깅용)
+        log_url : str, optional
+            로깅용 URL (인증키 자리는 ``***``, 호출부에서 키 없이 구성). (#125)
         """
         # RESULT 키 확인
         result = data.get("RESULT")
@@ -291,12 +320,12 @@ class EcosClient:
         if mapping is None:
             # 카탈로그 미등록 코드: ERROR 접두는 일반 API 에러로, 그 외는 정상 처리
             if code.startswith("ERROR"):
-                log_error_response(code, message, url)
+                log_error_response(code, message, log_url)
                 raise EcosAPIError(self._error_num(code), message)
             return
 
         exc_class, default_message, _retryable = mapping
-        log_error_response(code, message, url)
+        log_error_response(code, message, log_url)
         msg = message or default_message
 
         # EcosAPIError 계열은 (code, message) 시그니처, 그 외(Config/RateLimit)는 (message)
@@ -352,7 +381,8 @@ class EcosClient:
                 return cast("dict[str, Any]", cached)
 
         url = self._build_url(service, start, end, *path_params)
-        result = self._make_request(url)
+        log_url = self._build_log_url(service, start, end, *path_params)
+        result = self._make_request(url, log_url)
 
         if cache_key is not None and self._cache is not None:
             self._cache.set(cache_key, result)
