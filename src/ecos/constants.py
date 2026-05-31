@@ -163,6 +163,21 @@ ITEM_FACILITY_INVESTMENT_SA = "I15B"  # 계절조정지수
 STAT_RETAIL_SALES = "901Y037"
 ITEM_RETAIL_SALES = "*"
 
+# 경기종합지수 (901Y067, 월, 2020=100). 선행/동행/후행 종합지수. 라이브 검증.
+STAT_COMPOSITE_INDEX = "901Y067"
+COMPOSITE_INDEX_ITEMS: dict[str, str] = {
+    "leading": "I16A",  # 선행종합지수
+    "coincident": "I16B",  # 동행종합지수
+    "lagging": "I16C",  # 후행종합지수
+}
+
+# 무역 (수출입 총괄, 901Y118, 월/연, 천불). 라이브 검증.
+STAT_TRADE = "901Y118"
+TRADE_FLOW_ITEMS: dict[str, str] = {
+    "export": "T002",  # 수출금액
+    "import": "T004",  # 수입금액
+}
+
 
 # ============================================================================
 # 심리 지표 (sentiment)

@@ -59,12 +59,19 @@ from .prices import (
     get_ppi,
 )
 
-# 실물경기 지표 (#109)
-from .real_economy import get_facility_investment, get_industrial_production
+# 실물경기 지표 (#109, #127)
+from .real_economy import (
+    get_composite_index,
+    get_facility_investment,
+    get_industrial_production,
+)
 
 # 심리 지표 (#108)
 from .sentiment import get_business_sentiment, get_consumer_sentiment
 from .stock import get_investor_trading, get_stock_index
+
+# 무역 지표 (#127)
+from .trade import get_trade
 
 # ``__all__`` 자동 생성 (#16): 이 모듈로 import 된 모든 공개 ``get_*`` 조회 함수와
 # 레지스트리 공개 심볼을 수집합니다. 새 지표 함수를 추가/이동해도 수동 동기화가

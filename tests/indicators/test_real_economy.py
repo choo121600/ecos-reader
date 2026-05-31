@@ -10,6 +10,7 @@ import pytest
 import responses
 
 from ecos.indicators.real_economy import (
+    get_composite_index,
     get_facility_investment,
     get_industrial_production,
 )
@@ -90,9 +91,40 @@ class TestGetFacilityInvestment:
         assert "I15B" in responses.calls[0].request.url  # 계절조정지수
 
 
+@pytest.mark.usefixtures("set_api_key")
+class TestGetCompositeIndex:
+    @responses.activate
+    def test_success_columns(self):
+        responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y067"), status=200)
+        df = get_composite_index("coincident", start_date="202401", end_date="202402")
+        assert df.columns.tolist() == ["date", "value", "unit"]
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        ("index", "item_code"),
+        [("leading", "I16A"), ("coincident", "I16B"), ("lagging", "I16C")],
+    )
+    def test_index_maps_to_item(self, index, item_code):
+        responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y067"), status=200)
+        get_composite_index(index, start_date="202401", end_date="202402")
+        url = responses.calls[0].request.url
+        assert "901Y067" in url
+        assert item_code in url
+        assert "/M/" in url
+
+    @responses.activate
+    def test_default_dates(self):
+        responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y067"), status=200)
+        assert not get_composite_index().empty
+
+    def test_invalid_index_raises(self):
+        with pytest.raises(ValueError, match="index"):
+            get_composite_index("trailing", start_date="202401", end_date="202402")
+
+
 def test_public_exports():
     import ecos
 
-    for name in ("get_industrial_production", "get_facility_investment"):
+    for name in ("get_industrial_production", "get_facility_investment", "get_composite_index"):
         assert hasattr(ecos, name)
         assert name in ecos.__all__
