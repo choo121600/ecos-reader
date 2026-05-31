@@ -128,3 +128,5 @@ nav:
       - 릴리스 가이드: development/release.md
       - 지표 레지스트리: development/indicator-registry.md
       - Partial-coverage 재설계 규약: development/partial-coverage-redesign.md
+  - 설계 결정(ADR):
+      - 0001 공개 범용 조회 API: adr/0001-generic-access-api.md
