@@ -49,6 +49,23 @@ _PERIOD_CANONICAL = ("daily", "monthly", "quarterly", "annual", "semiannual", "s
 # ECOS StatisticSearch가 지원하는 항목축 개수.
 _MAX_ITEM_AXES = 4
 
+# list_items 정규화 출력의 선호 컬럼 순서(StatisticItemList 기준).
+# stat_code/stat_name은 입력과 중복이라 제외하며, 전부 비어있는 컬럼은 동적으로 제거한다.
+_ITEM_COLUMNS = [
+    "item_code",
+    "item_name",
+    "cycle",
+    "start_time",
+    "end_time",
+    "unit",
+    "data_cnt",
+    "p_item_code",
+    "p_item_name",
+    "grp_code",
+    "grp_name",
+    "weight",
+]
+
 
 def normalize_period(period: str) -> str:
     """period 어휘를 ECOS 원시 코드로 정규화한다 (ADR §2.3).
@@ -233,3 +250,50 @@ def get_series(
         return df
 
     return _to_tidy(df)
+
+
+def list_items(stat_code: str, *, client: EcosClient | None = None) -> pd.DataFrame:
+    """통계표의 세부 항목 목록을 조회해 정규화 DataFrame으로 반환한다 (#104).
+
+    :func:`get_series` 로 조회할 때 필요한 ``item_code`` 를 찾기 위한 탐색
+    함수다. ECOS ``StatisticItemList`` 를 래핑하며, 한 항목은 지원 주기
+    (``cycle``)마다 별도 행으로 나온다(예: 같은 항목의 일/월/연 주기).
+
+    Parameters
+    ----------
+    stat_code : str
+        ECOS 통계표코드 (예: ``"722Y001"``).
+    client : EcosClient, optional
+        사용할 클라이언트. 생략 시 전역 클라이언트(:func:`~ecos.get_client`).
+        클라이언트의 캐시 설정이 그대로 적용된다.
+
+    Returns
+    -------
+    pd.DataFrame
+        컬럼: ``item_code``, ``item_name``, ``cycle``, ``start_time``,
+        ``end_time``, ``unit``, ``data_cnt`` 와 (비어있지 않으면)
+        ``p_item_code``/``p_item_name``/``grp_code``/``grp_name``/``weight``.
+        전부 비어있는 컬럼은 제외한다. 항목이 없으면 빈 DataFrame.
+
+    Examples
+    --------
+    >>> import ecos
+    >>> items = ecos.list_items("722Y001")
+    >>> items[["item_code", "item_name", "cycle"]].head(1)
+    >>> # 찾은 item_code로 바로 조회
+    >>> df = ecos.get_series(
+    ...     "722Y001", "monthly",
+    ...     start_date="202401", end_date="202412",
+    ...     item_code=items.iloc[0]["item_code"],
+    ... )
+    """
+    client = client or get_client()
+    response = client.get_statistic_item_list(stat_code=stat_code, start=1, end=100000)
+
+    df = parse_response(response)
+    if df.empty:
+        return df
+
+    # 존재하면서 전부 비어있지 않은 컬럼만 선택(_is_empty_axis는 빈문자/NaN 모두 처리).
+    columns = [c for c in _ITEM_COLUMNS if c in df.columns and not _is_empty_axis(df[c])]
+    return df[columns].reset_index(drop=True)

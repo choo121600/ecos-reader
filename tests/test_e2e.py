@@ -366,3 +366,33 @@ class TestE2EGetSeries:
         )
         assert not df.empty
         assert "time" in df.columns
+
+
+class TestE2EListItems:
+    """항목 탐색 API(list_items) E2E 스모크 테스트 (#104)."""
+
+    def test_list_items_base_rate(self, e2e_client):
+        """722Y001 항목 목록 — 정규화 컬럼 + 항목코드 존재."""
+        df = ecos.list_items("722Y001", client=e2e_client)
+        assert not df.empty
+        for col in ("item_code", "item_name", "cycle"):
+            assert col in df.columns
+        # stat_code/stat_name은 입력 중복이라 제외됨
+        assert "stat_code" not in df.columns
+
+    def test_list_items_feeds_get_series(self, e2e_client):
+        """list_items로 찾은 item_code를 get_series에 바로 사용하는 연계 흐름."""
+        items = ecos.list_items("901Y009", client=e2e_client)
+        assert not items.empty
+        item_code = items.iloc[0]["item_code"]
+
+        df = ecos.get_series(
+            "901Y009",
+            "quarterly",
+            start_date="2022Q1",
+            end_date="2023Q4",
+            item_code=item_code,
+            client=e2e_client,
+        )
+        assert not df.empty
+        assert "value" in df.columns

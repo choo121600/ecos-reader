@@ -23,8 +23,8 @@ from __future__ import annotations
 __version__ = "0.4.0"
 __author__ = "yeonguk"
 
-# 범용 조회 API (#100)
-from .access import get_series
+# 범용 조회 API (#100, #104)
+from .access import get_series, list_items
 
 # Config API
 # Cache API
@@ -118,8 +118,9 @@ __all__ = [
     "get_client",
     "set_client",
     "reset_client",
-    # 범용 조회 API (#100)
+    # 범용 조회 API (#100, #104)
     "get_series",
+    "list_items",
     "parse_response",
     "normalize_stat_result",
     # 카탈로그 탐색 API (#103)
