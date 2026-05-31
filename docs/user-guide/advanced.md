@@ -64,6 +64,98 @@ no_cache_client = EcosClient(use_cache=False)
 cached_client = EcosClient(use_cache=True)
 ```
 
+## 대량 수집 안전장치 (rate limiter · 디스크 캐시)
+
+많은 통계표를 순회하거나 큰 표를 페이지네이션으로 받을 때, ECOS 호출 한도를
+넘지 않도록 **선제 rate limiter** 와 세션을 넘어 응답을 재사용하는 **디스크 캐시**
+를 제공합니다.
+
+### Rate limiter
+
+ECOS Open API는 **300 calls / 3분(180초)** 한도가 있습니다. ecos-reader는 이
+한도를 코드에 명문화하여, 클라이언트가 서버를 호출하기 **전에** 스스로 throttle
+합니다. 기본적으로 **켜져 있으며**, 한도 안에서 쓰는 일반적인 사용에서는 전혀
+대기가 발생하지 않습니다(캐시 히트는 한도를 소모하지 않습니다).
+
+알고리즘은 **sliding window log** 로, 임의의 180초 창에 300건을 넘지 않도록 가장
+오래된 호출이 창을 벗어날 때까지만 대기합니다.
+
+```python
+import ecos
+
+# 전역 rate limiter 조회/설정
+rl = ecos.get_rate_limiter()
+rl.max_calls = 300       # 창당 최대 호출 수
+rl.period = 180.0        # 창 길이(초)
+rl.enabled = False       # 완전히 끄기(비권장 — 한도 초과 위험)
+
+# 클라이언트에 커스텀 limiter 주입(예: 더 보수적으로)
+from ecos import EcosClient, RateLimiter
+client = EcosClient(rate_limiter=RateLimiter(max_calls=100, period=180))
+```
+
+`Settings` 기본값으로도 조정할 수 있습니다.
+
+| 설정 | 기본값 | 의미 |
+|------|--------|------|
+| `Settings.RATE_LIMIT_CALLS` | `300` | 창당 최대 호출 수 |
+| `Settings.RATE_LIMIT_PERIOD` | `180.0` | 창 길이(초) |
+| `Settings.RATE_LIMIT_ENABLED` | `True` | 선제 throttle 사용 여부 |
+
+같은 계정(API 키)을 쓰는 여러 클라이언트는 기본적으로 **전역 limiter를 공유**해
+합산 한도를 지킵니다.
+
+### 디스크 캐시 (opt-in)
+
+기본 인메모리 캐시는 최대 100개 항목·프로세스 종료 시 사라집니다. 대량 수집이나
+세션을 넘는 재사용에는 **디스크 캐시**(opt-in)가 적합합니다. 응답을 캐시
+디렉터리에 JSON 파일로 영속 저장하며 항목 수 제한이 없습니다.
+
+```python
+from ecos import EcosClient
+
+# 디스크 캐시 사용 클라이언트(기본 경로: ~/.cache/ecos-reader)
+client = EcosClient(disk_cache=True)
+
+# 사용자 지정 경로
+client = EcosClient(disk_cache=True, disk_cache_dir="/data/ecos-cache")
+```
+
+```python
+import ecos
+
+# 전역 디스크 캐시 핸들(조회/초기화)
+dc = ecos.get_disk_cache()
+dc.clear()                 # 저장된 모든 응답 삭제
+ecos.clear_cache()         # 인메모리 + 디스크 캐시 모두 초기화
+```
+
+| 설정 | 기본값 | 의미 |
+|------|--------|------|
+| `Settings.DISK_CACHE_DIR` | `None`(→ `~/.cache/ecos-reader`) | 캐시 디렉터리 |
+| `Settings.DISK_CACHE_TTL` | `86400`(1일) | 캐시 유효 시간(초) |
+
+쓰기는 임시 파일 후 원자적 `os.replace` 로 처리되어, 중단되어도 부분 기록이 남지
+않습니다. 손상되거나 만료된 항목은 읽을 때 자동 제거됩니다.
+
+### get_series 페이지네이션과의 조합
+
+`get_series` 는 윈도우를 넘는 표를 자동 순회합니다(기본 on). rate limiter가
+순회 중 호출을 throttle하고, 디스크 캐시가 이미 받은 페이지를 재사용해 대량
+수집을 안전하게 만듭니다.
+
+```python
+import ecos
+
+client = ecos.EcosClient(disk_cache=True)  # 영속 캐시 + 기본 rate limiter
+# 큰 일별 표 — 자동 페이지네이션 + throttle + 디스크 캐시
+df = ecos.get_series(
+    "817Y002", "D",
+    start_date="20200101", end_date="20231231",
+    client=client,
+)
+```
+
 ## 에러 처리
 
 ecos-reader는 다양한 상황에 대한 명확한 예외 클래스를 제공합니다.

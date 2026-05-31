@@ -12,9 +12,10 @@ import pytest
 import responses
 
 import ecos
-from ecos.cache import get_cache
+from ecos.cache import get_cache, reset_disk_cache
 from ecos.client import reset_client
 from ecos.config import clear_api_key
+from ecos.ratelimit import reset_rate_limiter
 
 
 @pytest.fixture(autouse=True)
@@ -24,6 +25,8 @@ def reset_state():
     clear_api_key()
     reset_client()
     get_cache().clear()
+    reset_rate_limiter()
+    reset_disk_cache()
 
     yield
 
@@ -31,6 +34,8 @@ def reset_state():
     clear_api_key()
     reset_client()
     get_cache().clear()
+    reset_rate_limiter()
+    reset_disk_cache()
 
 
 @pytest.fixture

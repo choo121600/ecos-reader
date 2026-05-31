@@ -150,5 +150,14 @@ class Settings:
     CACHE_TTL: int = 3600  # 1시간
     CACHE_MAXSIZE: int = 100
 
+    # 디스크 캐시 (opt-in, #102)
+    DISK_CACHE_DIR: str | None = None  # None이면 ~/.cache/ecos-reader
+    DISK_CACHE_TTL: int = 86400  # 1일
+
+    # Rate limiter (#102) — ECOS 한도: 300 calls / 3분(180초)
+    RATE_LIMIT_CALLS: int = 300
+    RATE_LIMIT_PERIOD: float = 180.0
+    RATE_LIMIT_ENABLED: bool = True
+
     # 페이지네이션
     DEFAULT_PAGE_SIZE: int = 10000

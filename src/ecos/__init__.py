@@ -28,7 +28,7 @@ from .access import get_series, list_items
 
 # Config API
 # Cache API
-from .cache import clear_cache, disable_cache, enable_cache
+from .cache import DiskCache, clear_cache, disable_cache, enable_cache, get_disk_cache
 
 # 카탈로그 탐색 API (#103)
 from .catalog import get_table_tree, list_tables, load_catalog, search_tables
@@ -101,6 +101,9 @@ from .metrics import get_metrics_summary, reset_metrics
 # 파서 헬퍼 (#100): 범용 조회 결과를 직접 가공할 때 사용
 from .parser import normalize_stat_result, parse_response
 
+# Rate limiter (#102)
+from .ratelimit import RateLimiter, get_rate_limiter
+
 __all__ = [
     # Version
     "__version__",
@@ -113,6 +116,11 @@ __all__ = [
     "clear_cache",
     "disable_cache",
     "enable_cache",
+    "DiskCache",
+    "get_disk_cache",
+    # Rate limiter (#102)
+    "RateLimiter",
+    "get_rate_limiter",
     # Client
     "EcosClient",
     "get_client",

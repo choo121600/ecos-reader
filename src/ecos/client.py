@@ -15,7 +15,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
-from .cache import Cache, get_cache
+from .cache import Cache, DiskCache, get_cache, get_disk_cache
 from .config import Settings, get_api_key
 from .exceptions import (
     ECOS_ERROR_CODES,
@@ -25,6 +25,7 @@ from .exceptions import (
     EcosRateLimitError,
 )
 from .logging import log_api_request, log_error_response, log_retry_attempt, logger, mask_api_key
+from .ratelimit import RateLimiter, get_rate_limiter
 
 if TYPE_CHECKING:
     from .types import EcosService
@@ -67,13 +68,26 @@ class EcosClient:
         timeout: int = Settings.DEFAULT_TIMEOUT,
         max_retries: int = Settings.MAX_RETRIES,
         use_cache: bool = True,
+        disk_cache: bool = False,
+        disk_cache_dir: str | None = None,
+        rate_limiter: RateLimiter | None = None,
     ):
         self.api_key = api_key
         self.timeout = timeout
         self.max_retries = max_retries
         self.use_cache = use_cache
+        self.use_disk_cache = disk_cache
         self.session = self._build_session()
-        self._cache: Cache | None = get_cache() if use_cache else None
+        # 캐시 백엔드 선택: opt-in 디스크 캐시(영속) 또는 인메모리 LRU(기본).
+        self._cache: Cache | DiskCache | None
+        if not use_cache:
+            self._cache = None
+        elif disk_cache:
+            self._cache = get_disk_cache(disk_cache_dir)
+        else:
+            self._cache = get_cache()
+        # 선제 rate limiter: 생략 시 전역 limiter(같은 계정 한도 공유).
+        self._rate_limiter = rate_limiter if rate_limiter is not None else get_rate_limiter()
 
     def _build_session(self) -> requests.Session:
         """재시도 정책과 커넥션 풀이 구성된 Session을 생성합니다.
@@ -197,6 +211,11 @@ class EcosClient:
 
         for attempt in range(self.max_retries):
             try:
+                # 선제 throttle: 캐시 미스로 실제 네트워크를 칠 때만 한도를 소모한다.
+                # 재시도(백오프)도 각 시도마다 throttle을 거친다.
+                if self._rate_limiter is not None:
+                    self._rate_limiter.acquire()
+
                 logger.debug(f"API 요청 전송: {mask_api_key(url)}")
                 response = self.session.get(url, timeout=self.timeout)
                 response.raise_for_status()
