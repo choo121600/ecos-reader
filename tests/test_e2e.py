@@ -9,8 +9,10 @@ from __future__ import annotations
 
 import os
 
+import pandas as pd
 import pytest
 
+import ecos
 from ecos.client import EcosClient
 from ecos.parser import parse_response
 
@@ -304,3 +306,63 @@ class TestE2EIntegration:
         if "class_name" in df.columns:
             groups = df["class_name"].unique()
             assert len(groups) > 0
+
+
+class TestE2EGetSeries:
+    """범용 조회 API(get_series) E2E 스모크 테스트 (#100, ADR 0001)."""
+
+    def test_monthly_base_rate(self, e2e_client):
+        """월별 기준금리(722Y001) — 정식 어휘 + 단일 항목축."""
+        df = ecos.get_series(
+            "722Y001",
+            "monthly",
+            start_date="202301",
+            end_date="202312",
+            item_code="0101000",
+            client=e2e_client,
+        )
+        assert not df.empty
+        assert "date" in df.columns
+        assert "value" in df.columns
+        assert pd.api.types.is_datetime64_any_dtype(df["date"])
+        assert df["date"].is_monotonic_increasing
+
+    def test_annual_gdp_raw_code(self, e2e_client):
+        """연간 GDP(200Y101) — 원시 코드 'A' passthrough."""
+        df = ecos.get_series(
+            "200Y101",
+            "A",
+            start_date="2018",
+            end_date="2023",
+            item_code="10101",
+            client=e2e_client,
+        )
+        assert not df.empty
+        assert "value" in df.columns
+
+    def test_quarterly_no_item_code(self, e2e_client):
+        """분기 데이터(901Y009) — item_code 미지정(전체 항목)."""
+        df = ecos.get_series(
+            "901Y009",
+            "quarterly",
+            start_date="2020Q1",
+            end_date="2023Q4",
+            client=e2e_client,
+        )
+        assert not df.empty
+        # 다축 항목이 long-format으로 보존되는지 확인
+        assert "date" in df.columns
+
+    def test_tidy_false_returns_raw(self, e2e_client):
+        """tidy=False 이스케이프 해치 — 원본 컬럼(time) 반환."""
+        df = ecos.get_series(
+            "722Y001",
+            "M",
+            start_date="202301",
+            end_date="202303",
+            item_code="0101000",
+            tidy=False,
+            client=e2e_client,
+        )
+        assert not df.empty
+        assert "time" in df.columns
