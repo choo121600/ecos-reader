@@ -218,8 +218,9 @@ def build_cases() -> list[Case]:
             "retail_sales",
             const.STAT_RETAIL_SALES,
             const.ITEM_RETAIL_SALES,
-            "소매판매지수",
-            False,
+            "소매판매액지수 총지수",
+            True,
+            ("총지수",),
         )
     )
     # 심리

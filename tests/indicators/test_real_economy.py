@@ -13,6 +13,7 @@ from ecos.indicators.real_economy import (
     get_composite_index,
     get_facility_investment,
     get_industrial_production,
+    get_retail_sales,
 )
 
 
@@ -122,9 +123,53 @@ class TestGetCompositeIndex:
             get_composite_index("trailing", start_date="202401", end_date="202402")
 
 
+@pytest.mark.usefixtures("set_api_key")
+class TestGetRetailSales:
+    @responses.activate
+    def test_success_columns(self):
+        responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y100"), status=200)
+        df = get_retail_sales(start_date="202401", end_date="202402")
+        assert df.columns.tolist() == ["date", "value", "unit"]
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        ("index", "item_code2"),
+        [("nominal", "T1"), ("real", "T2"), ("seasonal", "T3")],
+    )
+    def test_index_maps_to_series_axis(self, index, item_code2):
+        responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y100"), status=200)
+        get_retail_sales(index, start_date="202401", end_date="202402")
+        url = responses.calls[0].request.url
+        # 901Y100 + G0(총지수, item_code1) + 계열(item_code2)
+        assert "901Y100" in url
+        assert "G0" in url
+        assert url.rstrip("/").endswith("/" + item_code2)
+
+    @responses.activate
+    @pytest.mark.parametrize(("frequency", "marker"), [("monthly", "/M/"), ("annual", "/A/")])
+    def test_frequency_maps_to_period(self, frequency, marker):
+        responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y100"), status=200)
+        get_retail_sales(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    @responses.activate
+    def test_default_dates(self):
+        responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y100"), status=200)
+        assert not get_retail_sales().empty
+
+    def test_invalid_index_raises(self):
+        with pytest.raises(ValueError, match="index"):
+            get_retail_sales("constant", start_date="202401", end_date="202402")
+
+
 def test_public_exports():
     import ecos
 
-    for name in ("get_industrial_production", "get_facility_investment", "get_composite_index"):
+    for name in (
+        "get_industrial_production",
+        "get_facility_investment",
+        "get_composite_index",
+        "get_retail_sales",
+    ):
         assert hasattr(ecos, name)
         assert name in ecos.__all__

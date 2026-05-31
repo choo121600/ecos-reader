@@ -96,6 +96,7 @@ from .indicators import (
     # 통화 지표
     get_money_supply,
     get_ppi,
+    get_retail_sales,
     # 주식시장 지표
     get_stock_index,
     # 무역 지표
@@ -170,6 +171,7 @@ __all__ = [
     "get_industrial_production",
     "get_facility_investment",
     "get_composite_index",
+    "get_retail_sales",
     # 무역 지표
     "get_trade",
     # 주식시장 지표
