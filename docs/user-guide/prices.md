@@ -201,6 +201,96 @@ plt.tight_layout()
 plt.show()
 ```
 
+## CPI 특수분류별 조회
+
+상품·서비스·식품 에너지 제외 등 특수분류 및 COICOP 1단계(식료품, 주거, 교통 등) 항목별 CPI를 조회합니다.
+
+### 매개변수
+
+- `category`: CPI 세부 항목 (기본값: `"전체"`)
+    - `"전체"` - 소비자물가지수 전체
+    - `"상품"` - 상품 물가지수
+    - `"서비스"` - 서비스 물가지수
+    - `"식품_에너지제외"` - 식품 및 에너지 제외 지수 (근원 물가와 유사)
+    - `"농산물_석유제외"` - 농산물 및 석유류 제외 지수
+    - `"식료품_비주류음료"` - 식료품 및 비주류음료
+    - `"주거_수도_전기"` - 주거, 수도, 전기 및 연료
+    - `"교통"` - 교통
+
+### 기본 사용법
+
+```python
+import ecos
+
+# 전체 소비자물가지수
+df = ecos.get_cpi_by_category(category="전체")
+print(df.tail())
+
+# 식품 및 에너지 제외 (근원 물가 유사)
+df = ecos.get_cpi_by_category(category="식품_에너지제외")
+print(df.tail())
+
+# 서비스 물가
+df = ecos.get_cpi_by_category(category="서비스")
+print(df.tail())
+```
+
+### 기간 지정
+
+```python
+df = ecos.get_cpi_by_category(
+    category="상품",
+    start_date="202301",
+    end_date="202412"
+)
+```
+
+!!! info "날짜 형식"
+    월간 데이터이므로 `YYYYMM` 형식을 사용합니다.
+
+### 반환 데이터 구조
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `date` | datetime | 조회 월 |
+| `value` | float | CPI 카테고리별 지수 |
+| `unit` | str | 단위 |
+
+### 상품 vs 서비스 물가 비교
+
+```python
+import ecos
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 상품·서비스·근원 물가 조회
+goods = ecos.get_cpi_by_category(category="상품", start_date="202001")
+services = ecos.get_cpi_by_category(category="서비스", start_date="202001")
+core = ecos.get_cpi_by_category(category="식품_에너지제외", start_date="202001")
+
+# 데이터 병합
+merged = pd.merge(
+    goods[['date', 'value']].rename(columns={'value': '상품'}),
+    services[['date', 'value']].rename(columns={'value': '서비스'}),
+    on='date'
+)
+merged = pd.merge(
+    merged,
+    core[['date', 'value']].rename(columns={'value': '식품·에너지제외'}),
+    on='date'
+)
+
+# 시각화
+merged.set_index('date').plot(
+    title='CPI 특수분류별 추이',
+    ylabel='지수',
+    figsize=(12, 6),
+    grid=True
+)
+plt.tight_layout()
+plt.show()
+```
+
 ## 실전 활용 예제
 
 ### 인플레이션 압력 분석
@@ -316,7 +406,7 @@ merged = pd.merge(
     right_index=True,
     how='left'
 )
-merged['rate'] = merged['rate'].fillna(method='ffill')
+merged['rate'] = merged['rate'].ffill()
 
 # 상관관계 분석
 correlation = merged['cpi'].corr(merged['rate'])

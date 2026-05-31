@@ -176,10 +176,10 @@ print("가계대출:")
 print(df_household.tail())
 print()
 
-# 기업대출
-df_corporate = ecos.get_bank_lending(sector="corporate")
-print("기업대출:")
-print(df_corporate.tail())
+# 예금은행 전체 대출금 (기본값)
+df_all = ecos.get_bank_lending(sector="all")
+print("예금은행 전체 대출금:")
+print(df_all.tail())
 print()
 
 print("=" * 60)
@@ -233,7 +233,7 @@ merged = pd.merge(
     right_index=True,
     how='left'
 )
-merged['rate'] = merged['rate'].fillna(method='ffill')
+merged['rate'] = merged['rate'].ffill()
 merged = merged.reset_index()
 
 # 이중 축 그래프

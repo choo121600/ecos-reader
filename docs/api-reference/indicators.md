@@ -128,6 +128,52 @@
     options:
       heading_level: 3
 
+## 실물경기 지표
+
+::: ecos.get_industrial_production
+    options:
+      heading_level: 3
+
+::: ecos.get_facility_investment
+    options:
+      heading_level: 3
+
+::: ecos.get_composite_index
+    options:
+      heading_level: 3
+
+::: ecos.get_retail_sales
+    options:
+      heading_level: 3
+
+## 심리 지표
+
+::: ecos.get_business_sentiment
+    options:
+      heading_level: 3
+
+::: ecos.get_consumer_sentiment
+    options:
+      heading_level: 3
+
+## 환율 지표
+
+::: ecos.get_exchange_rate
+    options:
+      heading_level: 3
+
+## 국제수지 지표
+
+::: ecos.get_balance_of_payments
+    options:
+      heading_level: 3
+
+## 무역 지표
+
+::: ecos.get_trade
+    options:
+      heading_level: 3
+
 ## 지표 레지스트리
 
 ::: ecos.list_indicators

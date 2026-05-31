@@ -106,6 +106,11 @@ nav:
       - 통화 지표: user-guide/money.md
       - 재정 지표: user-guide/fiscal.md
       - 금융시장 지표: user-guide/financial-markets.md
+      - 실물경기 지표: user-guide/real-economy.md
+      - 심리 지표: user-guide/sentiment.md
+      - 환율 지표: user-guide/forex.md
+      - 국제수지 지표: user-guide/bop.md
+      - 무역(수출입) 지표: user-guide/trade.md
       - 고급 기능: user-guide/advanced.md
       - frequency 마이그레이션: user-guide/migration-frequency.md
       - v0.3.0 마이그레이션: user-guide/migration-v0.3.0.md
