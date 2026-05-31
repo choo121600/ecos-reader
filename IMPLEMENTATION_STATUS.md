@@ -1,31 +1,41 @@
 # ECOS 통계 구현 현황
 
-**마지막 업데이트**: 2025-12-31
-**라이브러리 버전**: 0.1.5
+**마지막 업데이트**: 2026-05-31
+**라이브러리 버전**: 0.4.0 (릴리스) · v0.5.0 범용 접근 계층 머지 완료(미릴리스)
 
-## 전체 현황
+## 커버리지 모델 (v0.5.0~)
 
-| 항목 | 개수 | 비율 |
-|------|------|------|
-| **ECOS 전체 통계표** | 664개 | 100% |
-| **구현 완료** | 43개 | **6.5%** |
-| **미구현** | 621개 | 93.5% |
+v0.5.0부터 커버리지를 **"구현된 표 N개 / 전체"** 비율이 아니라 **2계층**으로 본다.
+
+1. **범용 접근 — ECOS 전체 도달 가능 (100%).** `ecos.get_series(stat_code, period, ...)`
+   로 ECOS의 **어떤 통계표든** 직접 조회할 수 있다. 표 탐색은 동봉 카탈로그
+   (`search_tables`/`list_tables`/`get_table_tree`)와 항목 탐색(`list_items`)으로
+   네트워크 없이 수행한다. 즉 "라이브러리가 도달 못 하는 ECOS 통계는 없다."
+2. **큐레이션 — 고가치 지표의 편의 함수.** 자주 쓰는 지표는 올바른
+   `(stat_code, item_code, period)`를 검증해 도메인 함수로 노출한다. 아래 목록.
+
+| 항목 | 수치 |
+|------|------|
+| **동봉 카탈로그 통계표** | 834개 (검색가능 `srch_yn=Y` **609개**) |
+| **범용 접근 도달 가능** | 전체 100% (`get_series`) |
+| **큐레이션 편의 함수** | 30+ 개 (아래) |
+
+> 동봉 카탈로그 스냅샷은 `src/ecos/data/catalog.csv.gz`(834노드/검색가능 609)이며
+> `scripts/audit_codes.py snapshot` 으로 재생성한다(#105). 과거 문서의 664/43 수치는
+> v0.1.5 시절 기준으로 폐기되었다.
 
 ---
 
-## 카테고리별 구현 현황
+## 범용 접근 API (v0.5.0)
 
-| 카테고리 | 전체 통계 | 구현 완료 | 미구현 | 구현률 |
-|---------|----------|----------|--------|--------|
-| **1. 통화/금융** | 139개 | 23개 | 116개 | 16.5% |
-| **2. 국민계정** | 155개 | 10개 | 145개 | 6.5% |
-| **3. 국제수지/외채/환율** | 24개 | 0개 | 24개 | 0% |
-| **4. 물가** | 27개 | 4개 | 23개 | 14.8% |
-| **5. 경기/기업경영** | 90개 | 0개 | 90개 | 0% |
-| **6. 금융시장** | - | 5개 | - | - |
-| **7. 재정** | - | 1개 | - | - |
-| **8. 주택** | - | 0개 | - | 0% |
-| **9. 생산/건설/소비/무역/고용** | 22개 | 0개 | 22개 | 0% |
+| 함수 | 설명 |
+|------|------|
+| `get_series(stat_code, period, *, item_code, start_date, end_date, tidy, max_rows, page_size)` | 임의 통계표 조회 → long-format tidy. 윈도우 초과 시 자동 페이지네이션. |
+| `list_items(stat_code)` | 표의 세부 항목(item_code/cycle 등) 탐색. |
+| `search_tables(keyword)` / `list_tables(parent)` / `get_table_tree()` | 동봉 카탈로그 오프라인 탐색. |
+| `load_catalog()` | 카탈로그 전체 DataFrame. |
+| `parse_response` / `normalize_stat_result` | 응답 파서 헬퍼(직접 가공용). |
+| `RateLimiter` / `get_rate_limiter` · `DiskCache` / `get_disk_cache` | 대량수집 안전장치(선제 throttle + 영속 캐시). |
 
 ---
 
@@ -59,35 +69,33 @@
 | 901Y009 | 소비자물가지수 | 월 | `get_cpi()` |
 | 901Y010 | 소비자물가지수(특수분류) | 월 | `get_core_cpi()` |
 
+### 5. 환율·국제수지·심리·실물경기 (v0.5.0 신규)
+
+| 통계코드 | 통계명 | 주기 | 구현 함수 |
+|---------|--------|------|----------|
+| 731Y001 | 주요국 통화의 대원화환율 | 일 | `get_exchange_rate(currency=...)` |
+| 301Y013 | 국제수지 | 월/분기/연 | `get_balance_of_payments(account=...)` |
+| 512Y014 | 기업경기조사(업황전망BSI) | 월 | `get_business_sentiment(sector=...)` |
+| 511Y002 | 소비자동향조사(CSI) | 월 | `get_consumer_sentiment()` |
+| 901Y033 | 전산업생산지수 | 월 | `get_industrial_production(seasonal=...)` |
+| 901Y066 | 설비투자지수 | 월 | `get_facility_investment(seasonal=...)` |
+
+> 이 외 모든 통계표는 `get_series()` 로 도달 가능하다(범용 접근). 위 목록은
+> 큐레이션된 편의 함수만 나열한다.
+
 ---
 
-## 우선순위별 미구현 통계
+## 큐레이션 후보 (범용 접근으로는 이미 도달 가능)
 
-### 🔴 우선순위 1 (Phase 3) - 환율 및 국제수지
+아래 표들은 아직 **편의 함수**가 없을 뿐, `get_series()` 로 지금도 조회할 수 있다.
+큐레이션 우선순위 참고용 목록이다.
 
-constants.py에 정의되어 있으나 미구현된 통계:
+> 참고: v0.1.5 문서에 있던 환율 `731Y003`/`731Y004`, 국제수지 `301Y017`, 설비투자
+> `901Y049` 는 **잘못된 코드**였고 #67/#70/#72/#74에서 정정되었다(각각 731Y001 /
+> 301Y013 / 901Y066). 환율·국제수지·BSI·CSI·산업생산·설비투자는 v0.5.0에서
+> 큐레이션 완료되어 위 "구현 완료" 목록으로 이동했다.
 
-| 통계코드 | 통계명 | 예상 함수명 |
-|---------|--------|-----------|
-| 731Y003 | 원화의 대미달러, 원화의 대위안/대엔 환율 | `get_exchange_rate()` |
-| 731Y004 | 주요국 통화의 대원화환율 | `get_effective_exchange_rate()` |
-| 301Y017 | 국제수지 | `get_current_account()`, `get_capital_account()` |
-
-### 🟡 우선순위 2 (Phase 4) - 실물경제 및 심리지표
-
-constants.py에 정의되어 있으나 미구현된 통계:
-
-| 통계코드 | 통계명 | 예상 함수명 |
-|---------|--------|-----------|
-| 901Y033 | 산업생산지수 | `get_industrial_production()` |
-| 901Y049 | 설비투자지수 | `get_facility_investment()` |
-| 901Y037 | 소매판매지수 | `get_retail_sales()` |
-| 512Y014 | 기업경기실사지수(BSI) | `get_bsi()` |
-| 511Y002 | 소비자심리지수(CSI) | `get_csi()` |
-
-### 🟢 우선순위 3 - 기타 중요 통계
-
-사용 빈도가 높은 미구현 통계:
+### 🟢 사용 빈도가 높은 큐레이션 후보 통계
 
 #### 금리 관련
 | 통계코드 | 통계명 |
@@ -121,27 +129,24 @@ constants.py에 정의되어 있으나 미구현된 통계:
 
 ## 개발 로드맵
 
-### v0.2.x - 환율 및 국제수지 (Phase 3)
-- [ ] `get_exchange_rate()` - 주요 통화 환율
-- [ ] `get_effective_exchange_rate()` - 실효환율
-- [ ] `get_current_account()` - 경상수지
-- [ ] `get_capital_account()` - 자본수지
+### v0.5.0 - 범용 접근 + 카탈로그 (Epic #98)
+- [x] `get_series()` - 임의 통계표 범용 조회 (#100)
+- [x] 자동 페이지네이션 (#101)
+- [x] rate limiter + 디스크 캐시 (#102)
+- [x] 카탈로그 스냅샷 + 탐색 API (#103) / 재생성 스크립트·CI (#105)
+- [x] `list_items()` - 항목 탐색 (#104)
 
-### v0.3.x - 실물경제 및 심리지표 (Phase 4)
-- [ ] `get_industrial_production()` - 산업생산지수
-- [ ] `get_facility_investment()` - 설비투자지수
-- [ ] `get_retail_sales()` - 소매판매지수
-- [ ] `get_bsi()` - 기업경기실사지수
-- [ ] `get_csi()` - 소비자심리지수
+### v0.5.0 - 도메인 큐레이션 (Epic #98)
+- [x] `get_exchange_rate()` - 주요 통화 환율 (731Y001, #106)
+- [x] `get_balance_of_payments()` - 경상/자본/금융계정 (301Y013, #107)
+- [x] `get_business_sentiment()` / `get_consumer_sentiment()` - BSI/CSI (#108)
+- [x] `get_industrial_production()` / `get_facility_investment()` - 실물경기 (#109)
 
-### v0.4.x - 무역 및 고용 (Phase 5)
-- [ ] `get_export_import()` - 수출입 통계
-- [ ] `get_trade_by_country()` - 국가별 무역
-- [ ] `get_employment()` - 고용 통계
-
-### v0.5.x - 기업경영 및 재정 (Phase 6)
+### 후속 (별도 이슈 분리)
+- [ ] `get_effective_exchange_rate()` - 실효환율 (ECOS 원천 미확정, #71)
+- [ ] `get_retail_sales()` - 소매판매지수 (단일 항목 selector 확정 필요)
+- [ ] 무역(수출입)·고용(고용률/실업률)·경기종합지수 큐레이션
 - [ ] 기업경영분석 지표
-- [ ] 재정 통계
 
 ---
 
@@ -188,6 +193,8 @@ constants.py에 정의되어 있으나 미구현된 통계:
 
 ## 참고 자료
 
-- **전체 통계 목록**: `ecos_implementation_status.csv` 파일 참조
+- **동봉 카탈로그 스냅샷**: `src/ecos/data/catalog.csv.gz` (834표/검색가능 609).
+  `ecos.search_tables()`/`list_tables()`/`get_table_tree()` 로 조회, `scripts/audit_codes.py snapshot` 으로 재생성.
+- **범용 조회**: `ecos.get_series(stat_code, period, ...)` — 카탈로그의 어떤 표든 도달 가능.
 - **ECOS Open API 공식 문서**: https://ecos.bok.or.kr/api/
 - **GitHub Issues**: https://github.com/choo121600/ecos-reader/issues
