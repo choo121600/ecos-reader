@@ -98,13 +98,13 @@ print("6. GDP")
 print("=" * 60)
 
 # 분기별 실질 GDP
-df_gdp_q = ecos.get_gdp(frequency="Q", basis="real")
+df_gdp_q = ecos.get_gdp(frequency="quarterly", basis="real")
 print("분기별 실질 GDP:")
 print(df_gdp_q.tail())
 print()
 
 # 연간 명목 GDP
-df_gdp_a = ecos.get_gdp(frequency="A", basis="nominal")
+df_gdp_a = ecos.get_gdp(frequency="annual", basis="nominal")
 print("연간 명목 GDP:")
 print(df_gdp_a.tail())
 print()
@@ -131,10 +131,10 @@ print("가계대출:")
 print(df_household.tail())
 print()
 
-# 기업대출
-df_corporate = ecos.get_bank_lending(sector="corporate")
-print("기업대출:")
-print(df_corporate.tail())
+# 예금은행 전체 대출금 (기본값)
+df_all = ecos.get_bank_lending(sector="all")
+print("예금은행 전체 대출금:")
+print(df_all.tail())
 print()
 
 print("=" * 60)

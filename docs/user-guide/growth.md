@@ -234,7 +234,7 @@ df['cycle'] = np.where(df['value'] > df['MA4'], '확장', '수축')
 recent = df.tail(8)
 print("최근 8분기 경기 국면:")
 for _, row in recent.iterrows():
-    date_str = row['date'].strftime('%Y-Q%q')
+    date_str = f"{row['date'].year}-Q{(row['date'].month - 1) // 3 + 1}"
     print(f"{date_str}: {row['value']:.2f}% ({row['cycle']})")
 ```
 
@@ -348,7 +348,7 @@ print(f"코로나 이후 (2022-): {post_covid.mean():.2f}%")
 # 최대 충격
 min_covid = covid.min()
 min_date = df[df['value'] == min_covid]['date'].iloc[0]
-print(f"\n최대 충격: {min_covid:.2f}% ({min_date.strftime('%Y-Q%q')})")
+print(f"\n최대 충격: {min_covid:.2f}% ({min_date.year}-Q{(min_date.month - 1) // 3 + 1})")
 ```
 
 ## GDP 성장률

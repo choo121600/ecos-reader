@@ -541,7 +541,7 @@ def create_macro_dataset(start_date="202001"):
     dataset['m2'] = m2.set_index('month')['value']
 
     # 결측치 처리
-    dataset['base_rate'] = dataset['base_rate'].fillna(method='ffill')
+    dataset['base_rate'] = dataset['base_rate'].ffill()
 
     return dataset.reset_index()
 

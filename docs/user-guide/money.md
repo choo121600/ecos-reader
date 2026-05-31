@@ -114,13 +114,26 @@ plt.show()
 
 ## 은행 대출
 
-은행의 가계 및 기업 대출 잔액을 조회합니다.
+예금은행 대출금 잔액을 조회합니다.
 
 ### 지원 부문
 
-- `household` - 가계대출
-- `corporate` - 기업대출
-- `total` - 전체 대출 (가계 + 기업)
+- `all` - 예금은행 전체 대출금 (기본값)
+- `household` - 예금취급기관 가계대출
+
+!!! note "기업대출"
+    기업대출은 `get_bank_lending` 으로는 제공되지 않습니다.
+    기업대출이 필요하면 `get_series` 로 산업별대출금 통계표를 직접 조회하세요.
+
+### 전체 대출
+
+```python
+import ecos
+
+# 예금은행 전체 대출금 잔액 조회 (기본값)
+df = ecos.get_bank_lending(sector="all")
+print(df.tail())
+```
 
 ### 가계대출
 
@@ -129,26 +142,6 @@ import ecos
 
 # 가계대출 잔액 조회
 df = ecos.get_bank_lending(sector="household")
-print(df.tail())
-```
-
-### 기업대출
-
-```python
-import ecos
-
-# 기업대출 잔액 조회
-df = ecos.get_bank_lending(sector="corporate")
-print(df.tail())
-```
-
-### 전체 대출
-
-```python
-import ecos
-
-# 전체 대출 잔액 조회
-df = ecos.get_bank_lending(sector="total")
 print(df.tail())
 ```
 
@@ -170,7 +163,7 @@ df = ecos.get_bank_lending(
 | `value` | float | 대출 잔액 (10억원) |
 | `unit` | str | 단위 (십억원) |
 
-### 가계 vs 기업 대출 비교
+### 전체 vs 가계 대출 비교
 
 ```python
 import ecos
@@ -178,18 +171,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 두 부문 조회
+total = ecos.get_bank_lending(sector="all", start_date="202001")
 household = ecos.get_bank_lending(sector="household", start_date="202001")
-corporate = ecos.get_bank_lending(sector="corporate", start_date="202001")
 
 # 데이터 병합
 merged = pd.merge(
+    total[['date', 'value']].rename(columns={'value': '전체'}),
     household[['date', 'value']].rename(columns={'value': '가계'}),
-    corporate[['date', 'value']].rename(columns={'value': '기업'}),
     on='date'
 )
 
 # 조원 단위로 변환
-merged[['가계', '기업']] = merged[['가계', '기업']] / 1000
+merged[['전체', '가계']] = merged[['전체', '가계']] / 1000
 
 # 시각화
 merged.set_index('date').plot(
@@ -198,13 +191,12 @@ merged.set_index('date').plot(
     figsize=(12, 6),
     grid=True
 )
-plt.legend(['가계대출', '기업대출'])
+plt.legend(['전체 대출', '가계대출'])
 plt.tight_layout()
 plt.show()
 
 # 비율 계산
-merged['total'] = merged['가계'] + merged['기업']
-merged['household_ratio'] = (merged['가계'] / merged['total']) * 100
+merged['household_ratio'] = (merged['가계'] / merged['전체']) * 100
 
 print(f"\n가계대출 비중: {merged.iloc[-1]['household_ratio']:.1f}%")
 ```
@@ -215,9 +207,9 @@ M1 통화량의 평잔/말잔, 계절조정/원계열 세부 데이터를 조회
 
 ### 지원 유형
 
-- `평잔_계절조정` - 평균잔액, 계절조정 계열 (기본값)
+- `평잔_계절조정` - 평균잔액, 계절조정 계열
 - `평잔_원계열` - 평균잔액, 원계열
-- `말잔_계절조정` - 말일잔액, 계절조정 계열
+- `말잔_계절조정` - 말일잔액, 계절조정 계열 (기본값)
 
 ### 기본 사용법
 
@@ -247,11 +239,15 @@ df = ecos.get_m1_variants(
 
 M2 통화량의 평잔/말잔, 계절조정/원계열 세부 데이터를 조회합니다.
 
-### 지원 유형
+### 매개변수
 
-- `평잔_계절조정` - 평균잔액, 계절조정 계열 (기본값)
-- `평잔_원계열` - 평균잔액, 원계열
-- `말잔_계절조정` - 말일잔액, 계절조정 계열
+- `variant`: M2 변형 종류 (기본값: `"말잔_계절조정"`)
+
+| variant 값 | 설명 |
+|---|---|
+| `"평잔_계절조정"` | 기간 중 평균잔액, 계절조정 계열 |
+| `"평잔_원계열"` | 기간 중 평균잔액, 원계열 |
+| `"말잔_계절조정"` | 기말 잔액, 계절조정 계열 (기본값) |
 
 ### 기본 사용법
 
@@ -372,8 +368,8 @@ df = ecos.get_household_lending_detail(
 
 ### 지원 유형
 
-- `신규` - 신규 취급액 기준 (기본값)
-- `잔액` - 대출 잔액 기준
+- `신규` - 신규 취급액 기준
+- `잔액` - 대출 잔액 기준 (기본값)
 
 ### 기본 사용법
 
@@ -596,7 +592,7 @@ import ecos
 import numpy as np
 
 # 전체 대출 조회
-df = ecos.get_bank_lending(sector="total", start_date="201001")
+df = ecos.get_bank_lending(sector="all", start_date="201001")
 
 # 전년동월대비 증가율
 df['yoy_growth'] = df['value'].pct_change(periods=12) * 100
@@ -625,7 +621,7 @@ import matplotlib.pyplot as plt
 
 # 데이터 조회
 m2 = ecos.get_money_supply(indicator="M2", start_date="202001")
-lending = ecos.get_bank_lending(sector="total", start_date="202001")
+lending = ecos.get_bank_lending(sector="all", start_date="202001")
 
 # 조원 단위로 변환 및 병합
 merged = pd.merge(

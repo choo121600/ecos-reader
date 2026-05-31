@@ -16,14 +16,36 @@ df = ecos.get_base_rate()
 print(df)
 ```
 
+### 매개변수
+
+- `frequency`: 조회 주기
+    - `"monthly"` - 월별 (기본값, 날짜 형식 `YYYYMM`)
+    - `"daily"` - 일별 (날짜 형식 `YYYYMMDD`). 기준금리는 변경일에만 갱신되어 결과가 sparse합니다.
+
 ### 기간 지정
 
 ```python
-# 2020년 1월부터 2024년 12월까지
+# 2020년 1월부터 2024년 12월까지 (월별)
 df = ecos.get_base_rate(
     start_date="202001",
     end_date="202412"
 )
+```
+
+### 일간 기준금리
+
+기준금리 변경 이벤트를 일 단위로 조회할 때 `frequency="daily"`를 사용합니다. 변경이 없는 날은 행이 없으므로(sparse) 날짜별 전파가 필요하면 `.ffill()`을 사용하세요.
+
+```python
+import ecos
+
+# 일별 기준금리 (변경일만 포함)
+df = ecos.get_base_rate(
+    frequency="daily",
+    start_date="20200101",
+    end_date="20241231"
+)
+print(df)
 ```
 
 ### 반환 데이터 구조
@@ -166,15 +188,42 @@ df = ecos.get_yield_spread(
 )
 ```
 
+### 매개변수
+
+- `long_maturity`: 장기 만기 (기본값: `"10Y"`)
+    - `"10Y"` - 국고채 10년
+    - `"20Y"` - 국고채 20년
+    - `"30Y"` - 국고채 30년
+- `short_maturity`: 단기 만기 (기본값: `"3Y"`)
+    - `"1Y"` - 국고채 1년
+    - `"3Y"` - 국고채 3년
+    - `"5Y"` - 국고채 5년
+
 ### 반환 데이터 구조
 
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | `date` | datetime | 조회일 |
-| `long_yield` | float | 10년물 수익률 (%) |
-| `short_yield` | float | 3년물 수익률 (%) |
+| `long_yield` | float | 장기 수익률 (%) |
+| `short_yield` | float | 단기 수익률 (%) |
 | `spread` | float | 금리차 (%p) |
 | `unit` | str | 단위 (%p) |
+
+### 만기 조합 커스터마이징
+
+기본값(10Y - 3Y) 외에 다른 만기 조합으로 금리차를 계산할 수 있습니다.
+
+```python
+import ecos
+
+# 30년 - 1년 스프레드
+df = ecos.get_yield_spread(long_maturity="30Y", short_maturity="1Y")
+print(df.tail())
+
+# 20년 - 5년 스프레드
+df = ecos.get_yield_spread(long_maturity="20Y", short_maturity="5Y")
+print(df.tail())
+```
 
 ### 금리 역전 감지
 

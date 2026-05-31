@@ -79,6 +79,42 @@ df = ecos.get_gdp(frequency="quarterly", basis="real")
 print(df)
 ```
 
+## 두 가지 사용 방식
+
+ecos-reader는 동등한 두 진입점을 제공하며, 둘 다 정규화된 long-format DataFrame을 반환합니다.
+
+| | 큐레이션 함수 | 범용 조회 |
+|---|---|---|
+| **함수** | `get_base_rate()`, `get_cpi()`, `get_gdp()` … (37개) | `get_series(stat_code, period, …)` |
+| **언제** | 자주 쓰는 고가치 지표를 검증된 인자로 바로 | ECOS의 **어떤 통계표든** 직접 |
+| **탐색** | 함수 시그니처가 곧 옵션 | `search_tables()` / `list_tables()` / `list_items()` (오프라인) |
+| **도달 범위** | 큐레이션된 핵심 지표 | ECOS 전체 (도달 못 하는 통계 없음) |
+
+큐레이션 함수가 없는 통계는 `get_series` 로 직접 조회합니다. 통계표·항목은 **네트워크 없이**
+동봉 카탈로그로 탐색합니다.
+
+```python
+import ecos
+
+# 1) 통계표 찾기 (오프라인 카탈로그 검색)
+hits = ecos.search_tables("소비자물가")
+print(hits[["stat_code", "stat_name", "cycle"]].head())
+
+# 2) 임의 시계열 조회 — 윈도우 초과 시 자동 페이지네이션
+df = ecos.get_series(
+    "901Y009", "monthly",
+    start_date="202401", end_date="202412",
+    item_code="0",   # 생략 시 전체 항목
+)
+
+# 3) 표의 세부 항목(item_code) 탐색
+items = ecos.list_items("901Y009")
+print(items[["item_code", "item_name", "cycle"]].head())
+```
+
+> 큐레이션 함수는 범용 조회 위에 올바른 `(stat_code, item_code, period)`를 검증해 얹은
+> 편의 계층입니다. 전체 흐름과 옵션은 [범용 조회 & 탐색 가이드](docs/user-guide/universal-access.md)를 참고하세요.
+
 ## 지원 지표
 
 ### 금리 지표
@@ -98,6 +134,8 @@ print(df)
 | `get_cpi()` | 소비자물가지수 전년동월비 | 월 |
 | `get_core_cpi()` | 근원 CPI (식료품·에너지 제외) | 월 |
 | `get_ppi()` | 생산자물가지수 전년동월비 | 월 |
+| `get_cpi_monthly(sub_category)` | CPI 월별 원지수 (품목·분류별) | 월 |
+| `get_cpi_by_category(category)` | CPI 세부 항목별 지수 (상품/서비스 등 8종) | 월 |
 
 ### 성장 지표
 
@@ -115,7 +153,7 @@ print(df)
 | 함수 | 설명 | 주기 |
 |-----|------|-----|
 | `get_money_supply(indicator)` | 통화량 (M1/M2/Lf) | 월 |
-| `get_bank_lending(sector)` | 은행 대출 (가계/기업/전체) | 월 |
+| `get_bank_lending(sector)` | 예금은행 대출금 (전체/가계) | 월 |
 | `get_m1_variants(variant)` | M1 세부 (평잔·말잔, 계절조정·원계열) | 월 |
 | `get_m2_variants(variant)` | M2 세부 (평잔·말잔, 계절조정·원계열) | 월 |
 | `get_m2_by_holder(variant)` | M2 경제주체별 (평잔·말잔, 계절조정·원계열) | 월 |
@@ -137,13 +175,33 @@ print(df)
 | `get_investor_trading(action, metric, sub_category)` | 투자자별 주식거래 | 월 |
 | `get_bond_yield(bond_type, measure, sub_category)` | 채권 거래 (종류별/시장별) | 월 |
 
-> ℹ️ v0.3.0(#59~#63)에서 과거 단일 ECOS item만 반환하던 함수들이 모두 전체 시리즈
-> long-format + `sub_category` 선택으로 재설계되었습니다:
-> `get_gdp_by_industry`, `get_gdp_by_expenditure`, `get_gdp_deflator_by_industry`,
-> `get_stock_index(monthly)`, `get_investor_trading`, `get_cpi_monthly`,
-> `get_household_lending_detail`, `get_bond_yield`, `get_borrower_loan`(v0.2.0 #29).
-> 과거의 `EcosPartialCoverageWarning`은 제거되었습니다(#64). 자세한 변경·마이그레이션은
-> [v0.3.0 마이그레이션 가이드](docs/user-guide/migration-v0.3.0.md)를 참고하세요.
+### 실물경기 지표
+
+| 함수 | 설명 | 주기 |
+|-----|------|-----|
+| `get_industrial_production(seasonal)` | 전산업생산지수 (원계열/계절조정) | 월 |
+| `get_facility_investment(seasonal)` | 설비투자지수 (원지수/계절조정) | 월 |
+| `get_composite_index(index)` | 경기종합지수 (선행/동행/후행) | 월 |
+| `get_retail_sales(index, frequency)` | 소매판매액지수 (불변/경상/계절조정) | 월/분기/연 |
+
+### 심리 지표
+
+| 함수 | 설명 | 주기 |
+|-----|------|-----|
+| `get_business_sentiment(sector)` | 기업경기실사지수 BSI 업황전망 (전산업/제조/비제조) | 월 |
+| `get_consumer_sentiment()` | 소비자심리지수 (CCSI) | 월 |
+
+### 환율·국제수지·무역 지표
+
+| 함수 | 설명 | 주기 |
+|-----|------|-----|
+| `get_exchange_rate(currency)` | 원/외화 매매기준율 (USD/JPY/EUR/CNY) | 일 |
+| `get_balance_of_payments(account, frequency)` | 국제수지 (경상/자본/금융계정) | 월/분기/연 |
+| `get_trade(flow, frequency)` | 수출입금액 통관기준 (수출/수입) | 월/연 |
+
+> ℹ️ v0.3.0 이후 과거 단일 ECOS item만 반환하던 함수들이 전체 시리즈 long-format +
+> `sub_category` 선택으로 재설계되었고, `EcosPartialCoverageWarning`은 제거되었습니다.
+> 자세한 변경·마이그레이션은 [마이그레이션 가이드](docs/user-guide/migration-v0.3.0.md)를 참고하세요.
 
 ## 상세 사용법
 
@@ -324,10 +382,13 @@ pytest --cov=src/ecos  # 커버리지 포함
 ```
 ecos-reader/
 ├── src/ecos/
+│   ├── access.py            # 범용 조회 (get_series, list_items)
+│   ├── catalog.py           # 통계표 카탈로그 탐색 (오프라인)
 │   ├── client.py            # API 클라이언트
 │   ├── parser.py            # 응답 파서
 │   ├── constants.py         # 통계코드 정의
-│   └── indicators/          # 지표 모듈
+│   ├── data/catalog.csv.gz  # 동봉 카탈로그 스냅샷
+│   └── indicators/          # 큐레이션 지표 모듈
 ├── tests/                   # 테스트
 ├── docs/                    # 문서
 └── examples/                # 예제
@@ -351,7 +412,7 @@ mkdocs serve
 
 ## 프로젝트 문서
 
-- **[구현 현황](ecos_implementation_status.csv)**: ECOS 통계 구현 현황 (43/664개, 6.5%)
+- **[구현 현황](IMPLEMENTATION_STATUS.md)**: 2계층 커버리지 모델 — `get_series`로 ECOS 전체 도달 + 큐레이션 함수 37개. 동봉 카탈로그 834노드(검색가능 609개)
 - **[기여 가이드](CONTRIBUTING.md)**: 프로젝트 기여 방법
 - **[변경 이력](CHANGELOG.md)**: 버전별 변경사항
 
@@ -361,7 +422,7 @@ ecos-reader는 오픈소스 프로젝트입니다. 기여를 환영합니다!
 
 - 버그 리포트 및 기능 제안: [GitHub Issues](https://github.com/choo121600/ecos-reader/issues)
 - 코드 기여: [기여 가이드](CONTRIBUTING.md) 참조
-- 구현 현황: [ecos_implementation_status.csv](ecos_implementation_status.csv)에서 미구현 지표 확인 (621개 남음)
+- 구현 현황: [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)에서 큐레이션 후보·커버리지 모델 확인
 
 ## 라이센스
 

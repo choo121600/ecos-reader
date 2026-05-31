@@ -88,14 +88,48 @@ print(df.tail())
 df = ecos.get_money_supply(indicator="M2")
 print(df.tail())
 
+# 예금은행 전체 대출금 (기본값)
+df = ecos.get_bank_lending(sector="all")
+print(df.tail())
+
 # 가계대출
 df = ecos.get_bank_lending(sector="household")
 print(df.tail())
-
-# 기업대출
-df = ecos.get_bank_lending(sector="corporate")
-print(df.tail())
 ```
+
+## 범용 조회 — 어떤 통계든 직접
+
+큐레이션 함수가 없는 통계는 `get_series` 로 직접 조회합니다. `(통계표코드, 주기)` 와
+기간을 받아 동일한 long-format DataFrame을 반환합니다.
+
+```python
+import ecos
+
+# 임의의 ECOS 통계표 조회
+df = ecos.get_series(
+    "722Y001", "monthly",
+    start_date="202401", end_date="202412",
+    item_code="0101000",   # 특정 항목 (생략 시 전체)
+)
+print(df.columns.tolist())   # ['date', 'value', 'unit', 'item_code1', 'item_name1']
+```
+
+조회에 필요한 통계표코드·항목코드는 **네트워크 없이** 동봉 카탈로그로 탐색합니다.
+
+```python
+# 1) 통계표 찾기
+hits = ecos.search_tables("소비자물가")
+print(hits[["stat_code", "stat_name", "cycle"]].head())
+
+# 2) 표의 세부 항목(item_code) 찾기
+items = ecos.list_items("901Y009")
+print(items[["item_code", "item_name", "cycle"]].head())
+```
+
+!!! tip "큐레이션 vs 범용"
+    자주 쓰는 지표는 `get_base_rate()` 같은 큐레이션 함수가 더 간편합니다.
+    범용 조회의 전체 흐름(검색 → 항목 해석 → 조회)은
+    [범용 조회 & 탐색](../user-guide/universal-access.md) 가이드를 참고하세요.
 
 ## 기간 지정
 
@@ -235,6 +269,7 @@ df = ecos.get_base_rate()
 ## 다음 단계
 
 - [기본 사용법](../user-guide/basic-usage.md) - 더 자세한 사용법
+- [범용 조회 & 탐색](../user-guide/universal-access.md) - `get_series`로 ECOS 전체 도달
 - [금리 지표](../user-guide/interest-rates.md) - 금리 지표 활용
 - [물가 지표](../user-guide/prices.md) - 물가 지표 활용
 - [예제](../examples/basic.md) - 실전 예제 코드
