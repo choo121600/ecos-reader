@@ -972,6 +972,14 @@ class TestE2ERealEconomyIndicators:
         assert df.columns.tolist() == ["date", "value", "unit"]
         assert len(df) == df["date"].nunique()
 
+    @pytest.mark.parametrize("index", ["nominal", "real", "seasonal"])
+    def test_get_retail_sales(self, index):
+        """소매판매액지수 — 901Y100 총지수, 경상/불변/계절조정 단일 시계열."""
+        df = ecos.get_retail_sales(index, start_date="202301", end_date="202312")
+        assert not df.empty, f"{index} returned empty"
+        assert df.columns.tolist() == ["date", "value", "unit"]
+        assert len(df) == df["date"].nunique()
+
 
 class TestE2ETradeIndicators:
     """무역 지표(수출입) E2E 테스트 (#127)"""

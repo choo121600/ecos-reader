@@ -159,9 +159,16 @@ STAT_FACILITY_INVESTMENT = "901Y066"
 ITEM_FACILITY_INVESTMENT = "I15A"  # 원지수
 ITEM_FACILITY_INVESTMENT_SA = "I15B"  # 계절조정지수
 
-# 소매판매지수
-STAT_RETAIL_SALES = "901Y037"
-ITEM_RETAIL_SALES = "*"
+# 소매판매액지수 (901Y100 = 재별 및 상품군별 판매액지수). 라이브 검증.
+# 정정: 기존 901Y037은 ECOS에서 "건축허가현황"이라 소매판매가 아니었음(오라벨, #127 후속).
+# 2-축(상품군 G* × 계열)이라 헤드라인을 총지수(G0) × 계열(item_code2)로 고정한다.
+STAT_RETAIL_SALES = "901Y100"
+ITEM_RETAIL_SALES = "G0"  # 총지수
+RETAIL_SALES_INDEX_ITEMS: dict[str, str] = {
+    "nominal": "T1",  # 경상지수
+    "real": "T2",  # 불변지수
+    "seasonal": "T3",  # 계절조정지수
+}
 
 # 경기종합지수 (901Y067, 월, 2020=100). 선행/동행/후행 종합지수. 라이브 검증.
 STAT_COMPOSITE_INDEX = "901Y067"

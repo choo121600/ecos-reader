@@ -64,6 +64,7 @@ from .real_economy import (
     get_composite_index,
     get_facility_investment,
     get_industrial_production,
+    get_retail_sales,
 )
 
 # 심리 지표 (#108)
