@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - Unreleased
+
+> Epic #57(Deprecation 정리)의 **BREAKING** 릴리스. v0.2.2(#20)에서
+> `EcosDeprecationWarning` 과 함께 deprecated 처리됐던 레거시 frequency
+> 단일 문자 표기를 제거합니다. 마이그레이션: 사용자 가이드 > v0.4.0 마이그레이션.
+
+### Removed (BREAKING)
+- 레거시 `frequency` 단일 문자 표기(`"D"`/`"M"`/`"Q"`/`"A"`) 제거. 이제 정식
+  어휘(`"daily"`/`"monthly"`/`"quarterly"`/`"annual"`)만 허용하며, 정식이 아닌
+  값은 경고 없이 즉시 `ValueError` 를 발생시킵니다. (#65)
+- `EcosDeprecationWarning` 클래스 및 공개 export 제거. frequency 단일 문자
+  표기 전용 경고였으며, 해당 표기 제거와 함께 더 이상 노출되지 않습니다. (#65)
+
+### Added
+- v0.4.0 마이그레이션 가이드(사용자 가이드). (#66)
+
 ## [0.3.0] - 2026-05-31
 
 > Epic #56(Partial-coverage 재설계)의 **BREAKING** 릴리스. 함수명이 전체 시리즈를

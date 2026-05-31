@@ -1,84 +1,31 @@
-# frequency 어휘 통일 마이그레이션 (#20)
+# frequency 표기 마이그레이션 (#20, #57)
 
-## 배경
+이 문서는 `frequency` 인자 표기 변경(레거시 단일 문자 → 정식 풀네임)에 대한 안내입니다.
+v0.4.0(#57)부터 레거시 단일 문자 표기는 **제거**되어 더 이상 허용되지 않습니다.
 
-과거 ecos-reader는 카테고리마다 `frequency` 파라미터의 표기가 달랐습니다.
+## 한눈에 보기
 
-- **성장 지표** (`growth.py`): `"Q"` (분기), `"A"` (연간)
-- **금리 지표** (`interest_rate.py`): `"D"` (일), `"M"` (월)
-- **주가 지표** (`stock.py`): `"daily"`, `"monthly"` (이미 풀네임 사용)
+| 카테고리 | 함수 | 레거시(제거됨) | 정식(필수) |
+|---|---|---|---|
+| 성장 | `get_gdp`, `get_gdp_deflator` 등 | `Q`, `A` | `quarterly`, `annual` |
+| 금리 | `get_base_rate` | `D`, `M` | `daily`, `monthly` |
+| 주식 | `get_stock_index` | (없음) | `daily`, `monthly` |
 
-이 불일치를 해소하기 위해 이슈 #20에서 **풀네임 어휘**로 통일했습니다.
-
-```
-daily | monthly | quarterly | annual
-```
-
-## 레거시 → 정식 매핑
-
-| 레거시 (구) | 정식 (신) | 설명 |
-|------------|----------|------|
-| `"D"` | `"daily"` | 일별 |
-| `"M"` | `"monthly"` | 월별 |
-| `"Q"` | `"quarterly"` | 분기별 |
-| `"A"` | `"annual"` | 연간 |
-
-## Deprecation 정책
-
-레거시 단일 문자(`"D"`, `"M"`, `"Q"`, `"A"`)는 **당분간 계속 동작**하지만,
-호출 시 `EcosDeprecationWarning`이 발생합니다.
-
-- `EcosDeprecationWarning`은 `UserWarning`의 하위 클래스이며 기본 필터로도 표시됩니다.
-- **v0.4.0**에서 레거시 단일 문자 지원이 완전히 제거될 예정입니다.
-
-## Before / After 코드 예시
+## 권장 변경
 
 ```python
-# Before (레거시 — 동작하지만 경고 발생)
-import ecos
-
+# Before (v0.3.x 이하, 이제 ValueError)
 df = ecos.get_gdp(frequency="Q")
-df = ecos.get_gdp(frequency="A", basis="nominal")
-df = ecos.get_base_rate(frequency="M")
 
-# After (정식 — 권장)
+# After (정식)
 df = ecos.get_gdp(frequency="quarterly")
-df = ecos.get_gdp(frequency="annual", basis="nominal")
-df = ecos.get_base_rate(frequency="monthly")
 ```
 
-## 경고 끄는 법
+## 동작/타임라인
 
-마이그레이션 전까지 임시로 경고를 억제하려면:
+- v0.2.2: 정식 어휘 도입. 레거시 단일 문자는 `EcosDeprecationWarning` 과 함께 계속 동작.
+- **v0.4.0: 레거시 단일 문자 제거.** 이제 정식 어휘만 허용하며, 정식이 아닌
+  값은 경고 없이 즉시 `ValueError` 입니다. frequency 전용 경고였던
+  `EcosDeprecationWarning` 도 함께 제거되었습니다.
 
-```python
-import warnings
-from ecos import EcosDeprecationWarning
-
-warnings.simplefilter("ignore", EcosDeprecationWarning)
-```
-
-## 영향 함수 목록
-
-### `growth.py` — 6개 함수
-
-| 함수 | 지원 frequency |
-|------|---------------|
-| `get_gdp()` | `quarterly`, `annual` |
-| `get_gdp_deflator()` | `quarterly`, `annual` |
-| `get_gdp_growth_rate()` | `quarterly`, `annual` |
-| `get_gdp_by_industry()` | `quarterly`, `annual` |
-| `get_gdp_by_expenditure()` | `quarterly`, `annual` |
-| `get_gdp_deflator_by_industry()` | `quarterly`, `annual` |
-
-### `interest_rate.py` — 1개 함수
-
-| 함수 | 지원 frequency |
-|------|---------------|
-| `get_base_rate()` | `daily`, `monthly` |
-
-### `stock.py` — 1개 함수 (이미 정식 어휘 사용)
-
-| 함수 | 지원 frequency |
-|------|---------------|
-| `get_stock_index()` | `daily`, `monthly` |
+v0.4.0 변경 상세는 [v0.4.0 마이그레이션](migration-v0.4.0.md) 을 참고하세요.
