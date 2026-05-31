@@ -10,15 +10,17 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from ..client import get_client
 from ..constants import (
+    COMPOSITE_INDEX_ITEMS,
     ITEM_FACILITY_INVESTMENT,
     ITEM_FACILITY_INVESTMENT_SA,
     ITEM_INDUSTRIAL_ORIGINAL,
     ITEM_INDUSTRIAL_PRODUCTION,
     ITEM_INDUSTRIAL_SEASONAL,
+    STAT_COMPOSITE_INDEX,
     STAT_FACILITY_INVESTMENT,
     STAT_INDUSTRIAL_PRODUCTION,
 )
@@ -122,6 +124,67 @@ def get_facility_investment(
         start_date=start_date,
         end_date=end_date,
         item_code1=item,
+    )
+
+    df = parse_response(response)
+    return normalize_stat_result(df)
+
+
+def get_composite_index(
+    index: Literal["leading", "coincident", "lagging"] = "coincident",
+    start_date: str | None = None,
+    end_date: str | None = None,
+) -> pd.DataFrame:
+    """경기종합지수(CI)를 조회합니다.
+
+    ECOS 통계표 ``901Y067``(경기종합지수)의 선행/동행/후행 종합지수를
+    조회합니다. 월별 지수(기준 2020=100)입니다.
+
+    Parameters
+    ----------
+    index : str
+        조회할 지수.
+        - ``'coincident'``: 동행종합지수 (기본값)
+        - ``'leading'``: 선행종합지수
+        - ``'lagging'``: 후행종합지수
+    start_date : str, optional
+        조회 시작월 (``YYYYMM`` 형식). 기본값: 24개월 전.
+    end_date : str, optional
+        조회 종료월 (``YYYYMM`` 형식). 기본값: 현재.
+
+    Returns
+    -------
+    pd.DataFrame
+        컬럼: ``date``, ``value``, ``unit``. ``value`` 는 지수(2020=100).
+
+    Raises
+    ------
+    ValueError
+        지원하지 않는 ``index`` 일 때.
+
+    Examples
+    --------
+    >>> import ecos
+    >>> df = ecos.get_composite_index("leading")
+    """
+    if index not in COMPOSITE_INDEX_ITEMS:
+        allowed = ", ".join(repr(i) for i in COMPOSITE_INDEX_ITEMS)
+        raise ValueError(
+            f"get_composite_index(): index는 {allowed} 중 하나여야 합니다. (받은 값: {index!r})"
+        )
+
+    if start_date is None or end_date is None:
+        default_start, default_end = default_monthly(24)
+        start_date = start_date or default_start
+        end_date = end_date or default_end
+
+    client = get_client()
+    response = client.get_statistic_search(
+        stat_code=STAT_COMPOSITE_INDEX,
+        period="M",
+        start_date=start_date,
+        end_date=end_date,
+        item_code1=COMPOSITE_INDEX_ITEMS[index],
     )
 
     df = parse_response(response)

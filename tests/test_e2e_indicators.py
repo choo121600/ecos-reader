@@ -963,3 +963,29 @@ class TestE2ERealEconomyIndicators:
         assert not df.empty
         assert "value" in df.columns
         assert len(df) == df["date"].nunique()
+
+    @pytest.mark.parametrize("index", ["leading", "coincident", "lagging"])
+    def test_get_composite_index(self, index):
+        """경기종합지수 — 901Y067, 선행/동행/후행."""
+        df = ecos.get_composite_index(index, start_date="202301", end_date="202312")
+        assert not df.empty
+        assert df.columns.tolist() == ["date", "value", "unit"]
+        assert len(df) == df["date"].nunique()
+
+
+class TestE2ETradeIndicators:
+    """무역 지표(수출입) E2E 테스트 (#127)"""
+
+    @pytest.mark.parametrize("flow", ["export", "import"])
+    def test_get_trade_monthly(self, flow):
+        """수출입 금액(월별) — 901Y118."""
+        df = ecos.get_trade(flow, start_date="202301", end_date="202312")
+        assert not df.empty, f"{flow} returned empty"
+        assert df.columns.tolist() == ["date", "value", "unit"]
+        assert (df["value"] > 0).all()
+
+    def test_get_trade_annual(self):
+        """연별 수출금액."""
+        df = ecos.get_trade("export", start_date="2018", end_date="2023", frequency="annual")
+        assert not df.empty
+        assert len(df) >= 5

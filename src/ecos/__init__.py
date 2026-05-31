@@ -64,6 +64,8 @@ from .indicators import (
     get_borrower_loan,
     # 심리 지표
     get_business_sentiment,
+    # 실물경기 지표 (#127 경기종합지수 포함)
+    get_composite_index,
     get_consumer_sentiment,
     get_core_cpi,
     # 물가 지표
@@ -72,7 +74,6 @@ from .indicators import (
     get_cpi_monthly,
     # 환율 지표
     get_exchange_rate,
-    # 실물경기 지표
     get_facility_investment,
     # 재정 지표
     get_fiscal_balance,
@@ -97,6 +98,8 @@ from .indicators import (
     get_ppi,
     # 주식시장 지표
     get_stock_index,
+    # 무역 지표
+    get_trade,
     get_treasury_yield,
     get_yield_spread,
     list_indicators,
@@ -166,6 +169,9 @@ __all__ = [
     # 실물경기 지표
     "get_industrial_production",
     "get_facility_investment",
+    "get_composite_index",
+    # 무역 지표
+    "get_trade",
     # 주식시장 지표
     "get_stock_index",
     "get_investor_trading",
