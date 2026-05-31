@@ -23,6 +23,9 @@ from __future__ import annotations
 __version__ = "0.4.0"
 __author__ = "yeonguk"
 
+# 범용 조회 API (#100)
+from .access import get_series
+
 # Config API
 # Cache API
 from .cache import clear_cache, disable_cache, enable_cache
@@ -92,6 +95,9 @@ from .logging import setup_logging
 # Metrics API
 from .metrics import get_metrics_summary, reset_metrics
 
+# 파서 헬퍼 (#100): 범용 조회 결과를 직접 가공할 때 사용
+from .parser import normalize_stat_result, parse_response
+
 __all__ = [
     # Version
     "__version__",
@@ -109,6 +115,10 @@ __all__ = [
     "get_client",
     "set_client",
     "reset_client",
+    # 범용 조회 API (#100)
+    "get_series",
+    "parse_response",
+    "normalize_stat_result",
     # Exceptions
     "EcosError",
     "EcosAPIError",
