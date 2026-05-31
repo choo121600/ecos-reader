@@ -150,39 +150,10 @@ class EcosClient:
             self._resolved_cache_api_key = cached
         return cached
 
-    def _assemble_url(
-        self,
-        api_key: str,
-        service: EcosService,
-        start: int,
-        end: int,
-        *path_params: str,
-    ) -> str:
-        """주어진 ``api_key`` 로 ECOS 요청 URL을 조립합니다.
-
-        URL 형식: {BASE_URL}/{service}/{api_key}/{format}/{lang}/{start}/{end}/{params...}/
-
-        로깅용으로는 ``api_key="***"`` 를 넘겨 키가 **처음부터 포함되지 않은**
-        URL을 만든다(#125). 사후 마스킹(``mask_api_key``)과 달리 평문 키가 로그
-        경로의 데이터 흐름에 전혀 등장하지 않아, 정적 분석(CodeQL)의 clear-text
-        logging 오탐을 원천 차단한다.
-        """
-        parts = [
-            self.BASE_URL.rstrip("/"),
-            service,
-            api_key,
-            Settings.DEFAULT_FORMAT,
-            Settings.DEFAULT_LANG,
-            str(start),
-            str(end),
-        ]
-
-        # 추가 파라미터 (통계코드, 주기, 날짜 등)
-        for param in path_params:
-            if param:  # 빈 문자열은 제외
-                parts.append(quote(str(param), safe=""))
-
-        return "/".join(parts)
+    @staticmethod
+    def _url_path_params(path_params: tuple[str, ...]) -> list[str]:
+        """경로 파라미터(통계코드/주기/날짜 등) 중 빈 값을 제외해 인코딩한다."""
+        return [quote(str(p), safe="") for p in path_params if p]
 
     def _build_url(
         self,
@@ -191,8 +162,21 @@ class EcosClient:
         end: int,
         *path_params: str,
     ) -> str:
-        """실제 요청용 URL(인증키 포함)을 구성합니다."""
-        return self._assemble_url(self._get_api_key(), service, start, end, *path_params)
+        """실제 요청용 URL(인증키 포함)을 구성합니다.
+
+        URL 형식: {BASE_URL}/{service}/{api_key}/{format}/{lang}/{start}/{end}/{params...}/
+        """
+        parts = [
+            self.BASE_URL.rstrip("/"),
+            service,
+            self._get_api_key(),
+            Settings.DEFAULT_FORMAT,
+            Settings.DEFAULT_LANG,
+            str(start),
+            str(end),
+            *self._url_path_params(path_params),
+        ]
+        return "/".join(parts)
 
     def _build_log_url(
         self,
@@ -201,8 +185,25 @@ class EcosClient:
         end: int,
         *path_params: str,
     ) -> str:
-        """로깅/에러 메시지용 URL을 구성합니다(인증키 자리는 ``***``). (#125)"""
-        return self._assemble_url("***", service, start, end, *path_params)
+        """로깅/에러 메시지용 URL을 구성합니다(인증키 자리는 ``***``). (#125)
+
+        실제 요청 URL과 **코드 경로를 공유하지 않고** 키 자리에 ``"***"`` 리터럴을
+        직접 넣어 조립한다. 평문 키가 로그 문자열의 데이터 흐름에 전혀 연결되지
+        않으므로, 정적 분석(CodeQL)의 clear-text logging 오탐을 원천 차단한다.
+        (``_build_url`` 과 공유 헬퍼를 쓰면 CodeQL이 두 호출 경로를 구분하지 못해
+        로그 URL까지 오탐하므로, 의도적으로 분리한다.)
+        """
+        parts = [
+            self.BASE_URL.rstrip("/"),
+            service,
+            "***",  # 인증키 자리 — 실제 키와 데이터 흐름 분리
+            Settings.DEFAULT_FORMAT,
+            Settings.DEFAULT_LANG,
+            str(start),
+            str(end),
+            *self._url_path_params(path_params),
+        ]
+        return "/".join(parts)
 
     @log_api_request
     def _make_request(self, url: str, log_url: str) -> dict[str, Any]:
