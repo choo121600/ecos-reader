@@ -882,3 +882,18 @@ class TestE2ERegressionV016:
         assert "value" in df.columns
         # 분류축이므로 세부 항목이 2개 이상 존재해야 함
         assert df["category_value"].nunique() >= 2
+
+
+class TestE2EForexIndicators:
+    """환율 지표 E2E 테스트 (#106)"""
+
+    @pytest.mark.parametrize("currency", ["USD", "JPY", "EUR", "CNY"])
+    def test_get_exchange_rate(self, currency):
+        """원/외화 환율 조회 — 731Y001 일별 매매기준율."""
+        df = ecos.get_exchange_rate(currency, start_date="20240101", end_date="20240131")
+
+        assert not df.empty, f"{currency} returned empty"
+        assert df.columns.tolist() == ["date", "value", "unit"]
+        assert df["unit"].iloc[0] == "원"
+        # 환율은 양수
+        assert (df["value"] > 0).all()

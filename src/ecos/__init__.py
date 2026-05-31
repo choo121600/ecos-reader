@@ -65,6 +65,8 @@ from .indicators import (
     get_cpi,
     get_cpi_by_category,
     get_cpi_monthly,
+    # 환율 지표
+    get_exchange_rate,
     # 재정 지표
     get_fiscal_balance,
     # 성장 지표
@@ -146,6 +148,8 @@ __all__ = [
     "EcosValidationError",
     # 재정 지표
     "get_fiscal_balance",
+    # 환율 지표
+    "get_exchange_rate",
     # 주식시장 지표
     "get_stock_index",
     "get_investor_trading",
