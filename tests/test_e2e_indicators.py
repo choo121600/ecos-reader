@@ -772,7 +772,7 @@ class TestE2ERegressionV016:
     # ---- GDP 연간 fallback (#28) ----
 
     def test_gdp_growth_rate_annual_fallback(self):
-        """frequency='A'는 계절조정(분기 전용) 대신 원계열 200Y106으로 fallback해야 함."""
+        """frequency='annual'은 계절조정(분기 전용) 대신 원계열 200Y106으로 fallback해야 함."""
         df = ecos.get_gdp_growth_rate(frequency="annual", start_date="2020", end_date="2023")
 
         assert not df.empty

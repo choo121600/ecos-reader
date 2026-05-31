@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 
 def get_gdp(
-    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
+    frequency: Literal["quarterly", "annual"] = "quarterly",
     basis: Literal["real", "nominal"] = "real",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -48,9 +48,6 @@ def get_gdp(
         조회 주기
         - 'quarterly': 분기 (기본값)
         - 'annual': 연간
-
-        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
-        deprecated이며 v0.4.0에서 제거됩니다.
     basis : str
         GDP 기준
         - 'real': 실질 GDP (기본값)
@@ -114,7 +111,7 @@ def get_gdp(
 
 
 def get_gdp_deflator(
-    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
+    frequency: Literal["quarterly", "annual"] = "quarterly",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -130,9 +127,6 @@ def get_gdp_deflator(
         조회 주기
         - 'quarterly': 분기 (기본값)
         - 'annual': 연간
-
-        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
-        deprecated이며 v0.4.0에서 제거됩니다.
     start_date : str, optional
         조회 시작일
     end_date : str, optional
@@ -188,7 +182,7 @@ def get_gdp_deflator(
 
 
 def get_gdp_growth_rate(
-    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
+    frequency: Literal["quarterly", "annual"] = "quarterly",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -203,9 +197,6 @@ def get_gdp_growth_rate(
         조회 주기
         - 'quarterly': 분기 (기본값)
         - 'annual': 연간
-
-        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
-        deprecated이며 v0.4.0에서 제거됩니다.
     start_date : str, optional
         조회 시작일
         - 분기: YYYYQN 형식 (예: 2020Q1)
@@ -271,7 +262,7 @@ def get_gdp_growth_rate(
 def get_gdp_by_industry(
     basis: Literal["real", "nominal"] = "real",
     seasonal_adj: bool = True,
-    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
+    frequency: Literal["quarterly", "annual"] = "quarterly",
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
@@ -295,9 +286,6 @@ def get_gdp_by_industry(
         조회 주기
         - 'quarterly': 분기 (기본값)
         - 'annual': 연간
-
-        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
-        deprecated이며 v0.4.0에서 제거됩니다.
     sub_category : str, optional
         세부 산업(항목명 또는 item_code1). 지정 시 해당 산업 단일 시계열만
         반환합니다. 미지정 시 전체 산업을 long-format으로 반환합니다.
@@ -395,7 +383,7 @@ def get_gdp_by_industry(
 
 def get_gdp_by_expenditure(
     basis: Literal["real", "nominal"] = "real",
-    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
+    frequency: Literal["quarterly", "annual"] = "quarterly",
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
@@ -417,9 +405,6 @@ def get_gdp_by_expenditure(
         조회 주기
         - 'quarterly': 분기 (기본값)
         - 'annual': 연간
-
-        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
-        deprecated이며 v0.4.0에서 제거됩니다.
     sub_category : str, optional
         세부 지출항목(항목명 또는 item_code1). 지정 시 해당 항목 단일 시계열만
         반환합니다. 미지정 시 전체 지출항목을 long-format으로 반환합니다.
@@ -512,7 +497,7 @@ def get_gdp_by_expenditure(
 
 
 def get_gdp_deflator_by_industry(
-    frequency: Literal["quarterly", "annual", "Q", "A"] = "quarterly",
+    frequency: Literal["quarterly", "annual"] = "quarterly",
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
@@ -530,9 +515,6 @@ def get_gdp_deflator_by_industry(
         조회 주기
         - 'quarterly': 분기 (기본값)
         - 'annual': 연간
-
-        레거시 'Q'/'A'도 당분간 허용되나 EcosDeprecationWarning과 함께
-        deprecated이며 v0.4.0에서 제거됩니다.
     sub_category : str, optional
         세부 산업(항목명 또는 item_code1). 지정 시 해당 산업 단일 시계열만
         반환합니다. 미지정 시 전체 산업을 long-format으로 반환합니다.

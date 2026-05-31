@@ -57,7 +57,7 @@ class TestGetBaseRate:
 
     @responses.activate
     def test_get_base_rate_daily_frequency(self):
-        """일별(frequency='D') 조회 — 722Y001 은 일별 원천."""
+        """일별(frequency='daily') 조회 — 722Y001 은 일별 원천."""
         mock_response = {
             "StatisticSearch": {
                 "row": [

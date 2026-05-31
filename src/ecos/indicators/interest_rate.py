@@ -32,7 +32,7 @@ from ._registry import get_indicator
 def get_base_rate(
     start_date: str | None = None,
     end_date: str | None = None,
-    frequency: Literal["daily", "monthly", "D", "M"] = "monthly",
+    frequency: Literal["daily", "monthly"] = "monthly",
 ) -> pd.DataFrame:
     """
     한국은행 기준금리를 조회합니다.
@@ -49,10 +49,6 @@ def get_base_rate(
         - 'monthly': 월별 (기본값, 날짜 YYYYMM)
         - 'daily': 일별 (날짜 YYYYMMDD). 기준금리는 변경일에만 갱신되어
           결과가 sparse 합니다 (변경이 없는 날은 행이 없음).
-
-        레거시 단일 문자(``'M'``/``'D'``)도 당분간 허용되나
-        :class:`~ecos.EcosDeprecationWarning` 과 함께 deprecated이며
-        v0.4.0에서 제거됩니다.
 
     Returns
     -------
@@ -74,7 +70,7 @@ def get_base_rate(
 
     >>> # 일별 (변경일 단위) 조회
     >>> df = ecos.get_base_rate(
-    ...     start_date="20200101", end_date="20231231", frequency="D"
+    ...     start_date="20200101", end_date="20231231", frequency="daily"
     ... )
     """
     frequency = normalize_frequency(  # type: ignore[assignment]
