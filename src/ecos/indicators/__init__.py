@@ -59,6 +59,9 @@ from .prices import (
     get_ppi,
 )
 
+# 실물경기 지표 (#109)
+from .real_economy import get_facility_investment, get_industrial_production
+
 # 심리 지표 (#108)
 from .sentiment import get_business_sentiment, get_consumer_sentiment
 from .stock import get_investor_trading, get_stock_index

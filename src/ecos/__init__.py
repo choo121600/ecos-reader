@@ -72,6 +72,8 @@ from .indicators import (
     get_cpi_monthly,
     # 환율 지표
     get_exchange_rate,
+    # 실물경기 지표
+    get_facility_investment,
     # 재정 지표
     get_fiscal_balance,
     # 성장 지표
@@ -85,6 +87,7 @@ from .indicators import (
     get_household_lending_detail,
     # 선언적 레지스트리 (#16)
     get_indicator,
+    get_industrial_production,
     get_investor_trading,
     get_m1_variants,
     get_m2_by_holder,
@@ -160,6 +163,9 @@ __all__ = [
     # 심리 지표
     "get_business_sentiment",
     "get_consumer_sentiment",
+    # 실물경기 지표
+    "get_industrial_production",
+    "get_facility_investment",
     # 주식시장 지표
     "get_stock_index",
     "get_investor_trading",

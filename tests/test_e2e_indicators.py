@@ -940,3 +940,26 @@ class TestE2ESentimentIndicators:
         assert not df.empty
         assert "value" in df.columns
         assert (df["value"] > 0).all()
+
+
+class TestE2ERealEconomyIndicators:
+    """실물경기 지표(산업생산/설비투자) E2E 테스트 (#109)"""
+
+    @pytest.mark.parametrize("seasonal", [False, True])
+    def test_get_industrial_production(self, seasonal):
+        """전산업생산지수 — 901Y033, 원계열/계절조정 단일 시계열."""
+        df = ecos.get_industrial_production(
+            start_date="202301", end_date="202312", seasonal=seasonal
+        )
+        assert not df.empty
+        assert df.columns.tolist() == ["date", "value", "unit"]
+        # 2-축 헤드라인 고정 → 한 달에 한 행
+        assert len(df) == df["date"].nunique()
+
+    @pytest.mark.parametrize("seasonal", [False, True])
+    def test_get_facility_investment(self, seasonal):
+        """설비투자지수 — 901Y066, 원지수/계절조정지수."""
+        df = ecos.get_facility_investment(start_date="202301", end_date="202312", seasonal=seasonal)
+        assert not df.empty
+        assert "value" in df.columns
+        assert len(df) == df["date"].nunique()

@@ -146,14 +146,18 @@ BOP_ACCOUNT_ITEMS: dict[str, str] = {
 # 실물 지표 (real_economy)
 # ============================================================================
 
-# 산업생산지수
+# 산업생산지수 (901Y033 = 전산업생산지수). item_code1=A00(농림어업 제외),
+# item_code2 로 계열 선택(원계열/계절조정) — 2-축 구조. 라이브 검증.
 STAT_INDUSTRIAL_PRODUCTION = "901Y033"
 ITEM_INDUSTRIAL_PRODUCTION = "A00"
+ITEM_INDUSTRIAL_ORIGINAL = "1"  # 원계열
+ITEM_INDUSTRIAL_SEASONAL = "2"  # 계절조정
 
 # 설비투자지수 (901Y066 = 8.1.3. 설비투자지수, 월).
 # 이전 901Y049 는 ECOS 에 존재하지 않아 빈 응답을 반환했음 (#72/#67).
 STAT_FACILITY_INVESTMENT = "901Y066"
-ITEM_FACILITY_INVESTMENT = "I15A"  # 원지수 (계절조정은 I15B)
+ITEM_FACILITY_INVESTMENT = "I15A"  # 원지수
+ITEM_FACILITY_INVESTMENT_SA = "I15B"  # 계절조정지수
 
 # 소매판매지수
 STAT_RETAIL_SALES = "901Y037"
