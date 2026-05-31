@@ -131,7 +131,15 @@ EXCHANGE_RATE_ITEMS: dict[str, str] = {
 # 이전 301Y017 은 "경상수지(계절조정)" 표라 자본/금융계정이 없고 item CA/KA 도 부재했음 (#74/#67).
 STAT_BOP = "301Y013"
 ITEM_CURRENT_ACCOUNT = "000000"  # 경상수지
-ITEM_CAPITAL_ACCOUNT = "BOPC00000000"  # 자본수지 (금융계정은 BOPF00000000)
+ITEM_CAPITAL_ACCOUNT = "BOPC00000000"  # 자본수지
+ITEM_FINANCIAL_ACCOUNT = "BOPF00000000"  # 금융계정
+
+# account 선택자 → 항목코드 (301Y013, A/M/Q 주기 지원, 단위 백만달러). 라이브 검증.
+BOP_ACCOUNT_ITEMS: dict[str, str] = {
+    "current": ITEM_CURRENT_ACCOUNT,  # 경상수지
+    "capital": ITEM_CAPITAL_ACCOUNT,  # 자본수지
+    "financial": ITEM_FINANCIAL_ACCOUNT,  # 금융계정
+}
 
 
 # ============================================================================

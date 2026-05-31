@@ -897,3 +897,25 @@ class TestE2EForexIndicators:
         assert df["unit"].iloc[0] == "원"
         # 환율은 양수
         assert (df["value"] > 0).all()
+
+
+class TestE2EBalanceOfPaymentsIndicators:
+    """국제수지(BoP) 지표 E2E 테스트 (#107)"""
+
+    @pytest.mark.parametrize("account", ["current", "capital", "financial"])
+    def test_get_balance_of_payments_monthly(self, account):
+        """월별 국제수지 계정 조회 — 301Y013."""
+        df = ecos.get_balance_of_payments(
+            account, start_date="202301", end_date="202312", frequency="monthly"
+        )
+        assert not df.empty, f"{account} returned empty"
+        assert df.columns.tolist() == ["date", "value", "unit"]
+        assert df["unit"].iloc[0] == "백만달러"
+
+    def test_get_balance_of_payments_annual(self):
+        """연별 경상수지 조회."""
+        df = ecos.get_balance_of_payments(
+            "current", start_date="2018", end_date="2023", frequency="annual"
+        )
+        assert not df.empty
+        assert len(df) >= 5

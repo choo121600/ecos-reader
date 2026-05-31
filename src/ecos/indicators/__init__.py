@@ -11,6 +11,9 @@ from ._registry import INDICATORS, IndicatorSpec, get_indicator, list_indicators
 
 # 재정·금융시장 지표
 from .bond import get_bond_yield
+
+# 국제수지 지표 (#107)
+from .bop import get_balance_of_payments
 from .fiscal import get_fiscal_balance
 
 # 환율 지표 (#106)
