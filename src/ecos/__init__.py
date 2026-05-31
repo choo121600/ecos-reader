@@ -30,6 +30,9 @@ from .access import get_series
 # Cache API
 from .cache import clear_cache, disable_cache, enable_cache
 
+# 카탈로그 탐색 API (#103)
+from .catalog import get_table_tree, list_tables, load_catalog, search_tables
+
 # Client
 from .client import EcosClient, get_client, reset_client, set_client
 from .config import clear_api_key, get_api_key, load_env, set_api_key
@@ -119,6 +122,11 @@ __all__ = [
     "get_series",
     "parse_response",
     "normalize_stat_result",
+    # 카탈로그 탐색 API (#103)
+    "search_tables",
+    "list_tables",
+    "get_table_tree",
+    "load_catalog",
     # Exceptions
     "EcosError",
     "EcosAPIError",

@@ -59,6 +59,11 @@ Issues = "https://github.com/choo121600/ecos-reader/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ecos"]
+# 카탈로그 스냅샷(#103)을 휠에 포함 (.gz 데이터 파일을 명시적으로 동봉)
+artifacts = ["src/ecos/data/*.csv.gz"]
+
+[tool.hatch.build.targets.sdist]
+artifacts = ["src/ecos/data/*.csv.gz"]
 
 [tool.ruff]
 target-version = "py310"
