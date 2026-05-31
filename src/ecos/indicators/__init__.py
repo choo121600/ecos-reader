@@ -13,6 +13,9 @@ from ._registry import INDICATORS, IndicatorSpec, get_indicator, list_indicators
 from .bond import get_bond_yield
 from .fiscal import get_fiscal_balance
 
+# 환율 지표 (#106)
+from .forex import get_exchange_rate
+
 # 성장 지표
 from .growth import (
     get_gdp,
