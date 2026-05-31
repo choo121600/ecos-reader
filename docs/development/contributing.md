@@ -262,6 +262,35 @@ ecos-reader/
 └── README.md
 ```
 
+## 카탈로그 스냅샷 갱신
+
+패키지에는 ECOS 전체 통계표 목록이 정적 스냅샷 `src/ecos/data/catalog.csv.gz`
+으로 동봉됩니다(오프라인 탐색 API `search_tables`/`list_tables`/`get_table_tree`
+의 데이터 소스). ECOS에 통계표가 추가/변경되면 이 스냅샷을 재생성합니다.
+
+### 수동 재생성
+
+```bash
+export ECOS_API_KEY=...   # 한국은행 발급 인증키
+
+# StatisticTableList를 받아 src/ecos/data/catalog.csv.gz 재생성
+uv run python scripts/audit_codes.py snapshot
+
+# 변경 확인 후 커밋
+git diff --stat src/ecos/data/catalog.csv.gz
+```
+
+스냅샷은 **결정적**으로 생성됩니다(줄바꿈 `\n`, gzip `mtime=0`, BOM 없는 UTF-8).
+동일한 ECOS 응답이면 바이트가 동일한 파일이 나오므로, 변경 diff는 실제 카탈로그
+변동만 반영합니다. ECOS rate limit(3분간 300회)을 넘지 않도록 표 목록 호출만
+수행합니다.
+
+### 자동 재생성 (CI)
+
+`.github/workflows/refresh-catalog.yml` 가 분기 1회(및 수동 `workflow_dispatch`)
+스냅샷을 재생성하고, 변경이 있으면 자동으로 PR을 엽니다. 직접 푸시하지 않고 PR
+리뷰를 거치므로, 카탈로그 변동 내역이 기록으로 남습니다.
+
 ## 이슈 리포팅
 
 버그를 발견하거나 기능 제안이 있으면 [GitHub Issues](https://github.com/choo121600/ecos-reader/issues)에 등록해주세요.

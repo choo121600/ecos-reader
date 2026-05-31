@@ -1,0 +1,63 @@
+name: Refresh Catalog Snapshot
+
+# 동봉 카탈로그 스냅샷(src/ecos/data/catalog.csv.gz)을 ECOS StatisticTableList
+# 최신 상태로 재생성한다(#105). 수동 트리거 + 분기 1회 스케줄. 변경이 있으면
+# 자동으로 PR을 연다(직접 푸시하지 않음 — 리뷰 경유).
+#
+# ECOS rate limit(3분간 300회)을 넘지 않도록 단일 표 목록 호출만 수행한다.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # 매 분기 첫날 19:00 UTC (= 익일 04:00 KST)
+    - cron: "0 19 1 1,4,7,10 *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: refresh-catalog
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Regenerate catalog snapshot
+    runs-on: ubuntu-latest
+    # fork에는 secret이 없으므로 upstream에서만 실행
+    if: github.repository == 'choo121600/ecos-reader'
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Sync dev dependencies
+        run: uv sync --extra dev --python 3.12
+
+      - name: Regenerate catalog snapshot
+        env:
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+        run: uv run python scripts/audit_codes.py snapshot
+
+      - name: Create Pull Request if snapshot changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore: ECOS 카탈로그 스냅샷 갱신 (#105)"
+          title: "chore: ECOS 카탈로그 스냅샷 갱신"
+          body: |
+            ECOS `StatisticTableList` 최신 상태로 자동 재생성된 카탈로그 스냅샷입니다.
+
+            - 생성: `scripts/audit_codes.py snapshot`
+            - 파일: `src/ecos/data/catalog.csv.gz`
+
+            🤖 Refresh Catalog Snapshot 워크플로 자동 생성
+          branch: chore/refresh-catalog-snapshot
+          delete-branch: true
+          add-paths: src/ecos/data/catalog.csv.gz
+          labels: chore
