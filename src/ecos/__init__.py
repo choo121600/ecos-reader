@@ -62,6 +62,9 @@ from .indicators import (
     # 채권시장 지표
     get_bond_yield,
     get_borrower_loan,
+    # 심리 지표
+    get_business_sentiment,
+    get_consumer_sentiment,
     get_core_cpi,
     # 물가 지표
     get_cpi,
@@ -154,6 +157,9 @@ __all__ = [
     "get_exchange_rate",
     # 국제수지 지표
     "get_balance_of_payments",
+    # 심리 지표
+    "get_business_sentiment",
+    "get_consumer_sentiment",
     # 주식시장 지표
     "get_stock_index",
     "get_investor_trading",

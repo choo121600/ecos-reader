@@ -58,6 +58,9 @@ from .prices import (
     get_cpi_monthly,
     get_ppi,
 )
+
+# 심리 지표 (#108)
+from .sentiment import get_business_sentiment, get_consumer_sentiment
 from .stock import get_investor_trading, get_stock_index
 
 # ``__all__`` 자동 생성 (#16): 이 모듈로 import 된 모든 공개 ``get_*`` 조회 함수와

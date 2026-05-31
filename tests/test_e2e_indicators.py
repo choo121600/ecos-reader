@@ -919,3 +919,24 @@ class TestE2EBalanceOfPaymentsIndicators:
         )
         assert not df.empty
         assert len(df) >= 5
+
+
+class TestE2ESentimentIndicators:
+    """심리 지표(BSI/CSI) E2E 테스트 (#108)"""
+
+    @pytest.mark.parametrize("sector", ["manufacturing", "non_manufacturing", "all"])
+    def test_get_business_sentiment(self, sector):
+        """업황전망BSI 조회 — 512Y014, 업종별 단일 시계열."""
+        df = ecos.get_business_sentiment(sector, start_date="202301", end_date="202312")
+        assert not df.empty, f"{sector} returned empty"
+        assert "date" in df.columns
+        assert "value" in df.columns
+        # 월별 단일 시계열(2-축이 헤드라인으로 고정되어 한 달에 한 행)
+        assert len(df) == df["date"].nunique()
+
+    def test_get_consumer_sentiment(self):
+        """소비자심리지수(CSI) 조회 — 511Y002."""
+        df = ecos.get_consumer_sentiment(start_date="202301", end_date="202312")
+        assert not df.empty
+        assert "value" in df.columns
+        assert (df["value"] > 0).all()
