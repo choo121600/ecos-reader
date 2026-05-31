@@ -52,6 +52,8 @@ from .exceptions import (
 from .indicators import (
     INDICATORS,
     IndicatorSpec,
+    # 국제수지 지표
+    get_balance_of_payments,
     get_bank_deposit_rate,
     get_bank_lending,
     get_bank_lending_rate,
@@ -150,6 +152,8 @@ __all__ = [
     "get_fiscal_balance",
     # 환율 지표
     "get_exchange_rate",
+    # 국제수지 지표
+    "get_balance_of_payments",
     # 주식시장 지표
     "get_stock_index",
     "get_investor_trading",
