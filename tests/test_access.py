@@ -249,10 +249,89 @@ class TestGetSeriesRawAndErrors:
         assert client.calls == []
 
 
+# ---------------------------------------------------------------------------
+# list_items — 항목 탐색 (#104)
+# ---------------------------------------------------------------------------
+
+
+class _ItemStubClient:
+    """get_statistic_item_list 호출 인자를 기록하고 고정 응답을 반환하는 스텁."""
+
+    def __init__(self, response: dict) -> None:
+        self.response = response
+        self.calls: list[dict] = []
+
+    def get_statistic_item_list(self, **kwargs):
+        self.calls.append(kwargs)
+        return self.response
+
+
+def _make_item_list_response(rows: list[dict]) -> dict:
+    return {"StatisticItemList": {"row": rows}}
+
+
+class TestListItems:
+    def test_normalized_columns_and_empty_dropped(self):
+        # p_item_code/p_item_name/weight가 전부 빈 응답 → 해당 컬럼 제외
+        rows = [
+            {
+                "STAT_CODE": "722Y001",
+                "STAT_NAME": "기준금리",
+                "GRP_CODE": "Group1",
+                "GRP_NAME": "계정항목",
+                "ITEM_CODE": "0101000",
+                "ITEM_NAME": "한국은행 기준금리",
+                "P_ITEM_CODE": "",
+                "P_ITEM_NAME": "",
+                "CYCLE": "M",
+                "START_TIME": "199905",
+                "END_TIME": "202604",
+                "DATA_CNT": "324",
+                "UNIT_NAME": "연%",
+                "WEIGHT": "",
+            }
+        ]
+        client = _ItemStubClient(_make_item_list_response(rows))
+        df = ecos.list_items("722Y001", client=client)
+
+        # stat_code/stat_name은 입력 중복이라 제외
+        assert "stat_code" not in df.columns
+        assert "stat_name" not in df.columns
+        # 핵심 항목 컬럼 포함
+        for col in ("item_code", "item_name", "cycle", "start_time", "end_time", "unit"):
+            assert col in df.columns
+        # 전부 빈 컬럼 제거
+        assert "p_item_code" not in df.columns
+        assert "weight" not in df.columns
+        # 컬럼 순서가 선호 순서를 따름
+        assert df.columns.tolist()[0:3] == ["item_code", "item_name", "cycle"]
+        assert df.iloc[0]["item_code"] == "0101000"
+
+    def test_multiple_cycles_preserved(self):
+        # 같은 항목이 주기(A/D/M)별로 별도 행
+        rows = [
+            {"ITEM_CODE": "0101000", "ITEM_NAME": "기준금리", "CYCLE": c, "UNIT_NAME": "연%"}
+            for c in ("A", "D", "M")
+        ]
+        client = _ItemStubClient(_make_item_list_response(rows))
+        df = ecos.list_items("722Y001", client=client)
+        assert len(df) == 3
+        assert set(df["cycle"]) == {"A", "D", "M"}
+
+    def test_passes_stat_code_to_client(self):
+        client = _ItemStubClient(_make_item_list_response([{"ITEM_CODE": "0", "CYCLE": "M"}]))
+        ecos.list_items("901Y009", client=client)
+        assert client.calls[0]["stat_code"] == "901Y009"
+
+    def test_empty_result_returns_empty_df(self):
+        client = _ItemStubClient(make_empty_response())
+        df = ecos.list_items("722Y001", client=client)
+        assert df.empty
+
+
 def test_public_exports():
-    # 공개 export 확인 (#100)
-    assert hasattr(ecos, "get_series")
-    assert hasattr(ecos, "parse_response")
-    assert hasattr(ecos, "normalize_stat_result")
-    for name in ("get_series", "parse_response", "normalize_stat_result"):
+    # 공개 export 확인 (#100, #104)
+    names = ("get_series", "list_items", "parse_response", "normalize_stat_result")
+    for name in names:
+        assert hasattr(ecos, name)
         assert name in ecos.__all__
