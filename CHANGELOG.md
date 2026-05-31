@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-06-01
+
+> v0.5.0 이후 추가된 도메인 큐레이션과 정적 분석 보강을 묶은 패치 릴리스.
+> 비파괴적(추가/수정만)입니다.
+
+### Added
+- **무역** `get_trade(flow, frequency)` — 수출입 금액(`901Y118`). export/import, 월/연. (#127)
+- **경기종합지수** `get_composite_index(index)` — 선행/동행/후행 종합지수(`901Y067`), 월. (#127)
+- **소매판매** `get_retail_sales(index, frequency)` — 소매판매액지수 총지수(`901Y100`).
+  경상/불변/계절조정 계열, 월/분기/연.
+
+### Fixed
+- `STAT_RETAIL_SALES` 상수가 실제로는 "건축허가현황"(`901Y037`)을 가리키던 오라벨을
+  올바른 소매판매액지수(`901Y100`)로 정정.
+- CodeQL `py/clear-text-logging-sensitive-data` 오탐 근본 차단 — 로깅용 URL을 실제
+  요청 URL과 코드 경로까지 분리해 평문 인증키가 로그 데이터 흐름에 등장하지 않도록 함.
+  마스킹 동작/로그 포맷(`/***/`)은 동일. (#125)
+
 ## [0.5.0] - 2026-05-31
 
 > Epic #98(Full ECOS Coverage)의 기능 릴리스. 범용 조회 `get_series` 로 ECOS
@@ -360,6 +378,7 @@ v0.1.6 라이브 e2e 검증에서 드러난 follow-up(#2 Reliability epic)을 �
   - 기본 사용법 (`examples/basic_usage.py`)
   - 거시경제 대시보드 (`examples/macro_dashboard.py`)
 
+[0.5.1]: https://github.com/choo121600/ecos-reader/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/choo121600/ecos-reader/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/choo121600/ecos-reader/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/choo121600/ecos-reader/compare/v0.2.2...v0.3.0
