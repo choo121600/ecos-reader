@@ -36,6 +36,9 @@ catalog
 from __future__ import annotations
 
 import argparse
+import csv
+import gzip
+import io
 import os
 import sys
 from dataclasses import dataclass, field
@@ -523,6 +526,80 @@ def run_catalog(client: EcosClient, *, out: Path | None, with_items: bool) -> in
 
 
 # ============================================================================
+# 패키지 스냅샷 (src/ecos/data/catalog.csv.gz) — #103 카탈로그를 동봉/갱신
+# ============================================================================
+
+# 동봉 스냅샷 기본 경로(catalog.py 로더가 읽는 파일).
+DEFAULT_SNAPSHOT = (
+    Path(__file__).resolve().parent.parent / "src" / "ecos" / "data" / "catalog.csv.gz"
+)
+# 스냅샷 CSV 컬럼(원시 순서). ecos.catalog 로더는 컬럼 순서에 무관하게 읽는다.
+SNAPSHOT_COLUMNS = ["p_stat_code", "stat_code", "stat_name", "cycle", "srch_yn", "org_name"]
+# 스냅샷 컬럼 ← StatisticTableList 원시 키 매핑.
+_SNAPSHOT_RAW_KEYS = {
+    "p_stat_code": "P_STAT_CODE",
+    "stat_code": "STAT_CODE",
+    "stat_name": "STAT_NAME",
+    "cycle": "CYCLE",
+    "srch_yn": "SRCH_YN",
+    "org_name": "ORG_NAME",
+}
+
+
+def _fetch_table_list(client: EcosClient) -> list[dict]:
+    """StatisticTableList 전체 행을 list_total_count 기준으로 순회 수집한다."""
+    rows: list[dict] = []
+    total: int | None = None
+    page = 1
+    page_size = 100000
+    while True:
+        payload = client.get_statistic_table_list("", start=page, end=page + page_size - 1)
+        block = payload.get("StatisticTableList", {}) if isinstance(payload, dict) else {}
+        chunk = block.get("row") or []
+        if not chunk:
+            break
+        rows.extend(chunk)
+        if block.get("list_total_count") is not None:
+            total = int(block["list_total_count"])
+        if total is not None and len(rows) >= total:
+            break
+        if len(chunk) < page_size:
+            break
+        page += page_size
+    return rows
+
+
+def write_catalog_snapshot(rows: list[dict], out: Path) -> int:
+    """통계표 행 목록을 결정적 gzip CSV 스냅샷으로 기록한다.
+
+    재현성을 위해 줄바꿈은 ``\\n``, gzip ``mtime=0``, BOM 없는 UTF-8로 고정한다.
+    같은 ECOS 응답이면 바이트 동일한 파일이 생성된다.
+    """
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=SNAPSHOT_COLUMNS, lineterminator="\n")
+    writer.writeheader()
+    for r in rows:
+        writer.writerow({col: (r.get(raw) or "") for col, raw in _SNAPSHOT_RAW_KEYS.items()})
+    data = buf.getvalue().encode("utf-8")
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with gzip.GzipFile(str(out), "wb", mtime=0) as f:
+        f.write(data)
+    return len(rows)
+
+
+def run_snapshot(client: EcosClient, *, out: Path) -> int:
+    rows = _fetch_table_list(client)
+    if not rows:
+        print("통계표 목록이 비어있습니다 — 스냅샷을 갱신하지 않습니다.", file=sys.stderr)
+        return 1
+    n = write_catalog_snapshot(rows, out)
+    searchable = sum(1 for r in rows if r.get("SRCH_YN") == "Y")
+    print(f"카탈로그 스냅샷 {n}개 노드(검색가능 {searchable}) → {out}")
+    return 0
+
+
+# ============================================================================
 # CLI
 # ============================================================================
 
@@ -543,9 +620,18 @@ def main(argv: list[str] | None = None) -> int:
     pa.add_argument("--search", action="store_true", help="최근 윈도우 데이터 유무까지 확인")
     pa.add_argument("--only", default=None, help="그룹명으로 필터 (예: forex)")
 
-    pc = sub.add_parser("catalog", help="ECOS 전체 통계표 덤프")
+    pc = sub.add_parser("catalog", help="ECOS 전체 통계표 덤프 (markdown 문서)")
     pc.add_argument("-o", "--out", type=Path, default=None, help="출력 markdown 경로")
     pc.add_argument("--items", action="store_true", help="통계표별 항목까지 크롤 (대량)")
+
+    ps = sub.add_parser("snapshot", help="동봉 카탈로그 스냅샷(csv.gz) 재생성")
+    ps.add_argument(
+        "-o",
+        "--out",
+        type=Path,
+        default=DEFAULT_SNAPSHOT,
+        help=f"출력 경로 (기본: {DEFAULT_SNAPSHOT})",
+    )
 
     args = ap.parse_args(argv)
     client = _client()
@@ -554,6 +640,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_audit(client, do_search=args.search, only=args.only)
     if args.mode == "catalog":
         return run_catalog(client, out=args.out, with_items=args.items)
+    if args.mode == "snapshot":
+        return run_snapshot(client, out=args.out)
     return 2
 
 
