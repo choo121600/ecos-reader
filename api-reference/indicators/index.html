@@ -1610,10 +1610,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ecos.get_bond_yield" class="md-nav__link">
+  <a href="#ecos.get_bond_market" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_bond_yield
+        get_bond_market
       
     </span>
   </a>
@@ -2871,10 +2871,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ecos.get_bond_yield" class="md-nav__link">
+  <a href="#ecos.get_bond_market" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_bond_yield
+        get_bond_market
       
     </span>
   </a>
@@ -6693,20 +6693,24 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 <div class="doc doc-object doc-function">
 
 
-<h3 id="ecos.get_bond_yield" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">get_bond_yield</span>
+<h3 id="ecos.get_bond_market" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_bond_market</span>
 
 
-<a href="#ecos.get_bond_yield" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_bond_yield</span><span class="p">(</span><span class="n">bond_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;종류별&#39;</span><span class="p">,</span> <span class="s1">&#39;시장별&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;종류별&#39;</span><span class="p">,</span> <span class="n">measure</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="s1">&#39;거래량&#39;</span><span class="p">,</span> <span class="s1">&#39;상장잔액&#39;</span><span class="p">,</span> <span class="s1">&#39;상장종목수&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<a href="#ecos.get_bond_market" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;종류별&#39;</span><span class="p">,</span> <span class="s1">&#39;시장별&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;종류별&#39;</span><span class="p">,</span> <span class="n">measure</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="s1">&#39;거래량&#39;</span><span class="p">,</span> <span class="s1">&#39;상장잔액&#39;</span><span class="p">,</span> <span class="s1">&#39;상장종목수&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
 
-        <p>채권 거래를 종류별 또는 시장별로 조회합니다.</p>
-<p>국채/회사채 등 채권 종류별, 또는 국채전문/일반채권 등 시장별 거래를 제공합니다.
-partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</code> 미지정 시 전체
-분류를 long-format으로, 지정 시 해당 분류 단일 시계열만 반환합니다.</p>
+        <p>채권시장 거래통계를 종류별 또는 시장별로 조회합니다.</p>
+<p>국채/회사채 등 채권 종류별, 또는 국채전문/일반채권 등 시장별 거래대금·거래량·
+상장잔액·상장종목수를 제공합니다. partial-coverage 재설계 규약(#56)을 따릅니다 —
+<code>sub_category</code> 미지정 시 전체 분류를 long-format으로, 지정 시 해당 분류 단일
+시계열만 반환합니다.</p>
+<p>.. note::
+   이 함수는 <strong>채권 수익률(%)이 아니라 채권시장 거래통계</strong>를 반환합니다.
+   채권/국고채 수익률(연%)은 :func:<code>get_treasury_yield</code> 를 사용하세요.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -6875,15 +6879,15 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 종류별 거래대금 전체 (long-format)</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_yield</span><span class="p">()</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">()</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">        date category_value  value unit</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 국채만</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_yield</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;국채&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;국채&quot;</span><span class="p">)</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 시장별 거래량</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_yield</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">&quot;시장별&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;거래량&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">&quot;시장별&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;거래량&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
