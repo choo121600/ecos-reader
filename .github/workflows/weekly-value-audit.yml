@@ -1,0 +1,44 @@
+name: Weekly Value Audit
+
+# 큐레이션 함수 반환 '값'을 원시 get_series 와 소수점까지 대조하는 값-정확성 전수 감사.
+# 야간 e2e(ci.yml/nightly-e2e.yml)가 단위·범위·구조를 보는 것에 더해, 여기서는 래퍼
+# 계층의 매핑·변환 오류를 값 단위로 잡는다. 호출량(~194)이 커서 주 1회로 분리 실행한다.
+# (ECOS rate limit: 3분간 300회 / 초과 시 30분 차단)
+
+on:
+  schedule:
+    # 매주 월요일 18:30 UTC (= 화 03:30 KST). nightly-e2e(18:00)와 시간 분리.
+    - cron: "30 18 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  value-audit:
+    name: Value accuracy (curated vs raw get_series)
+    runs-on: ubuntu-latest
+    if: github.repository == 'choo121600/ecos-reader'
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Sync dev dependencies
+        run: uv sync --extra dev --python 3.12
+
+      # 각 엔드포인트 반환 값 == 동일 코드 원시 get_series (불일치 시 비0 종료).
+      - name: Run value-accuracy audit
+        env:
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+        run: uv run python scripts/audit_values_vs_raw.py --ci

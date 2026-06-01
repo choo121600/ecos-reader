@@ -537,9 +537,30 @@ def report():
     print("FAIL/ERROR:", bad or "없음")
 
 
+def ci():
+    """전 그룹 실행 후 값 불일치/에러가 있으면 비0 종료 (CI 게이트용)."""
+    import sys
+
+    res = run()
+    bad = {k: v for k, v in res.items() if not v.get("match")}
+    if bad:
+        print(f"\n값-정확성 실패 {len(bad)}건:")
+        for k, v in bad.items():
+            print(f"  {k}: {v}")
+        sys.exit(1)
+    print(f"\n값-정확성 전수 통과: {len(res)}/{len(res)}")
+    sys.exit(0)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--group")
     ap.add_argument("--report", action="store_true")
+    ap.add_argument("--ci", action="store_true", help="전 그룹 실행 후 불일치 시 비0 종료")
     a = ap.parse_args()
-    report() if a.report else run(a.group)
+    if a.ci:
+        ci()
+    elif a.report:
+        report()
+    else:
+        run(a.group)
