@@ -837,6 +837,21 @@ class TestE2ERegressionV016:
             assert not df.empty, label
             assert df["unit"].iloc[0] == "십억원", label
 
+    def test_m2_by_holder_breaks_down_by_holder(self):
+        """(#141) get_m2_by_holder는 경제주체별로 분해돼야 하며 M2 총계만 반환하면 안 된다.
+
+        과거엔 holder 선택 인자가 없고 총계 항목만 가리켜 get_m2_variants와 동일값이었다.
+        """
+        # sub_category 미지정 → 여러 경제주체가 long-format으로 나와야 함
+        full = ecos.get_m2_by_holder()
+        assert "category_value" in full.columns
+        holders = set(full["category_value"])
+        assert len(holders) >= 5  # 가계/비금융기업/보험기관/연금기금 등 다수
+        # sub_category 지정 → 단일 시계열, 총계와 다른 값
+        gagye = ecos.get_m2_by_holder(sub_category="가계 및 비영리단체 1)")
+        assert list(gagye.columns) == ["date", "value", "unit"]
+        assert gagye["unit"].iloc[0] == "십억원"
+
     @pytest.mark.parametrize("basis", ["real", "nominal"])
     def test_gdp_by_expenditure_annual_fallback(self, basis):
         """frequency='annual'은 원계열(real→200Y110 / nominal→200Y109)로 fallback해야 함."""

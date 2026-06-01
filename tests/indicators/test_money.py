@@ -423,60 +423,77 @@ class TestGetM2Variants:
             get_m2_variants(variant="없는변형")  # type: ignore[arg-type]
 
 
+def _m2_holder_mock() -> dict:
+    """M2 보유주체별(161Y0xx) 응답 모킹 — 단일 축 item_code1 에 총계+주체별이 함께.
+
+    실제 ECOS 구조: BBxA00 총계 / BBxAJn 경제주체별. (#141 재설계 검증용)
+    """
+    rows = []
+    for time in ["202401", "202402"]:
+        rows += [
+            {
+                "ITEM_CODE1": "BBGA00",
+                "ITEM_NAME1": "M2(말잔, 원계열)",
+                "TIME": time,
+                "DATA_VALUE": "3900000",
+                "UNIT_NAME": "십억원",
+            },
+            {
+                "ITEM_CODE1": "BBGAJ1",
+                "ITEM_NAME1": "가계 및 비영리단체 1)",
+                "TIME": time,
+                "DATA_VALUE": "2200000",
+                "UNIT_NAME": "십억원",
+            },
+            {
+                "ITEM_CODE1": "BBGAJ2",
+                "ITEM_NAME1": "비금융기업 2)",
+                "TIME": time,
+                "DATA_VALUE": "1100000",
+                "UNIT_NAME": "십억원",
+            },
+        ]
+    return {"StatisticSearch": {"row": rows}}
+
+
 @pytest.mark.usefixtures("set_api_key")
 class TestGetM2ByHolder:
-    """get_m2_by_holder 함수 테스트"""
+    """get_m2_by_holder 함수 테스트 (#141 — 경제주체별 분해 long-format)"""
 
     @responses.activate
-    def test_default_variant_returns_dataframe(self):
-        """기본 variant(말잔_원계열)로 데이터 조회"""
-        responses.add(
-            responses.GET,
-            url=re.compile(r".*"),
-            json=_simple_monthly_mock("3900000", "202401"),
-            status=200,
-        )
-        df = get_m2_by_holder(variant="말잔_원계열", start_date="202401", end_date="202401")
+    def test_default_returns_long_format_holders(self):
+        """sub_category 미지정 시 전체 경제주체를 long-format으로 반환 (#141)."""
+        responses.add(responses.GET, url=re.compile(r".*"), json=_m2_holder_mock(), status=200)
+        df = get_m2_by_holder(variant="말잔_원계열", start_date="202401", end_date="202402")
         assert not df.empty
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        # 총계와 주체별 항목이 함께 포함된다.
+        assert {"M2(말잔, 원계열)", "가계 및 비영리단체 1)", "비금융기업 2)"} <= set(
+            df["category_value"]
+        )
+
+    @responses.activate
+    def test_sub_category_returns_single_series(self):
+        """sub_category 지정 시 해당 주체 단일 시계열만 반환."""
+        responses.add(responses.GET, url=re.compile(r".*"), json=_m2_holder_mock(), status=200)
+        df = get_m2_by_holder(sub_category="비금융기업 2)", start_date="202401", end_date="202402")
         assert list(df.columns) == ["date", "value", "unit"]
-        assert df["value"].iloc[0] == 3900000.0
+        assert df["value"].iloc[0] == 1100000.0
 
     @responses.activate
-    def test_variant_말잔_계절조정(self):
-        """말잔_계절조정 variant 조회"""
-        responses.add(
-            responses.GET,
-            url=re.compile(r".*"),
-            json=_simple_monthly_mock("3850000", "202401"),
-            status=200,
-        )
-        df = get_m2_by_holder(variant="말잔_계절조정", start_date="202401", end_date="202401")
-        assert not df.empty
+    def test_sub_category_by_item_code(self):
+        """sub_category 를 item_code1 로도 지정할 수 있다."""
+        responses.add(responses.GET, url=re.compile(r".*"), json=_m2_holder_mock(), status=200)
+        df = get_m2_by_holder(sub_category="BBGAJ1", start_date="202401", end_date="202402")
         assert list(df.columns) == ["date", "value", "unit"]
+        assert df["value"].iloc[0] == 2200000.0
 
     @responses.activate
-    def test_variant_평잔_계절조정(self):
-        """평잔_계절조정 variant 조회"""
-        responses.add(
-            responses.GET,
-            url=re.compile(r".*"),
-            json=_simple_monthly_mock("3820000", "202401"),
-            status=200,
-        )
-        df = get_m2_by_holder(variant="평잔_계절조정", start_date="202401", end_date="202401")
-        assert not df.empty
-
-    @responses.activate
-    def test_variant_평잔_원계열(self):
-        """평잔_원계열 variant 조회"""
-        responses.add(
-            responses.GET,
-            url=re.compile(r".*"),
-            json=_simple_monthly_mock("3810000", "202401"),
-            status=200,
-        )
-        df = get_m2_by_holder(variant="평잔_원계열", start_date="202401", end_date="202401")
-        assert not df.empty
+    def test_invalid_sub_category_raises(self):
+        """존재하지 않는 sub_category 는 사용 가능 목록과 함께 ValueError."""
+        responses.add(responses.GET, url=re.compile(r".*"), json=_m2_holder_mock(), status=200)
+        with pytest.raises(ValueError, match="존재하지 않습니다"):
+            get_m2_by_holder(sub_category="없는주체", start_date="202401", end_date="202402")
 
     def test_invalid_variant_raises(self):
         """잘못된 variant 지정 시 ValueError"""
