@@ -4622,7 +4622,7 @@ item_code1(예: 'A01101')을 사용하세요.</p>
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: GDP (조원)
+- value: GDP (십억원)
 - unit: 단위</p>
               </div>
             </td>
@@ -5612,7 +5612,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: 통화량 (조원)
+- value: 통화량 (십억원)
 - unit: 단위</p>
               </div>
             </td>
@@ -5744,7 +5744,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: M1 (조원)
+- value: M1 (십억원)
 - unit: 단위</p>
               </div>
             </td>
@@ -5875,7 +5875,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: M2 (조원)
+- value: M2 (십억원)
 - unit: 단위</p>
               </div>
             </td>
@@ -6008,7 +6008,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: M2 보유액 (조원)
+- value: M2 보유액 (십억원)
 - unit: 단위</p>
               </div>
             </td>
@@ -6134,7 +6134,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: 대출금 (조원 또는 십억원)
+- value: 대출금 (십억원)
 - unit: 단위</p>
               </div>
             </td>
@@ -6263,7 +6263,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: 가계신용 (조원)
+- value: 가계신용 (십억원)
 - unit: 단위</p>
               </div>
             </td>
@@ -6950,7 +6950,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: 통합재정수지 (조원)
+- value: 통합재정수지 (십억원)
 - unit: 단위</p>
               </div>
             </td>
@@ -6974,9 +6974,9 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_fiscal_balance</span><span class="p">()</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">        date  value unit</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">0 2023-01-01   -5.2  조원</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">1 2023-02-01   -3.8  조원</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">        date    value  unit</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">0 2023-01-01  -5200.0  십억원</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">1 2023-02-01  -3800.0  십억원</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_fiscal_balance</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202301&quot;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s2">&quot;202312&quot;</span><span class="p">)</span>
 </span></code></pre></div>
