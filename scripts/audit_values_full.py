@@ -433,6 +433,8 @@ def build():
     for ix, fr in itertools.product(
         ("nominal", "real", "seasonal"), ("monthly", "quarterly", "annual")
     ):
+        if ix == "seasonal" and fr == "annual":
+            continue  # ECOS 미제공(계절조정 연간) — 함수가 ValueError
         p = PMAP[fr]
         t2 = c.RETAIL_SALES_INDEX_ITEMS[ix]
         add_long(
@@ -444,6 +446,8 @@ def build():
             lambda t2=t2, p=p: _multiset(_raw(c.STAT_RETAIL_SALES, p, None, fix2=t2)),
         )
     for sa, fr in itertools.product((False, True), ("monthly", "quarterly", "annual")):
+        if sa and fr == "annual":
+            continue  # ECOS 미제공(계절조정 연간) — 함수가 ValueError
         p = PMAP[fr]
         ic2 = c.ITEM_INDUSTRIAL_SEASONAL if sa else c.ITEM_INDUSTRIAL_ORIGINAL
         add_single(

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `get_industrial_production`/`get_facility_investment`(`seasonal=True`)·`get_retail_sales`
+  (`index='seasonal'`)에 `frequency='annual'` 조합은 ECOS가 계절조정 연간을 제공하지 않아
+  빈 응답을 silent 반환했는데, 이제 명확한 `ValueError` 로 안내한다(전수 감사 #151 후속).
+
 ### Tests
 - `scripts/audit_values_full.py` — 완전 전수 값-정확성(199 조합×전기간) 199/199 일치 (#151).
 - `scripts/audit_values_vs_raw.py` 추가 — 각 엔드포인트의 반환 **값**을 같은 코드의
