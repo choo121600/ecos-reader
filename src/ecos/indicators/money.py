@@ -15,7 +15,6 @@ from ..constants import (
     BORROWER_LOAN_STAT_CODES,
     M1_ITEMS,
     M1_VARIANTS,
-    M2_HOLDER_ITEMS,
     M2_HOLDER_VARIANTS,
     M2_ITEMS,
     M2_VARIANTS,
@@ -320,13 +319,17 @@ def get_m2_by_holder(
     variant: Literal[
         "평잔_계절조정", "평잔_원계열", "말잔_계절조정", "말잔_원계열"
     ] = "말잔_원계열",
+    sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
     M2 경제주체별 보유 현황을 조회합니다.
 
-    기업, 가계, 기타 경제주체별 M2 보유액을 제공합니다.
+    가계 및 비영리단체, 비금융기업, 보험기관, 연금기금 등 경제주체별 M2
+    보유액을 제공합니다. partial-coverage 재설계 규약(#56)을 따릅니다 —
+    ``sub_category`` 미지정 시 전체 경제주체를 long-format으로, 지정 시 해당
+    주체 단일 시계열만 반환합니다.
 
     Parameters
     ----------
@@ -336,6 +339,10 @@ def get_m2_by_holder(
         - '평잔_원계열': 평잔 원계열
         - '말잔_계절조정': 말잔 계절조정 계열
         - '말잔_원계열': 말잔 원계열 (기본값)
+    sub_category : str, optional
+        경제주체(항목명 또는 item_code1). 지정 시 해당 주체 단일 시계열만,
+        미지정 시 전체 주체를 long-format으로 반환합니다.
+        예) '가계 및 비영리단체', '비금융기업', 또는 item_code 'BBGAJ1'.
     start_date : str, optional
         조회 시작일 (YYYYMM 형식), 기본값: 3년 전
     end_date : str, optional
@@ -344,10 +351,12 @@ def get_m2_by_holder(
     Returns
     -------
     pd.DataFrame
-        컬럼: date, value, unit
-        - date: 날짜 (datetime)
-        - value: M2 보유액 (십억원)
-        - unit: 단위
+        - ``sub_category`` 미지정: 컬럼 ``date, category_value, value, unit``
+          (각 경제주체가 행으로 포함된 long-format, ``category_value``=주체명).
+          이 통계표에는 총계(M2 전체)와 주체별 항목이 함께 포함되므로 주체 간
+          단순 합산은 금지합니다.
+        - ``sub_category`` 지정: 컬럼 ``date, value, unit`` (단일 시계열).
+        - value 단위: 십억원
 
     Notes
     -----
@@ -357,9 +366,8 @@ def get_m2_by_holder(
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_m2_by_holder()
-    >>> df.head()
-
+    >>> df = ecos.get_m2_by_holder()  # 전체 주체 long-format
+    >>> df = ecos.get_m2_by_holder(sub_category="가계 및 비영리단체")  # 단일 주체
     >>> df = ecos.get_m2_by_holder(variant="평잔_계절조정")
     """
     if variant not in M2_HOLDER_VARIANTS:
@@ -372,19 +380,19 @@ def get_m2_by_holder(
         end_date = end_date or default_end
 
     stat_code = M2_HOLDER_VARIANTS[variant]
-    item_code = M2_HOLDER_ITEMS[variant]
 
+    # 보유주체별 통계표는 분류축이 item_code1 하나뿐(총계 BBxA00 + 주체별 BBxAJn).
+    # item_code1 필터 없이 전량을 조회해 select_subcategory로 분류한다(#58 규약).
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
         period=PERIOD_MONTHLY,
         start_date=start_date,
         end_date=end_date,
-        item_code1=item_code,
     )
 
     df = parse_response(response)
-    return normalize_stat_result(df)
+    return select_subcategory(df, prefix="", sub_category=sub_category, context="get_m2_by_holder")
 
 
 def get_household_credit(

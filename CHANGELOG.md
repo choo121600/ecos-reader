@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `get_m2_by_holder()` 가 실제로 경제주체별 분해를 제공하도록 재설계 (#141). 과거엔 holder
+  선택 인자가 없고 M2 총계 항목만 가리켜 `get_m2_variants()` 와 동일값을 반환했다. 이제
+  partial-coverage 규약(#56)에 따라 `sub_category` 미지정 시 전체 경제주체(가계·비금융기업·
+  보험기관·연금기금 등)를 long-format(`date, category_value, value, unit`)으로, 지정 시 해당
+  주체 단일 시계열을 반환한다. **기본 호출의 반환 형태가 단일 시계열 → long-format으로 변경됨.**
+
 ### Fixed
 - `get_cpi()` / `get_core_cpi()` / `get_ppi()` 의 docstring·registry 메타데이터가 실제 반환값과
   불일치하던 문제 정정. 이 함수들은 전년동월비(%)가 아니라 **지수(2020=100)** 를 반환하며,
