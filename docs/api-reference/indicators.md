@@ -108,7 +108,7 @@
 
 ## 채권 지표
 
-::: ecos.get_bond_yield
+::: ecos.get_bond_market
     options:
       heading_level: 3
 

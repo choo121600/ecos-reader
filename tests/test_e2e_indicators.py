@@ -300,7 +300,7 @@ class TestE2EBondIndicators:
 
     def test_get_bond_yield_type(self):
         """채권 거래 (종류별) — 채권종류 long-format (#63)."""
-        df = ecos.get_bond_yield(bond_type="종류별", start_date="202301", end_date="202312")
+        df = ecos.get_bond_market(bond_type="종류별", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
@@ -309,13 +309,13 @@ class TestE2EBondIndicators:
 
     def test_get_bond_yield_type_sub_category(self):
         """sub_category로 단일 채권종류 시계열 (#63)."""
-        df = ecos.get_bond_yield(sub_category="국채", start_date="202301", end_date="202312")
+        df = ecos.get_bond_market(sub_category="국채", start_date="202301", end_date="202312")
         assert not df.empty
         assert list(df.columns) == ["date", "value", "unit"]
 
     def test_get_bond_yield_market(self):
         """채권 거래 (시장별) — 시장 long-format, 축이 종류별과 반대 (#63)."""
-        df = ecos.get_bond_yield(bond_type="시장별", start_date="202301", end_date="202312")
+        df = ecos.get_bond_market(bond_type="시장별", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
@@ -695,7 +695,7 @@ class TestE2EIntegrationWorkflow:
         assert not stock.empty
 
         # 채권
-        bond = ecos.get_bond_yield(bond_type="종류별", start_date="202301", end_date="202312")
+        bond = ecos.get_bond_market(bond_type="종류별", start_date="202301", end_date="202312")
         assert not bond.empty
 
         # 모든 데이터가 정상적으로 조회됨
@@ -762,7 +762,7 @@ class TestE2EIntegrationNewIndicators:
         assert not stock.empty
 
         # 채권
-        bond = ecos.get_bond_yield(bond_type="종류별", start_date="202301", end_date="202312")
+        bond = ecos.get_bond_market(bond_type="종류별", start_date="202301", end_date="202312")
         assert not bond.empty
 
         # 모든 데이터가 정상적으로 조회됨
@@ -904,7 +904,7 @@ class TestE2ERegressionV016:
         long-format은 분류별 다행이지만, measure 차원은 고정되므로
         (month, category_value) 조합은 유일해야 한다(혼합 measure 중복 금지).
         """
-        df = ecos.get_bond_yield(bond_type=bond_type, start_date="202301", end_date="202312")
+        df = ecos.get_bond_market(bond_type=bond_type, start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "category_value" in df.columns
@@ -918,7 +918,7 @@ class TestE2ERegressionV016:
     def test_bond_yield_sub_category_one_row_per_month(self, bond_type):
         """단일 sub_category 선택 시에는 월별 1행이어야 한다 (#63)."""
         sub = "국채" if bond_type == "종류별" else "0202"
-        df = ecos.get_bond_yield(
+        df = ecos.get_bond_market(
             bond_type=bond_type, sub_category=sub, start_date="202301", end_date="202312"
         )
         assert not df.empty
