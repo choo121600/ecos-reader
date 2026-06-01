@@ -203,11 +203,18 @@ ITEM_BSI_ALL = "99988"  # 전산업
 # 헤드라인 설문항목(item_code2): 업황전망BSI. 라이브 검증(섹터별 단일 시계열).
 ITEM_BSI_OUTLOOK = "BA"  # 업황전망BSI
 
-# sector 선택자 → item_code1 (512Y014). 라이브 검증.
+# sector 선택자 → item_code1 (512Y014). 라이브 검증(전 부문 업황전망 BA 존재 확인, #154).
 BSI_SECTOR_ITEMS: dict[str, str] = {
-    "manufacturing": ITEM_BSI_MANUFACTURING,  # 제조업
-    "non_manufacturing": ITEM_BSI_NON_MANUFACTURING,  # 비제조업
-    "all": ITEM_BSI_ALL,  # 전산업
+    "all": ITEM_BSI_ALL,  # 전산업 99988
+    "manufacturing": ITEM_BSI_MANUFACTURING,  # 제조업 C0000
+    "heavy_chemical": "X3000",  # 중화학공업
+    "light": "X4000",  # 경공업
+    "large": "X5000",  # 대기업
+    "sme": "X6000",  # 중소기업
+    "export": "X8000",  # 수출기업
+    "domestic": "X9000",  # 내수기업
+    "non_manufacturing": ITEM_BSI_NON_MANUFACTURING,  # 비제조업 Y9900
+    "service": "Y9950",  # 서비스업
 }
 
 # 소비자심리지수 (CSI)
