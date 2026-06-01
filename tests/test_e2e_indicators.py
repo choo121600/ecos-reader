@@ -95,6 +95,21 @@ class TestE2EPriceIndicators:
         assert "value" in df.columns
         assert len(df) > 0
 
+    def test_core_cpi_differs_from_headline(self):
+        """(#133) 근원 CPI는 헤드라인 CPI와 달라야 하며, 식료품·에너지제외 계열과 일치해야 한다.
+
+        과거 item "00"(총지수) 오매핑으로 get_core_cpi가 get_cpi와 동일 값을 반환했다.
+        """
+        headline = ecos.get_cpi(start_date="202602", end_date="202602")
+        core = ecos.get_core_cpi(start_date="202602", end_date="202602")
+        by_category = ecos.get_cpi_by_category("식품_에너지제외", "202602", "202602")
+
+        assert not core.empty
+        # 근원은 헤드라인과 다른 계열이어야 한다 (silent 데이터 오염 방지).
+        assert core["value"].iloc[0] != headline["value"].iloc[0]
+        # 근원은 식료품·에너지제외 특수분류(901Y010/DB)와 동일해야 한다.
+        assert core["value"].iloc[0] == by_category["value"].iloc[0]
+
     def test_get_ppi(self):
         """생산자물가지수 조회"""
         df = ecos.get_ppi(start_date="202301", end_date="202312")
@@ -486,16 +501,20 @@ class TestE2EGrowthDetailIndicators:
         assert "value" in df.columns
         assert "unit" in df.columns
         assert len(df) > 0
+        # (#134) 성장률은 %여야 하고 금액 레벨(십억원)이 아니어야 한다.
+        assert df["unit"].iloc[0] == "%"
+        assert df["value"].abs().max() < 20  # 성장률은 합리적 범위; 8925.7 같은 레벨이면 실패
 
-    @pytest.mark.skip(reason="stat_code 200Y104는 분기 데이터만 제공 (연간 미지원)")
     def test_get_gdp_growth_rate_annual(self):
-        """실질 GDP 성장률 (연간) - 미지원"""
+        """실질 GDP 성장률 (연간)"""
         df = ecos.get_gdp_growth_rate(frequency="annual", start_date="2020", end_date="2023")
 
         assert not df.empty
         assert "date" in df.columns
         assert "value" in df.columns
         assert len(df) > 0
+        assert df["unit"].iloc[0] == "%"
+        assert df["value"].abs().max() < 20
 
     def test_get_gdp_by_industry_real_seasonal(self):
         """산업별 GDP (실질, 계절조정)"""
@@ -769,16 +788,24 @@ class TestE2ERegressionV016:
     지원되지 않는 조합 차단 등)를 명시적으로 검증한다.
     """
 
-    # ---- GDP 연간 fallback (#28) ----
+    # ---- GDP 성장률 매핑 (#134) ----
 
-    def test_gdp_growth_rate_annual_fallback(self):
-        """frequency='annual'은 계절조정(분기 전용) 대신 원계열 200Y106으로 fallback해야 함."""
-        df = ecos.get_gdp_growth_rate(frequency="annual", start_date="2020", end_date="2023")
+    def test_gdp_growth_rate_returns_percent_not_level(self):
+        """(#134) get_gdp_growth_rate는 성장률(%)을 반환해야 하며 GDP 금액 레벨(십억원)이 아니어야 함.
 
-        assert not df.empty
-        assert "date" in df.columns
-        assert "value" in df.columns
-        assert len(df) > 0
+        과거 200Y104/200Y106 + item "1101"(농림어업) 오매핑으로 십억원 단위 금액을 반환했다.
+        현재는 902Y015(국제 경제성장률, OECD)의 한국(KOR) 계열을 사용한다.
+        """
+        for frequency, start, end in [
+            ("quarterly", "2020Q1", "2023Q4"),
+            ("annual", "2020", "2023"),
+        ]:
+            df = ecos.get_gdp_growth_rate(frequency=frequency, start_date=start, end_date=end)
+
+            assert not df.empty, frequency
+            assert "value" in df.columns
+            assert df["unit"].iloc[0] == "%", frequency
+            assert df["value"].abs().max() < 20, frequency
 
     @pytest.mark.parametrize("basis", ["real", "nominal"])
     def test_gdp_by_expenditure_annual_fallback(self, basis):

@@ -20,7 +20,6 @@ from ..constants import (
     STAT_GDP_DEFLATOR,
     STAT_GDP_DEFLATOR_BY_INDUSTRY,
     STAT_GDP_GROWTH_RATE,
-    STAT_GDP_GROWTH_RATE_ANNUAL,
     STAT_GDP_NOMINAL,
     STAT_GDP_REAL,
 )
@@ -187,9 +186,10 @@ def get_gdp_growth_rate(
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
-    실질 GDP 성장률을 조회합니다.
+    실질 GDP 성장률(%)을 조회합니다.
 
-    전기비 또는 전년동기비 실질 GDP 성장률을 제공합니다.
+    ECOS 통계표 902Y015(국제 주요국 경제성장률, OECD 출처)의 한국 계열을 사용합니다.
+    분기는 전기대비(QoQ, 계절조정), 연간은 전년대비(YoY) 성장률입니다.
 
     Parameters
     ----------
@@ -214,8 +214,9 @@ def get_gdp_growth_rate(
 
     Notes
     -----
-    - 전기비: 직전 분기/년 대비 성장률
-    - 전년동기비: 전년 같은 분기/년 대비 성장률
+    - 분기(quarterly): 전기대비(QoQ) 계절조정 성장률
+    - 연간(annual): 전년대비(YoY) 성장률
+    - 출처가 OECD이므로 한국은행 국민계정 속보치와 소수점 단위 차이가 있을 수 있습니다.
 
     GDP 성장률은 경제 성장의 속도를 나타내는 가장 핵심적인 지표입니다.
 
@@ -243,12 +244,10 @@ def get_gdp_growth_rate(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    # 계절조정 시리즈(200Y104)는 분기만 — 연간 조회 시 원계열(200Y106)로 fallback.
-    stat_code = STAT_GDP_GROWTH_RATE if frequency == "quarterly" else STAT_GDP_GROWTH_RATE_ANNUAL
-
+    # 902Y015(국제 경제성장률, OECD)는 분기(QoQ)·연간(YoY)을 동일 통계표에서 제공한다.
     client = get_client()
     response = client.get_statistic_search(
-        stat_code=stat_code,
+        stat_code=STAT_GDP_GROWTH_RATE,
         period=period,
         start_date=start_date,
         end_date=end_date,
