@@ -153,3 +153,4 @@ Thumbs.db
 
 # 라이브 엔드포인트 감사 실행 산출물 (scripts/audit_endpoints_live.py)
 scripts/audit_results.json
+scripts/audit_values.json
