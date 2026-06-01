@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/audit_values_vs_raw.py` 추가 — 각 엔드포인트의 반환 **값**을 같은 코드의
   원시 `get_series` 조회(또는 파생 함수는 독립 재계산)와 **소수점까지 정확 대조**하는
   값-정확성 전수 감사 (#151 심화). 범위 검증이 못 잡는 래퍼 매핑·변환 오류를 값 단위로
-  확정. 라이브 전수 결과: 67/67 일치(0 불일치).
+  확정. 라이브 전수 결과: **97/97 일치(0 불일치)** — 단일계열·2축고정·파생·long-format/다축(retail/bond_market/m2_by_holder/gdp_by_*/investor_trading/borrower_loan 등) 전부 포함.
 
 ## [0.6.0] - 2026-06-01
 

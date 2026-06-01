@@ -232,6 +232,58 @@ def single_checks():
             _raw(c.STAT_STOCK_MONTHLY, "M", c.ITEM_STOCK_INDEX_MONTHLY, "202301", "202312")
         ),
     )
+    # --- 누락 단일계열 변종 (100% 커버리지, #151) ---
+    add(
+        "gdp[q,nominal]",
+        "growth",
+        lambda: _ser(ecos.get_gdp("quarterly", "nominal", "2022Q1", "2023Q4")),
+        lambda: _ser(_raw(c.STAT_GDP_NOMINAL, "Q", c.ITEM_GDP, "2022Q1", "2023Q4")),
+    )
+    add(
+        "gdp[a,real]",
+        "growth",
+        lambda: _ser(ecos.get_gdp("annual", "real", "2020", "2023")),
+        lambda: _ser(_raw(c.STAT_GDP_REAL, "A", c.ITEM_GDP, "2020", "2023")),
+    )
+    add(
+        "gdp_growth_rate[a]",
+        "growth",
+        lambda: _ser(ecos.get_gdp_growth_rate("annual", "2020", "2023")),
+        lambda: _ser(_raw(c.STAT_GDP_GROWTH_RATE, "A", c.ITEM_GDP_GROWTH_RATE, "2020", "2023")),
+    )
+    # 금리 함수는 특정 item 단일계열 (interest_rate.py 기준)
+    for b, st, it in (
+        ("신규취급액", c.STAT_DEPOSIT_RATE_NEW, "BEABAA2"),
+        ("잔액", c.STAT_DEPOSIT_RATE_BALANCE, "BEABAB2"),
+    ):
+        add(
+            f"bank_deposit_rate[{b}]",
+            "rates",
+            lambda b=b: _ser(ecos.get_bank_deposit_rate(b, "202301", "202312")),
+            lambda st=st, it=it: _ser(_raw(st, "M", it, "202301", "202312")),
+        )
+    for b, st, it in (
+        ("신규취급액", c.STAT_LENDING_RATE_NEW, "BECBLA01"),
+        ("잔액", c.STAT_LENDING_RATE_BALANCE, "BECBLB01"),
+    ):
+        add(
+            f"bank_lending_rate[{b}]",
+            "rates",
+            lambda b=b: _ser(ecos.get_bank_lending_rate(b, "202301", "202312")),
+            lambda st=st, it=it: _ser(_raw(st, "M", it, "202301", "202312")),
+        )
+    add(
+        "household_credit[업권별]",
+        "money",
+        lambda: _ser(ecos.get_household_credit("업권별", "2022Q1", "2023Q4")),
+        lambda: _ser(_raw(c.STAT_HOUSEHOLD_CREDIT_SECTOR, "Q", "1110000", "2022Q1", "2023Q4")),
+    )
+    add(
+        "household_credit[용도별]",
+        "money",
+        lambda: _ser(ecos.get_household_credit("용도별", "2022Q1", "2023Q4")),
+        lambda: _ser(_raw(c.STAT_HOUSEHOLD_CREDIT_PURPOSE, "Q", "1000000", "2022Q1", "2023Q4")),
+    )
     return chk
 
 
@@ -286,7 +338,159 @@ def derived_checks():
     return chk
 
 
-ALL = single_checks() + derived_checks()
+def _vmultiset(dates, values):
+    """{(date, rank): value} — 날짜별 값 multiset(정렬). 동명 item_code1 충돌을 피하고
+    값 집합의 정확 일치를 검증한다."""
+    import collections
+
+    by_date = collections.defaultdict(list)
+    for t, v in zip(dates, values, strict=False):
+        by_date[str(t.date())].append(round(float(v), R))
+    out = {}
+    for d, vs in by_date.items():
+        for i, v in enumerate(sorted(vs)):
+            out[(d, i)] = v
+    return out
+
+
+def _long(df):
+    """long-format 함수 출력 -> 날짜별 값 multiset."""
+    return _vmultiset(df["date"], df["value"])
+
+
+def _raw_long(stat, period, s, e, *, fix1=None, fix2=None, prefix="", exclude1=None):
+    """get_series 전량 조회 → 함수 내부와 동일한 고정축/prefix 필터 후 날짜별 값 multiset."""
+    df = ecos.get_series(stat, period, start_date=s, end_date=e)
+    if fix2 is not None and "item_code2" in df.columns:
+        df = df[df["item_code2"] == fix2]
+    if fix1 is not None and "item_code1" in df.columns:
+        df = df[df["item_code1"] == fix1]
+    if exclude1 is not None and "item_code1" in df.columns:
+        df = df[df["item_code1"] != exclude1]
+    if prefix and "item_code1" in df.columns:
+        df = df[df["item_code1"].astype(str).str.startswith(prefix)]
+    return _vmultiset(df["date"], df["value"])
+
+
+# long-format / 다축 함수 — 함수 출력 vs 원시(고정축 적용) 행단위 정확 대조.
+def long_checks():
+    chk = []
+
+    def add(label, group, cur, raw):
+        chk.append((label, group, cur, raw))
+
+    # retail: item_code2=index 고정, 분류=item_name1
+    for ix, t2 in c.RETAIL_SALES_INDEX_ITEMS.items():
+        add(
+            f"retail[{ix}]",
+            "real",
+            lambda ix=ix: _long(ecos.get_retail_sales(ix, start_date="202301", end_date="202312")),
+            lambda t2=t2: _raw_long(c.STAT_RETAIL_SALES, "M", "202301", "202312", fix2=t2),
+        )
+    # bond 종류별: item_code2=measure 고정, 분류=item_name1
+    for meas, mc in c.BOND_YIELD_TYPE_MEASURE_CODE.items():
+        add(
+            f"bond_market[종류별,{meas}]",
+            "markets",
+            lambda meas=meas: _long(
+                ecos.get_bond_market("종류별", meas, start_date="202301", end_date="202312")
+            ),
+            lambda mc=mc: _raw_long(c.STAT_BOND_YIELD_TYPE, "M", "202301", "202312", fix2=mc),
+        )
+    # bond 시장별: item_code1=measure 고정, 분류=item_name2
+    for meas, mc in c.BOND_MARKET_MEASURE_CODE.items():
+        add(
+            f"bond_market[시장별,{meas}]",
+            "markets",
+            lambda meas=meas: _long(
+                ecos.get_bond_market("시장별", meas, start_date="202301", end_date="202312")
+            ),
+            lambda mc=mc: _raw_long(c.STAT_BOND_MARKET, "M", "202301", "202312", fix1=mc),
+        )
+    # m2_by_holder: 고정축 없음, 분류=item_name1
+    add(
+        "m2_by_holder",
+        "money",
+        lambda: _long(ecos.get_m2_by_holder(start_date="202301", end_date="202312")),
+        lambda: _raw_long(c.M2_HOLDER_VARIANTS["말잔_원계열"], "M", "202301", "202312"),
+    )
+    # gdp_by_industry / expenditure / deflator_by_industry / cpi_monthly / lending_detail
+    add(
+        "gdp_by_industry[real]",
+        "growth",
+        lambda: _long(ecos.get_gdp_by_industry("real", start_date="2023Q1", end_date="2023Q4")),
+        lambda: _raw_long(c.GDP_BY_INDUSTRY_VARIANTS["계절조정_실질"], "Q", "2023Q1", "2023Q4"),
+    )
+    add(
+        "gdp_by_expenditure[real]",
+        "growth",
+        lambda: _long(ecos.get_gdp_by_expenditure("real", start_date="2023Q1", end_date="2023Q4")),
+        lambda: _raw_long(c.GDP_BY_EXPENDITURE_VARIANTS["계절조정_실질"], "Q", "2023Q1", "2023Q4"),
+    )
+    add(
+        "gdp_deflator_by_industry",
+        "growth",
+        lambda: _long(ecos.get_gdp_deflator_by_industry(start_date="2023Q1", end_date="2023Q4")),
+        lambda: _raw_long(c.STAT_GDP_DEFLATOR_BY_INDUSTRY, "Q", "2023Q1", "2023Q4"),
+    )
+    add(
+        "cpi_monthly",
+        "prices",
+        lambda: _long(ecos.get_cpi_monthly(start_date="202401", end_date="202403")),
+        lambda: _raw_long(c.STAT_CPI_MONTHLY, "M", "202401", "202403"),
+    )
+    add(
+        "household_lending_detail",
+        "money",
+        lambda: _long(ecos.get_household_lending_detail(start_date="202401", end_date="202403")),
+        lambda: _raw_long(c.STAT_HOUSEHOLD_LENDING_PURPOSE, "M", "202401", "202403"),
+    )
+    # investor_trading: item_code2=metric 고정, prefix=action, 합계행(prefix 정확) 제외
+    for act, pre in c.INVESTOR_TRADING_ACTION_PREFIX.items():
+        add(
+            f"investor_trading[{act}]",
+            "markets",
+            lambda act=act: _long(
+                ecos.get_investor_trading(act, "거래대금", start_date="202401", end_date="202403")
+            ),
+            lambda pre=pre: _raw_long(
+                c.STAT_INVESTOR_TRADING,
+                "M",
+                "202401",
+                "202403",
+                fix2=c.INVESTOR_TRADING_METRIC_CODE["거래대금"],
+                prefix=pre,
+                exclude1=pre,
+            ),
+        )
+    # borrower_loan: prefix=category, 잔액
+    for cat, pre in (
+        ("연령별", c.BORROWER_LOAN_CATEGORY_PREFIX["연령별"]),
+        ("업권별", c.BORROWER_LOAN_CATEGORY_PREFIX["업권별"]),
+    ):
+        add(
+            f"borrower_loan[{cat}]",
+            "money",
+            lambda cat=cat: _long(
+                ecos.get_borrower_loan("잔액", cat, start_date="2023Q1", end_date="2023Q4")
+            ),
+            lambda pre=pre: _raw_long(
+                c.BORROWER_LOAN_STAT_CODES["잔액"], "Q", "2023Q1", "2023Q4", prefix=pre
+            ),
+        )
+    # consumer_sentiment 구성지표 (인구통계 전체 고정)
+    add(
+        "consumer_sentiment[소비지출전망CSI]",
+        "sentiment",
+        lambda: _ser(
+            ecos.get_consumer_sentiment("202301", "202312", sub_category="소비지출전망CSI")
+        ),
+        lambda: _ser(_raw(c.STAT_CSI, "M", ["FMCB", "99988"], "202301", "202312")),
+    )
+    return chk
+
+
+ALL = single_checks() + derived_checks() + long_checks()
 
 
 def run(group=None):
