@@ -1059,11 +1059,19 @@ class TestE2ERealEconomyIndicators:
 
     @pytest.mark.parametrize("index", ["nominal", "real", "seasonal"])
     def test_get_retail_sales(self, index):
-        """소매판매액지수 — 901Y100 총지수, 경상/불변/계절조정 단일 시계열."""
+        """소매판매액지수 — 901Y100, 경상/불변/계절조정. (#150) 기본 long-format(상품군별)."""
+        # 미지정: 전체 상품군 long-format
         df = ecos.get_retail_sales(index, start_date="202301", end_date="202312")
         assert not df.empty, f"{index} returned empty"
-        assert df.columns.tolist() == ["date", "value", "unit"]
-        assert len(df) == df["date"].nunique()
+        assert df.columns.tolist() == ["date", "category_value", "value", "unit"]
+        assert {"총지수", "내구재", "비내구재"} <= set(df["category_value"]), index
+        assert df["unit"].iloc[0] == "2020=100"
+        # 지정: 단일 상품군 시계열
+        total = ecos.get_retail_sales(
+            index, sub_category="총지수", start_date="202301", end_date="202312"
+        )
+        assert total.columns.tolist() == ["date", "value", "unit"]
+        assert len(total) == total["date"].nunique()
 
 
 class TestE2ETradeIndicators:
