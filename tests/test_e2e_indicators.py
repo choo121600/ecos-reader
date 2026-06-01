@@ -820,6 +820,23 @@ class TestE2ERegressionV016:
             assert df["unit"].iloc[0] == "%", frequency
             assert df["value"].abs().max() < 20, frequency
 
+    def test_amount_indicators_are_in_bilwon(self):
+        """(#142) 금액 지표는 ECOS 원본 단위 '십억원'을 반환해야 한다 (docstring의 '조원' 아님).
+
+        docstring/registry가 '조원'으로 선언했으나 실제 반환 unit 은 '십억원'이다.
+        단위 컬럼이 1000배 다른 '조원'으로 바뀌면(혹은 그렇게 오인하면) 즉시 감지한다.
+        """
+        cases = [
+            ("fiscal_balance", lambda: ecos.get_fiscal_balance()),
+            ("money_supply[M2]", lambda: ecos.get_money_supply(indicator="M2")),
+            ("gdp", lambda: ecos.get_gdp()),
+            ("household_credit", lambda: ecos.get_household_credit()),
+        ]
+        for label, fn in cases:
+            df = fn()
+            assert not df.empty, label
+            assert df["unit"].iloc[0] == "십억원", label
+
     @pytest.mark.parametrize("basis", ["real", "nominal"])
     def test_gdp_by_expenditure_annual_fallback(self, basis):
         """frequency='annual'은 원계열(real→200Y110 / nominal→200Y109)로 fallback해야 함."""
