@@ -20,7 +20,7 @@ Examples
 
 from __future__ import annotations
 
-__version__ = "0.6.1"
+__version__ = "0.7.0"
 __author__ = "yeonguk"
 
 # 범용 조회 API (#100, #104)
@@ -61,7 +61,6 @@ from .indicators import (
     get_base_rate,
     # 채권시장 지표
     get_bond_market,
-    get_bond_yield,
     get_borrower_loan,
     # 심리 지표
     get_business_sentiment,
@@ -180,7 +179,6 @@ __all__ = [
     "get_investor_trading",
     # 채권시장 지표
     "get_bond_market",
-    "get_bond_yield",
     # 금리 지표
     "get_base_rate",
     "get_treasury_yield",

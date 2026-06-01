@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-06-02
+
+> 하위호환을 깨는 변경 포함. `get_bond_yield` deprecated alias를 제거합니다
+> (0.5.3에서 deprecation 예고, 0.6.x 동안 경고 유지). `get_bond_market` 으로 교체하세요.
+
+### Removed
+- **`get_bond_yield()` 제거** (#167, #140). 0.5.3에서 `get_bond_market()` 으로 리네임하며
+  `DeprecationWarning` alias로 유지하던 것을 제거. 이 함수는 이름과 달리 수익률(%)이 아닌
+  채권시장 거래통계를 반환했으며, 동일 동작은 `get_bond_market()` 으로, 채권 수익률(%)은
+  `get_treasury_yield()` 로 조회하세요.
+
 ## [0.6.1] - 2026-06-02
 
 > 전수 감사(#151) 후속 패치. 계절조정+연간 무의미 조합을 빈 응답 대신 명확한

@@ -15,7 +15,7 @@ import warnings
 import pytest
 import responses
 
-from ecos.indicators.bond import get_bond_market, get_bond_yield
+from ecos.indicators.bond import get_bond_market
 
 
 def _type_mock() -> dict:
@@ -188,17 +188,3 @@ class TestGetBondYieldValidation:
         """이 통계표들은 분기 자료를 제공하지 않으므로 quarterly는 ValueError."""
         with pytest.raises(ValueError, match="frequency"):
             get_bond_market(frequency="quarterly")  # type: ignore[arg-type]
-
-
-@pytest.mark.usefixtures("set_api_key")
-class TestGetBondYieldDeprecatedAlias:
-    """get_bond_yield 는 get_bond_market 의 deprecated alias (#140)."""
-
-    @responses.activate
-    def test_alias_warns_and_delegates(self):
-        """get_bond_yield 는 DeprecationWarning 을 내고 get_bond_market 과 동일 결과를 반환한다."""
-        responses.add(responses.GET, url=re.compile(r".*"), json=_type_mock(), status=200)
-        with pytest.warns(DeprecationWarning, match="get_bond_market"):
-            df = get_bond_yield(bond_type="종류별", start_date="202401", end_date="202402")
-        assert list(df.columns) == ["date", "category_value", "value", "unit"]
-        assert set(df["category_value"]) == {"합계", "국채", "회사채"}

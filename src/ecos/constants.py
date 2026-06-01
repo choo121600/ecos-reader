@@ -271,7 +271,7 @@ INVESTOR_TRADING_METRIC_CODE: dict[str, str] = {
 STAT_BOND_YIELD_TYPE = "901Y015"  # 채권종류별 거래
 STAT_BOND_MARKET = "901Y120"  # 채권시장별 거래
 
-# get_bond_yield 재설계(#63). 두 통계표는 2차원이며 축 위치가 다르다:
+# get_bond_market 의 2축 처리(#63). 두 통계표는 2차원이며 축 위치가 다르다:
 #   종류별(901Y015): item_code1=채권종류(분류축), item_code2=measure
 #   시장별(901Y120): item_code1=measure, item_code2=시장(분류축)
 # measure로 한 차원을 고정한 뒤 나머지 분류축을 long-format으로 분류한다.
