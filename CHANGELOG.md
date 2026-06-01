@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `get_cpi()` / `get_core_cpi()` / `get_ppi()` 에 `measure` 파라미터 추가 (#139).
+  `measure='index'`(기본값, 지수 2020=100) / `'yoy'`(전년동월비 %, 인플레이션율) /
+  `'mom'`(전월비 %). 변화율은 지수에서 파생 계산하며 lookback 을 시차만큼 앞으로 확장해
+  요청 구간 첫 달부터 값이 나오도록 한다. **기본값이 'index' 라 기존 동작은 불변.**
+
 ### Changed
 - `get_bond_yield()` 를 `get_bond_market()` 으로 이름 변경 (#140). 이 함수는 이름과 달리
   채권 수익률(%)이 아니라 **채권시장 거래통계**(거래대금/거래량/상장잔액/상장종목수)를

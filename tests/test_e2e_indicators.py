@@ -132,6 +132,19 @@ class TestE2EPriceIndicators:
             # 지수 레벨(보통 90~150)이어야 함; 한 자릿수면 전년동월비(%)를 반환한 것.
             assert df["value"].iloc[0] > 50, fn.__name__
 
+    def test_price_measure_yoy_returns_percent(self):
+        """(#139) measure='yoy'는 전년동월비(%)를, 'mom'는 전월비(%)를 반환한다."""
+        for fn in (ecos.get_cpi, ecos.get_core_cpi, ecos.get_ppi):
+            yoy = fn(start_date="202401", end_date="202412", measure="yoy")
+            assert not yoy.empty, fn.__name__
+            assert yoy["unit"].iloc[0] == "%", fn.__name__
+            # 전년동월비는 합리적 범위(보통 -5~15%); 지수 레벨(100+)이면 실패.
+            assert yoy["value"].abs().max() < 20, fn.__name__
+            # 확장분이 잘려 요청 시작월부터 시작해야 함.
+            assert yoy["date"].min().strftime("%Y%m") == "202401", fn.__name__
+        mom = ecos.get_cpi(start_date="202401", end_date="202412", measure="mom")
+        assert mom["unit"].iloc[0] == "%"
+
 
 class TestE2EGrowthIndicators:
     """성장 지표 E2E 테스트"""
