@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.5.2] - 2026-06-01
+
+> 지표 매핑 정확성 패치. `get_core_cpi`/`get_gdp_growth_rate` 가 엉뚱한 계열을
+> 반환하던 버그를 정정합니다. 두 함수의 반환 **값/단위가 바뀌므로** 해당 지표를
+> 쓰던 코드는 결과를 재확인하세요.
 
 ### Fixed
 - `get_core_cpi()` 가 근원CPI 대신 헤드라인 CPI(총지수)를 반환하던 버그 수정. `ITEM_CORE_CPI`
