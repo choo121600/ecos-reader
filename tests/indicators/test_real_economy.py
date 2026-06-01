@@ -84,6 +84,11 @@ class TestGetIndustrialProduction:
         with pytest.raises(ValueError, match="frequency"):
             get_industrial_production(frequency="daily")  # type: ignore[arg-type]
 
+    def test_seasonal_annual_raises(self):
+        """계절조정+연간은 ECOS 미제공 → 빈 응답 대신 명확한 ValueError (#150 후속)."""
+        with pytest.raises(ValueError, match="계절조정"):
+            get_industrial_production(seasonal=True, frequency="annual")
+
 
 @pytest.mark.usefixtures("set_api_key")
 class TestGetFacilityInvestment:
@@ -118,6 +123,10 @@ class TestGetFacilityInvestment:
     def test_invalid_frequency_raises(self):
         with pytest.raises(ValueError, match="frequency"):
             get_facility_investment(frequency="weekly")  # type: ignore[arg-type]
+
+    def test_seasonal_annual_raises(self):
+        with pytest.raises(ValueError, match="계절조정"):
+            get_facility_investment(seasonal=True, frequency="annual")
 
 
 @pytest.mark.usefixtures("set_api_key")
@@ -226,6 +235,11 @@ class TestGetRetailSales:
     def test_invalid_index_raises(self):
         with pytest.raises(ValueError, match="index"):
             get_retail_sales("constant", start_date="202401", end_date="202402")
+
+    def test_seasonal_annual_raises(self):
+        """계절조정지수는 연간 미제공 → 명확한 ValueError (#150 후속)."""
+        with pytest.raises(ValueError, match="계절조정"):
+            get_retail_sales("seasonal", frequency="annual")
 
 
 def test_public_exports():

@@ -84,6 +84,11 @@ def get_industrial_production(
         allowed=("monthly", "quarterly", "annual"),
         func_name="get_industrial_production",
     )
+    if seasonal and frequency == "annual":
+        raise ValueError(
+            "get_industrial_production(): 계절조정 계열은 연간(annual)으로 제공되지 않습니다 "
+            "(연간 데이터엔 계절성이 없음). seasonal=False 또는 frequency='monthly'/'quarterly'를 사용하세요."
+        )
     period = {
         "monthly": PERIOD_MONTHLY,
         "quarterly": PERIOD_QUARTERLY,
@@ -159,6 +164,11 @@ def get_facility_investment(
         allowed=("monthly", "quarterly", "annual"),
         func_name="get_facility_investment",
     )
+    if seasonal and frequency == "annual":
+        raise ValueError(
+            "get_facility_investment(): 계절조정지수는 연간(annual)으로 제공되지 않습니다. "
+            "seasonal=False 또는 frequency='monthly'/'quarterly'를 사용하세요."
+        )
     period = {
         "monthly": PERIOD_MONTHLY,
         "quarterly": PERIOD_QUARTERLY,
@@ -315,6 +325,11 @@ def get_retail_sales(
         allowed=("monthly", "quarterly", "annual"),
         func_name="get_retail_sales",
     )
+    if index == "seasonal" and frequency == "annual":
+        raise ValueError(
+            "get_retail_sales(): 계절조정지수(index='seasonal')는 연간(annual)으로 제공되지 "
+            "않습니다. index='nominal'/'real' 또는 frequency='monthly'/'quarterly'를 사용하세요."
+        )
     period = {
         "monthly": PERIOD_MONTHLY,
         "quarterly": PERIOD_QUARTERLY,
