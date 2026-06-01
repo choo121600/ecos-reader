@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Tests
+- `scripts/audit_values_vs_raw.py` 추가 — 각 엔드포인트의 반환 **값**을 같은 코드의
+  원시 `get_series` 조회(또는 파생 함수는 독립 재계산)와 **소수점까지 정확 대조**하는
+  값-정확성 전수 감사 (#151 심화). 범위 검증이 못 잡는 래퍼 매핑·변환 오류를 값 단위로
+  확정. 라이브 전수 결과: 67/67 일치(0 불일치).
+
 ## [0.6.0] - 2026-06-01
 
 > 커버리지 확장 마이너 릴리스(milestone v0.6.0, #150). 큐레이션 함수들이 통계표가
