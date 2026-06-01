@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   종합 소비자심리지수(FME) 유지(하위호환), `sub_category` 로 생활형편전망·소비지출전망
   등 구성지표를 선택. 인구통계 축은 '전체' 고정.
 
+### Removed
+- 미사용 상수 `STAT_EXCHANGE_RATE_RELATED`(901Y050) 제거 (#157). 어떤 함수도
+  참조하지 않던 dead 상수. 매핑 스냅샷(55 stat_codes)·audit 스크립트도 갱신.
+
 ### Changed
 - `get_retail_sales()` 에 상품군 분해(`sub_category`) 추가 (#150). 통계표 901Y100 은
   상품군(item_code1, 26개) × 계열(item_code2) 2축인데 기존엔 총지수(`G0`)만 반환했다.
