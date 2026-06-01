@@ -4788,8 +4788,9 @@ item_code1(예: 'A01101')을 사용하세요.</p>
 
     <div class="doc doc-contents first">
 
-        <p>실질 GDP 성장률을 조회합니다.</p>
-<p>전기비 또는 전년동기비 실질 GDP 성장률을 제공합니다.</p>
+        <p>실질 GDP 성장률(%)을 조회합니다.</p>
+<p>ECOS 통계표 902Y015(국제 주요국 경제성장률, OECD 출처)의 한국 계열을 사용합니다.
+분기는 전기대비(QoQ, 계절조정), 연간은 전년대비(YoY) 성장률입니다.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4888,8 +4889,9 @@ item_code1(예: 'A01101')을 사용하세요.</p>
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
-<li>전기비: 직전 분기/년 대비 성장률</li>
-<li>전년동기비: 전년 같은 분기/년 대비 성장률</li>
+<li>분기(quarterly): 전기대비(QoQ) 계절조정 성장률</li>
+<li>연간(annual): 전년대비(YoY) 성장률</li>
+<li>출처가 OECD이므로 한국은행 국민계정 속보치와 소수점 단위 차이가 있을 수 있습니다.</li>
 </ul>
 <p>GDP 성장률은 경제 성장의 속도를 나타내는 가장 핵심적인 지표입니다.</p>
 </details>
