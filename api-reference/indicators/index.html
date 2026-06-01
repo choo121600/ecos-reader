@@ -5570,7 +5570,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_money_supply" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_money_supply</span><span class="p">(</span><span class="n">indicator</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;M1&#39;</span><span class="p">,</span> <span class="s1">&#39;M2&#39;</span><span class="p">,</span> <span class="s1">&#39;Lf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;M2&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_money_supply</span><span class="p">(</span><span class="n">indicator</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;M1&#39;</span><span class="p">,</span> <span class="s1">&#39;M2&#39;</span><span class="p">,</span> <span class="s1">&#39;Lf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;M2&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
@@ -5617,7 +5617,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 시작일 (YYYYMM 형식), 기본값: 3년 전</p>
+                <p>조회 시작 시점. <code>frequency</code> 에 맞는 형식
+(월 <code>YYYYMM</code> / 분기 <code>YYYYQn</code> / 연 <code>YYYY</code>). 기본값: 주기별 기본 범위.</p>
               </div>
             </td>
             <td>
@@ -5633,11 +5634,27 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 종료일 (YYYYMM 형식), 기본값: 현재</p>
+                <p>조회 종료 시점. (형식은 <code>start_date</code> 와 동일)</p>
               </div>
             </td>
             <td>
                   <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>frequency</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>조회 주기. <code>'monthly'</code>(기본)/<code>'quarterly'</code>/<code>'annual'</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;monthly&#39;</code>
             </td>
           </tr>
       </tbody>
@@ -5670,6 +5687,29 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
     </table>
 
 
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지원하지 않는 <code>indicator</code>/<code>frequency</code> 일 때.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
@@ -5682,10 +5722,11 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_money_supply</span><span class="p">()</span>  <span class="c1"># M2 기본</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_money_supply</span><span class="p">()</span>  <span class="c1"># M2 기본(월)</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_money_supply</span><span class="p">(</span><span class="n">indicator</span><span class="o">=</span><span class="s2">&quot;M1&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_money_supply</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
@@ -5701,7 +5742,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_m1_variants" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_m1_variants</span><span class="p">(</span><span class="n">variant</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;평잔_계절조정&#39;</span><span class="p">,</span> <span class="s1">&#39;평잔_원계열&#39;</span><span class="p">,</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_m1_variants</span><span class="p">(</span><span class="n">variant</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;평잔_계절조정&#39;</span><span class="p">,</span> <span class="s1">&#39;평잔_원계열&#39;</span><span class="p">,</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
@@ -5749,7 +5790,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 시작일 (YYYYMM 형식), 기본값: 3년 전</p>
+                <p>조회 시작 시점. <code>frequency</code> 에 맞는 형식
+(월 <code>YYYYMM</code> / 분기 <code>YYYYQn</code> / 연 <code>YYYY</code>). 기본값: 주기별 기본 범위.</p>
               </div>
             </td>
             <td>
@@ -5765,11 +5807,27 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 종료일 (YYYYMM 형식), 기본값: 현재</p>
+                <p>조회 종료 시점. (형식은 <code>start_date</code> 와 동일)</p>
               </div>
             </td>
             <td>
                   <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>frequency</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>조회 주기. <code>'monthly'</code>(기본)/<code>'quarterly'</code>/<code>'annual'</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;monthly&#39;</code>
             </td>
           </tr>
       </tbody>
@@ -5802,6 +5860,29 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
     </table>
 
 
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지원하지 않는 <code>variant</code>/<code>frequency</code> 일 때.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
@@ -5817,6 +5898,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_m1_variants</span><span class="p">(</span><span class="n">variant</span><span class="o">=</span><span class="s2">&quot;평잔_원계열&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_m1_variants</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
@@ -5832,7 +5914,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_m2_variants" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_m2_variants</span><span class="p">(</span><span class="n">variant</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;평잔_계절조정&#39;</span><span class="p">,</span> <span class="s1">&#39;평잔_원계열&#39;</span><span class="p">,</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_m2_variants</span><span class="p">(</span><span class="n">variant</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;평잔_계절조정&#39;</span><span class="p">,</span> <span class="s1">&#39;평잔_원계열&#39;</span><span class="p">,</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
@@ -5880,7 +5962,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 시작일 (YYYYMM 형식), 기본값: 3년 전</p>
+                <p>조회 시작 시점. <code>frequency</code> 에 맞는 형식
+(월 <code>YYYYMM</code> / 분기 <code>YYYYQn</code> / 연 <code>YYYY</code>). 기본값: 주기별 기본 범위.</p>
               </div>
             </td>
             <td>
@@ -5896,11 +5979,27 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 종료일 (YYYYMM 형식), 기본값: 현재</p>
+                <p>조회 종료 시점. (형식은 <code>start_date</code> 와 동일)</p>
               </div>
             </td>
             <td>
                   <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>frequency</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>조회 주기. <code>'monthly'</code>(기본)/<code>'quarterly'</code>/<code>'annual'</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;monthly&#39;</code>
             </td>
           </tr>
       </tbody>
@@ -5933,6 +6032,29 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
     </table>
 
 
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지원하지 않는 <code>variant</code>/<code>frequency</code> 일 때.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
@@ -5949,6 +6071,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_m2_variants</span><span class="p">(</span><span class="n">variant</span><span class="o">=</span><span class="s2">&quot;평잔_원계열&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_m2_variants</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
@@ -5964,7 +6087,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_m2_by_holder" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_m2_by_holder</span><span class="p">(</span><span class="n">variant</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;평잔_계절조정&#39;</span><span class="p">,</span> <span class="s1">&#39;평잔_원계열&#39;</span><span class="p">,</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">,</span> <span class="s1">&#39;말잔_원계열&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;말잔_원계열&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_m2_by_holder</span><span class="p">(</span><span class="n">variant</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;평잔_계절조정&#39;</span><span class="p">,</span> <span class="s1">&#39;평잔_원계열&#39;</span><span class="p">,</span> <span class="s1">&#39;말잔_계절조정&#39;</span><span class="p">,</span> <span class="s1">&#39;말잔_원계열&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;말잔_원계열&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
@@ -6034,7 +6157,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 시작일 (YYYYMM 형식), 기본값: 3년 전</p>
+                <p>조회 시작 시점. <code>frequency</code> 에 맞는 형식
+(월 <code>YYYYMM</code> / 분기 <code>YYYYQn</code> / 연 <code>YYYY</code>). 기본값: 주기별 기본 범위.</p>
               </div>
             </td>
             <td>
@@ -6050,11 +6174,27 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 종료일 (YYYYMM 형식), 기본값: 현재</p>
+                <p>조회 종료 시점. (형식은 <code>start_date</code> 와 동일)</p>
               </div>
             </td>
             <td>
                   <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>frequency</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>조회 주기. <code>'monthly'</code>(기본)/<code>'quarterly'</code>/<code>'annual'</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;monthly&#39;</code>
             </td>
           </tr>
       </tbody>
@@ -6091,6 +6231,29 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
     </table>
 
 
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지원하지 않는 <code>variant</code>/<code>frequency</code> 이거나 <code>sub_category</code> 가 없을 때.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
 <details class="note" open>
   <summary>Notes</summary>
   <p>경제주체별 M2 보유 현황은 자금 흐름과 유동성 분포를 파악하는 데
@@ -6102,6 +6265,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_m2_by_holder</span><span class="p">()</span>  <span class="c1"># 전체 주체 long-format</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_m2_by_holder</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;가계 및 비영리단체&quot;</span><span class="p">)</span>  <span class="c1"># 단일 주체</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_m2_by_holder</span><span class="p">(</span><span class="n">variant</span><span class="o">=</span><span class="s2">&quot;평잔_계절조정&quot;</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_m2_by_holder</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
@@ -6117,7 +6281,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_bank_lending" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_bank_lending</span><span class="p">(</span><span class="n">sector</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;household&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_bank_lending</span><span class="p">(</span><span class="n">sector</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;household&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
@@ -6163,7 +6327,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 시작일 (YYYYMM 형식), 기본값: 3년 전</p>
+                <p>조회 시작 시점. <code>frequency</code> 에 맞는 형식
+(월 <code>YYYYMM</code> / 분기 <code>YYYYQn</code> / 연 <code>YYYY</code>). 기본값: 주기별 기본 범위.</p>
               </div>
             </td>
             <td>
@@ -6179,11 +6344,27 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 종료일 (YYYYMM 형식), 기본값: 현재</p>
+                <p>조회 종료 시점. (형식은 <code>start_date</code> 와 동일)</p>
               </div>
             </td>
             <td>
                   <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>frequency</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>조회 주기. <code>'monthly'</code>(기본)/<code>'quarterly'</code>/<code>'annual'</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;monthly&#39;</code>
             </td>
           </tr>
       </tbody>
@@ -6216,6 +6397,29 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
     </table>
 
 
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지원하지 않는 <code>sector</code>/<code>frequency</code> 일 때.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
@@ -6230,6 +6434,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bank_lending</span><span class="p">(</span><span class="n">sector</span><span class="o">=</span><span class="s2">&quot;household&quot;</span><span class="p">)</span>  <span class="c1"># 가계대출</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bank_lending</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
@@ -6747,7 +6952,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_bond_market" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;종류별&#39;</span><span class="p">,</span> <span class="s1">&#39;시장별&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;종류별&#39;</span><span class="p">,</span> <span class="n">measure</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="s1">&#39;거래량&#39;</span><span class="p">,</span> <span class="s1">&#39;상장잔액&#39;</span><span class="p">,</span> <span class="s1">&#39;상장종목수&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;종류별&#39;</span><span class="p">,</span> <span class="s1">&#39;시장별&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;종류별&#39;</span><span class="p">,</span> <span class="n">measure</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="s1">&#39;거래량&#39;</span><span class="p">,</span> <span class="s1">&#39;상장잔액&#39;</span><span class="p">,</span> <span class="s1">&#39;상장종목수&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
@@ -6836,7 +7041,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 시작일 (YYYYMM 형식), 기본값: 2년 전</p>
+                <p>조회 시작 시점. <code>frequency</code> 에 맞는 형식
+(월 <code>YYYYMM</code> / 연 <code>YYYY</code>). 기본값: 주기별 기본 범위.</p>
               </div>
             </td>
             <td>
@@ -6852,11 +7058,28 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 종료일 (YYYYMM 형식), 기본값: 현재</p>
+                <p>조회 종료 시점. (형식은 <code>start_date</code> 와 동일)</p>
               </div>
             </td>
             <td>
                   <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>frequency</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>조회 주기. <code>'monthly'</code>(기본)/<code>'annual'</code>.
+두 통계표(<code>901Y015</code>/<code>901Y120</code>)는 월·연 자료만 제공합니다.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;monthly&#39;</code>
             </td>
           </tr>
       </tbody>
@@ -6905,7 +7128,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>bond_type/measure가 허용 값이 아니거나, 지정한 <code>sub_category</code> 가
+                <p>bond_type/measure/frequency가 허용 값이 아니거나, 지정한 <code>sub_category</code> 가
 존재하지 않는 경우 (사용 가능 항목을 함께 안내).</p>
               </div>
             </td>
@@ -6937,6 +7160,9 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 시장별 거래량</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">&quot;시장별&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;거래량&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 연간 종류별 거래대금</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
@@ -7256,7 +7482,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_investor_trading" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_investor_trading</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;순매수&#39;</span><span class="p">,</span> <span class="s1">&#39;매수&#39;</span><span class="p">,</span> <span class="s1">&#39;매도&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;순매수&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="s1">&#39;거래량&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_investor_trading</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;순매수&#39;</span><span class="p">,</span> <span class="s1">&#39;매수&#39;</span><span class="p">,</span> <span class="s1">&#39;매도&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;순매수&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="s1">&#39;거래량&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;거래대금&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
@@ -7344,7 +7570,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 시작일 (YYYYMM 형식), 기본값: 2년 전</p>
+                <p>조회 시작 시점. <code>frequency</code> 에 맞는 형식
+(월 <code>YYYYMM</code> / 연 <code>YYYY</code>). 기본값: 주기별 기본 범위.</p>
               </div>
             </td>
             <td>
@@ -7360,11 +7587,28 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 종료일 (YYYYMM 형식), 기본값: 현재</p>
+                <p>조회 종료 시점. (형식은 <code>start_date</code> 와 동일)</p>
               </div>
             </td>
             <td>
                   <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>frequency</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>조회 주기. <code>'monthly'</code>(기본)/<code>'annual'</code>.
+이 통계표(<code>901Y055</code>)는 월·연 자료만 제공합니다.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;monthly&#39;</code>
             </td>
           </tr>
       </tbody>
@@ -7413,8 +7657,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>action/metric이 허용 값이 아니거나, 지정한 <code>sub_category</code> 가 존재하지
-않는 경우 (사용 가능 항목을 함께 안내).</p>
+                <p>action/metric/frequency가 허용 값이 아니거나, 지정한 <code>sub_category</code> 가
+존재하지 않는 경우 (사용 가능 항목을 함께 안내).</p>
               </div>
             </td>
           </tr>
@@ -7448,6 +7692,9 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 투자자별 매수 거래량</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;매수&quot;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;거래량&quot;</span><span class="p">)</span>
 </span></code></pre></div>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 연간 투자자별 순매수</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
+</span></code></pre></div>
 
 
     </div>
@@ -7463,14 +7710,14 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_industrial_production" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_industrial_production</span><span class="p">(</span><span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seasonal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_industrial_production</span><span class="p">(</span><span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seasonal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
 
         <p>전산업생산지수를 조회합니다.</p>
 <p>ECOS 통계표 <code>901Y033</code>(전산업생산지수, 농림어업 제외)을 사용합니다.
-월별 지수(기준 2020=100)입니다. 2-축 구조(지수 × 계열)이므로 계열을
+월/분기/연별 지수(기준 2020=100)입니다. 2-축 구조(지수 × 계열)이므로 계열을
 원계열/계절조정 중 하나로 고정해 단일 시계열을 반환합니다.</p>
 
 
@@ -7494,7 +7741,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 시작월 (<code>YYYYMM</code> 형식). 기본값: 24개월 전.</p>
+                <p>조회 시작 시점. <code>frequency</code> 에 맞는 형식
+(월 <code>YYYYMM</code> / 분기 <code>YYYYQn</code> / 연 <code>YYYY</code>). 기본값: 주기별 기본 범위.</p>
               </div>
             </td>
             <td>
@@ -7510,7 +7758,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 종료월 (<code>YYYYMM</code> 형식). 기본값: 현재.</p>
+                <p>조회 종료 시점. (형식은 <code>start_date</code> 와 동일)</p>
               </div>
             </td>
             <td>
@@ -7531,6 +7779,22 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
                   <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>frequency</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>조회 주기. <code>'monthly'</code>(기본)/<code>'quarterly'</code>/<code>'annual'</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;monthly&#39;</code>
             </td>
           </tr>
       </tbody>
@@ -7560,10 +7824,34 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
     </table>
 
 
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지원하지 않는 <code>frequency</code> 일 때.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_industrial_production</span><span class="p">()</span>                 <span class="c1"># 원계열</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_industrial_production</span><span class="p">()</span>                 <span class="c1"># 원계열(월)</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_industrial_production</span><span class="p">(</span><span class="n">seasonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    <span class="c1"># 계절조정</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_industrial_production</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
@@ -7579,13 +7867,13 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_facility_investment" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_facility_investment</span><span class="p">(</span><span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seasonal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_facility_investment</span><span class="p">(</span><span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seasonal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
 
         <p>설비투자지수를 조회합니다.</p>
-<p>ECOS 통계표 <code>901Y066</code>(설비투자지수)을 사용합니다. 월별 지수(기준
+<p>ECOS 통계표 <code>901Y066</code>(설비투자지수)을 사용합니다. 월/분기/연별 지수(기준
 2020=100)이며, 원지수/계절조정지수 중 하나를 반환합니다.</p>
 
 
@@ -7609,7 +7897,8 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 시작월 (<code>YYYYMM</code> 형식). 기본값: 24개월 전.</p>
+                <p>조회 시작 시점. <code>frequency</code> 에 맞는 형식
+(월 <code>YYYYMM</code> / 분기 <code>YYYYQn</code> / 연 <code>YYYY</code>). 기본값: 주기별 기본 범위.</p>
               </div>
             </td>
             <td>
@@ -7625,7 +7914,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>조회 종료월 (<code>YYYYMM</code> 형식). 기본값: 현재.</p>
+                <p>조회 종료 시점. (형식은 <code>start_date</code> 와 동일)</p>
               </div>
             </td>
             <td>
@@ -7646,6 +7935,22 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
                   <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>frequency</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>조회 주기. <code>'monthly'</code>(기본)/<code>'quarterly'</code>/<code>'annual'</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;monthly&#39;</code>
             </td>
           </tr>
       </tbody>
@@ -7675,9 +7980,33 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
     </table>
 
 
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>지원하지 않는 <code>frequency</code> 일 때.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_facility_investment</span><span class="p">()</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_facility_investment</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
