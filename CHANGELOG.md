@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.5.3] - 2026-06-01
+
+> 지표 매핑 정확성 패치. 전수 조사로 발견한 stat/item·단위 오매핑 6건을 정정하고,
+> 인플레이션율(전년동월비) 조회와 재발 방지 가드를 추가합니다. 대부분 비파괴적이나
+> **`get_m2_by_holder()` 기본 반환 형태가 단일 시계열 → long-format 으로 변경**되었으니
+> 해당 함수를 쓰던 코드는 확인하세요(#141). `get_bond_yield()` 는 deprecation alias 로
+> 계속 동작합니다(#140).
 
 ### Added
 - `get_cpi()` / `get_core_cpi()` / `get_ppi()` 에 `measure` 파라미터 추가 (#139).
