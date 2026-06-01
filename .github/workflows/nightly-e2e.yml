@@ -41,3 +41,10 @@ jobs:
         env:
           ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
         run: uv run pytest -m "e2e"
+
+      # 오프라인 매핑 가드(tests/test_mapping_consistency.py)가 쓰는 항목 스냅샷이
+      # 라이브 ECOS와 어긋났는지 검사. drift 시 스냅샷 재생성 필요(가드가 거짓 통과/실패하지 않도록).
+      - name: Check item-catalog snapshot drift
+        env:
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+        run: uv run python scripts/snapshot_item_units.py --check
