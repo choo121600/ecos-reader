@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.6.1] - 2026-06-02
+
+> 전수 감사(#151) 후속 패치. 계절조정+연간 무의미 조합을 빈 응답 대신 명확한
+> ValueError로 안내하고, 값-정확성 전수 감사 하니스를 추가합니다.
 
 ### Changed
 - `get_industrial_production`/`get_facility_investment`(`seasonal=True`)·`get_retail_sales`
