@@ -155,8 +155,8 @@ def mock_cpi_response():
                 "ITEM_CODE1": "0",
                 "ITEM_NAME1": "총지수",
                 "TIME": "202401",
-                "DATA_VALUE": "3.20",
-                "UNIT_NAME": "%",
+                "DATA_VALUE": "113.52",
+                "UNIT_NAME": "2020=100",
             },
             {
                 "STAT_CODE": "901Y009",
@@ -164,8 +164,8 @@ def mock_cpi_response():
                 "ITEM_CODE1": "0",
                 "ITEM_NAME1": "총지수",
                 "TIME": "202402",
-                "DATA_VALUE": "3.10",
-                "UNIT_NAME": "%",
+                "DATA_VALUE": "113.20",
+                "UNIT_NAME": "2020=100",
             },
         ],
     )

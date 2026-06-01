@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- `get_cpi()` / `get_core_cpi()` / `get_ppi()` 의 docstring·registry 메타데이터가 실제 반환값과
+  불일치하던 문제 정정. 이 함수들은 전년동월비(%)가 아니라 **지수(2020=100)** 를 반환하며,
+  문서/registry `unit` 을 실제 값(`"2020=100"`)에 맞췄다. **반환 데이터 자체는 변경 없음**
+  (비파괴적, 문서·메타데이터만 정정). 인플레이션율이 필요하면 지수에서 직접 계산. (#136)
+
+### Tests
+- e2e 회귀 가드 추가: 물가지수 함수들이 `unit == "2020=100"` 의 지수 레벨을 반환하고
+  전년동월비(%)가 아님을 검증.
+
 ## [0.5.2] - 2026-06-01
 
 > 지표 매핑 정확성 패치. `get_core_cpi`/`get_gdp_growth_rate` 가 엉뚱한 계열을
