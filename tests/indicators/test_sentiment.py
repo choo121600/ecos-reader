@@ -55,7 +55,18 @@ class TestGetBusinessSentiment:
     @responses.activate
     @pytest.mark.parametrize(
         ("sector", "item_code1"),
-        [("manufacturing", "C0000"), ("non_manufacturing", "Y9900"), ("all", "99988")],
+        [
+            ("manufacturing", "C0000"),
+            ("non_manufacturing", "Y9900"),
+            ("all", "99988"),
+            ("heavy_chemical", "X3000"),
+            ("light", "X4000"),
+            ("large", "X5000"),
+            ("sme", "X6000"),
+            ("export", "X8000"),
+            ("domestic", "X9000"),
+            ("service", "Y9950"),
+        ],
     )
     def test_sector_and_outlook_axis(self, sector, item_code1):
         responses.add(
@@ -101,7 +112,7 @@ class TestGetConsumerSentiment:
         assert df["value"].iloc[0] == 92.3
 
     @responses.activate
-    def test_uses_csi_codes(self):
+    def test_default_uses_fme_composite(self):
         responses.add(
             responses.GET,
             re.compile(r".*"),
@@ -113,6 +124,55 @@ class TestGetConsumerSentiment:
         assert "511Y002" in url
         assert "FME" in url
         assert "/M/" in url
+
+    @responses.activate
+    def test_sub_category_selects_component_at_total_demo(self):
+        """sub_category 는 인구통계 전체(99988)에서 구성지표를 선택한다 (#155)."""
+        rows = []
+        for t in ["202401", "202402"]:
+            for c1, n1 in [("FME", "소비자심리지수"), ("FMCB", "소비지출전망CSI")]:
+                for c2, base in [("99988", 100), ("A0001", 200)]:  # 전체 / 남자
+                    rows.append(
+                        {
+                            "STAT_CODE": "511Y002",
+                            "ITEM_CODE1": c1,
+                            "ITEM_NAME1": n1,
+                            "ITEM_CODE2": c2,
+                            "ITEM_NAME2": "x",
+                            "TIME": t,
+                            "DATA_VALUE": str(base + (1 if c1 == "FMCB" else 0)),
+                            "UNIT_NAME": "",
+                        }
+                    )
+        responses.add(
+            responses.GET, re.compile(r".*"), json={"StatisticSearch": {"row": rows}}, status=200
+        )
+        df = get_consumer_sentiment(
+            sub_category="소비지출전망CSI", start_date="202401", end_date="202402"
+        )
+        assert df.columns.tolist() == ["date", "value", "unit"]
+        # FMCB × 전체(99988, base 100) → 101 (남자 201은 제외돼야 함)
+        assert (df["value"] == 101).all()
+
+    @responses.activate
+    def test_invalid_sub_category_raises(self):
+        rows = [
+            {
+                "STAT_CODE": "511Y002",
+                "ITEM_CODE1": "FME",
+                "ITEM_NAME1": "소비자심리지수",
+                "ITEM_CODE2": "99988",
+                "ITEM_NAME2": "전체",
+                "TIME": "202401",
+                "DATA_VALUE": "100",
+                "UNIT_NAME": "",
+            }
+        ]
+        responses.add(
+            responses.GET, re.compile(r".*"), json={"StatisticSearch": {"row": rows}}, status=200
+        )
+        with pytest.raises(ValueError, match="사용 가능한 항목"):
+            get_consumer_sentiment(sub_category="없는지표", start_date="202401", end_date="202402")
 
 
 def test_public_exports():
