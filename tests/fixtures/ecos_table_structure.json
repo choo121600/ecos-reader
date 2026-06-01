@@ -1,0 +1,533 @@
+{
+ "104Y016": {
+  "axes": {
+   "item_code1": 44
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "121Y002": {
+  "axes": {
+   "item_code1": 27
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "121Y006": {
+  "axes": {
+   "item_code1": 19
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "121Y013": {
+  "axes": {
+   "item_code1": 19
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "121Y015": {
+  "axes": {
+   "item_code1": 19
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "151Y001": {
+  "axes": {
+   "item_code1": 20
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "151Y002": {
+  "axes": {
+   "item_code1": 8
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "151Y004": {
+  "axes": {
+   "item_code1": 15
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "151Y005": {
+  "axes": {
+   "item_code1": 9
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y001": {
+  "axes": {
+   "item_code1": 4
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y002": {
+  "axes": {
+   "item_code1": 4
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y003": {
+  "axes": {
+   "item_code1": 4
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y004": {
+  "axes": {
+   "item_code1": 4
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y005": {
+  "axes": {
+   "item_code1": 11
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y006": {
+  "axes": {
+   "item_code1": 16
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y007": {
+  "axes": {
+   "item_code1": 11
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y008": {
+  "axes": {
+   "item_code1": 16
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y009": {
+  "axes": {
+   "item_code1": 11
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y010": {
+  "axes": {
+   "item_code1": 11
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y011": {
+  "axes": {
+   "item_code1": 11
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "161Y012": {
+  "axes": {
+   "item_code1": 11
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "171Y002": {
+  "axes": {
+   "item_code1": 5
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "181Y001": {
+  "axes": {
+   "item_code1": 30
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "181Y002": {
+  "axes": {
+   "item_code1": 27
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "200Y103": {
+  "axes": {
+   "item_code1": 51
+  },
+  "cycles": [
+   "Q"
+  ]
+ },
+ "200Y104": {
+  "axes": {
+   "item_code1": 53
+  },
+  "cycles": [
+   "Q"
+  ]
+ },
+ "200Y105": {
+  "axes": {
+   "item_code1": 55
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "200Y106": {
+  "axes": {
+   "item_code1": 57
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "200Y107": {
+  "axes": {
+   "item_code1": 21
+  },
+  "cycles": [
+   "Q"
+  ]
+ },
+ "200Y108": {
+  "axes": {
+   "item_code1": 21
+  },
+  "cycles": [
+   "Q"
+  ]
+ },
+ "200Y109": {
+  "axes": {
+   "item_code1": 21
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "200Y110": {
+  "axes": {
+   "item_code1": 21
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "200Y111": {
+  "axes": {
+   "item_code1": 18
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "200Y112": {
+  "axes": {
+   "item_code1": 19
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "301Y013": {
+  "axes": {
+   "item_code1": 284
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "404Y014": {
+  "axes": {
+   "item_code1": 525
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "511Y002": {
+  "axes": {
+   "item_code1": 25,
+   "item_code2": 22
+  },
+  "cycles": [
+   "M"
+  ]
+ },
+ "512Y014": {
+  "axes": {
+   "item_code1": 10,
+   "item_code2": 17
+  },
+  "cycles": [
+   "M"
+  ]
+ },
+ "722Y001": {
+  "axes": {
+   "item_code1": 9
+  },
+  "cycles": [
+   "A",
+   "D",
+   "M",
+   "Q"
+  ]
+ },
+ "731Y001": {
+  "axes": {
+   "item_code1": 43
+  },
+  "cycles": [
+   "D"
+  ]
+ },
+ "802Y001": {
+  "axes": {
+   "item_code1": 9
+  },
+  "cycles": [
+   "D"
+  ]
+ },
+ "817Y002": {
+  "axes": {
+   "item_code1": 27
+  },
+  "cycles": [
+   "D"
+  ]
+ },
+ "901Y009": {
+  "axes": {
+   "item_code1": 581
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "901Y010": {
+  "axes": {
+   "item_code1": 34
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "901Y013": {
+  "axes": {
+   "item_code1": 33
+  },
+  "cycles": [
+   "M"
+  ]
+ },
+ "901Y014": {
+  "axes": {
+   "item_code1": 24
+  },
+  "cycles": [
+   "A",
+   "M"
+  ]
+ },
+ "901Y015": {
+  "axes": {
+   "item_code1": 6,
+   "item_code2": 4
+  },
+  "cycles": [
+   "A",
+   "M"
+  ]
+ },
+ "901Y033": {
+  "axes": {
+   "item_code1": 5,
+   "item_code2": 2
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "901Y050": {
+  "axes": {
+   "item_code1": 2,
+   "item_code2": 29,
+   "item_code3": 3
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ },
+ "901Y055": {
+  "axes": {
+   "item_code1": 18,
+   "item_code2": 2
+  },
+  "cycles": [
+   "A",
+   "M"
+  ]
+ },
+ "901Y066": {
+  "axes": {
+   "item_code1": 2
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "901Y067": {
+  "axes": {
+   "item_code1": 5
+  },
+  "cycles": [
+   "M"
+  ]
+ },
+ "901Y100": {
+  "axes": {
+   "item_code1": 26,
+   "item_code2": 3
+  },
+  "cycles": [
+   "A",
+   "M",
+   "Q"
+  ]
+ },
+ "901Y118": {
+  "axes": {
+   "item_code1": 2
+  },
+  "cycles": [
+   "A",
+   "M"
+  ]
+ },
+ "901Y120": {
+  "axes": {
+   "item_code1": 2,
+   "item_code2": 5
+  },
+  "cycles": [
+   "A",
+   "M"
+  ]
+ },
+ "902Y015": {
+  "axes": {
+   "item_code1": 41
+  },
+  "cycles": [
+   "A",
+   "Q"
+  ]
+ }
+}
