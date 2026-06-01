@@ -277,7 +277,6 @@ STAT_ONLY: list[tuple[str, str, str]] = [
     ("stock", const.STAT_STOCK_MONTHLY, "주식시장(월/연)"),
     ("household_credit", const.STAT_HOUSEHOLD_CREDIT_SECTOR, "가계신용(업권별)"),
     ("household_credit", const.STAT_HOUSEHOLD_CREDIT_PURPOSE, "가계신용(용도별)"),
-    ("forex_related", const.STAT_EXCHANGE_RATE_RELATED, "환율 관련 통계"),
 ]
 
 
