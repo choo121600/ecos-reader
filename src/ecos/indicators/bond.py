@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING, Literal
 
 from ..client import get_client
@@ -164,36 +163,4 @@ def get_bond_market(
 
     return select_subcategory(
         df, prefix="", sub_category=sub_category, context=f"bond_type='{bond_type}'"
-    )
-
-
-def get_bond_yield(
-    bond_type: Literal["종류별", "시장별"] = "종류별",
-    measure: Literal["거래대금", "거래량", "상장잔액", "상장종목수"] = "거래대금",
-    sub_category: str | None = None,
-    start_date: str | None = None,
-    end_date: str | None = None,
-    frequency: Literal["monthly", "annual"] = "monthly",
-) -> pd.DataFrame:
-    """``get_bond_market`` 의 deprecated alias (#140).
-
-    이 함수는 이름과 달리 수익률(%)이 아니라 채권시장 거래통계를 반환했습니다.
-    이름을 :func:`get_bond_market` 으로 정정했으며, 본 alias 는 다음 마이너
-    릴리스에서 제거됩니다. 채권 수익률은 :func:`get_treasury_yield` 를 사용하세요.
-    """
-    warnings.warn(
-        "get_bond_yield()는 get_bond_market()으로 이름이 변경되었습니다 "
-        "(수익률이 아닌 채권시장 거래통계 반환). get_bond_market()을 사용하세요. "
-        "채권 수익률(%)은 get_treasury_yield()를 사용하세요. "
-        "이 alias는 다음 마이너 릴리스에서 제거됩니다.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return get_bond_market(
-        bond_type=bond_type,
-        measure=measure,
-        sub_category=sub_category,
-        start_date=start_date,
-        end_date=end_date,
-        frequency=frequency,
     )
