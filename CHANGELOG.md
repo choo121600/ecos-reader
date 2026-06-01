@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.6.0] - 2026-06-01
+
+> 커버리지 확장 마이너 릴리스(milestone v0.6.0, #150). 큐레이션 함수들이 통계표가
+> 제공하는 차원(상품군·부문·구성지표·주기)을 더 노출합니다. 대부분 비파괴적이나
+> **`get_retail_sales()` 기본 반환 형태가 단일 시계열 → long-format 으로 변경**되었으니
+> 총지수만 쓰던 코드는 `sub_category="총지수"` 로 바꾸세요. 미사용 상수
+> `STAT_EXCHANGE_RATE_RELATED` 도 제거되었습니다.
 
 ### Added
 - `get_business_sentiment()` 의 `sector` 를 3개 → **10개 부문**으로 확장 (#154).
