@@ -3870,8 +3870,8 @@
 
     <div class="doc doc-contents first">
 
-        <p>소비자물가지수(CPI) 전년동월비를 조회합니다.</p>
-<p>한국은행 물가안정목표(2%)의 기준 지표입니다.</p>
+        <p>소비자물가지수(CPI) 총지수(지수, 2020=100)를 조회합니다.</p>
+<p>한국은행 물가안정목표(2%)의 기준이 되는 물가 수준 지표입니다.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3938,8 +3938,8 @@
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: 전년동월비 (%)
-- unit: 단위</p>
+- value: 소비자물가지수 (지수, 2020=100)
+- unit: 단위 ('2020=100')</p>
               </div>
             </td>
           </tr>
@@ -3950,8 +3950,10 @@
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
-<li>CPI가 2%를 상회하면 인플레이션 압력이 있음을 의미</li>
-<li>CPI가 2%를 하회하면 디플레이션 우려</li>
+<li>반환값은 전년동월비(%)가 아니라 <strong>지수 레벨</strong>입니다. 인플레이션율이 필요하면
+  반환된 지수에서 전년동월 대비 변화율을 직접 계산하세요
+  (예: <code>df["value"].pct_change(12) * 100</code>).</li>
+<li>지수 상승률(전년동월비)이 2%를 상회하면 인플레이션 압력을 의미합니다.</li>
 </ul>
 </details>
 
@@ -3959,8 +3961,8 @@
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">()</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">        date  value unit</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">0 2023-01-01   5.20    %</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">        date   value      unit</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">0 2024-01-01  113.15  2020=100</span>
 </span></code></pre></div>
 
 
@@ -3981,7 +3983,7 @@
 
     <div class="doc doc-contents first">
 
-        <p>근원 소비자물가지수(Core CPI)를 조회합니다.</p>
+        <p>근원 소비자물가지수(Core CPI) 지수(2020=100)를 조회합니다.</p>
 <p>식료품과 에너지를 제외한 물가지수로, 일시적인 물가 변동 요인을
 제거한 기조적 인플레이션을 파악하는 데 활용됩니다.</p>
 
@@ -4050,8 +4052,8 @@
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: 근원 CPI (%, 전년동월비)
-- unit: 단위</p>
+- value: 근원 소비자물가지수 (지수, 2020=100)
+- unit: 단위 ('2020=100')</p>
               </div>
             </td>
           </tr>
@@ -4062,6 +4064,8 @@
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
+<li>반환값은 전년동월비(%)가 아니라 <strong>지수 레벨</strong>입니다. 기조적 인플레이션율이
+  필요하면 반환된 지수에서 직접 변화율을 계산하세요(<code>pct_change(12) * 100</code>).</li>
 <li>근원 CPI는 일시적 충격(유가, 농산물 가격)을 제외</li>
 <li>통화정책 결정 시 참고 지표로 중요하게 활용</li>
 </ul>
@@ -4218,7 +4222,7 @@ item_code1(예: 'A01101')을 사용하세요.</p>
   <summary>Notes</summary>
   <ul>
 <li>원지수는 기준년도(2020=100)를 100으로 한 지수값</li>
-<li>전년동월비는 get_cpi() 함수 사용</li>
+<li>총지수 단일 시계열은 get_cpi() 함수 사용 (동일하게 지수 레벨 반환)</li>
 <li>CPI 통계표(901Y009)는 계층형입니다 — long-format에는 총지수(item_code '0'),
   COICOP 대분류(A=식료품 등), 중·소분류, 개별 품목(쌀 등)이 모두 포함됩니다.
   특정 시계열이 필요하면 <code>sub_category</code> 로 선택하세요(축 간 단순 합산 금지).</li>
@@ -4401,7 +4405,7 @@ item_code1(예: 'A01101')을 사용하세요.</p>
 
     <div class="doc doc-contents first">
 
-        <p>생산자물가지수(PPI) 전년동월비를 조회합니다.</p>
+        <p>생산자물가지수(PPI) 총지수(지수, 2020=100)를 조회합니다.</p>
 <p>생산자물가는 소비자물가의 선행 지표로 활용됩니다.</p>
 
 
@@ -4469,8 +4473,8 @@ item_code1(예: 'A01101')을 사용하세요.</p>
               <div class="doc-md-description">
                 <p>컬럼: date, value, unit
 - date: 날짜 (datetime)
-- value: 전년동월비 (%)
-- unit: 단위</p>
+- value: 생산자물가지수 (지수, 2020=100)
+- unit: 단위 ('2020=100')</p>
               </div>
             </td>
           </tr>
@@ -4481,6 +4485,8 @@ item_code1(예: 'A01101')을 사용하세요.</p>
 <details class="note" open>
   <summary>Notes</summary>
   <ul>
+<li>반환값은 전년동월비(%)가 아니라 <strong>지수 레벨</strong>입니다. 변화율이 필요하면
+  반환된 지수에서 직접 계산하세요(<code>pct_change(12) * 100</code>).</li>
 <li>PPI 상승 → CPI 상승으로 이어지는 경향</li>
 <li>기업의 원가 부담을 나타내는 지표</li>
 </ul>
