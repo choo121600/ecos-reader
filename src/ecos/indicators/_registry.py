@@ -121,7 +121,7 @@ INDICATORS: dict[str, IndicatorSpec] = {
         item_code1=ITEM_BASE_RATE,
         date_format="M",
         default_lookback=12,
-        unit="%",
+        unit="연%",
         category="금리",
         description="한국은행 기준금리",
     ),

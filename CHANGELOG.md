@@ -18,11 +18,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `get_gdp`. **반환 데이터 변경 없음**(문서·메타데이터만 정정). `get_fiscal_balance` 의
   허구 Examples 값과 registry `unit`, 관련 문서 표기도 `십억원` 으로 정정. (#142)
 
+- registry `base_rate` 단위 `"%"` → `"연%"` 로 정정 (ECOS 실제 단위와 일치). 신규 매핑 가드가 발견.
+
 ### Tests
 - e2e 회귀 가드 추가: 물가지수 함수들이 `unit == "2020=100"` 의 지수 레벨을 반환하고
   전년동월비(%)가 아님을 검증.
 - e2e 회귀 가드 추가: 금액 지표(fiscal_balance/money_supply/gdp/household_credit)가
   `unit == "십억원"` 을 반환함을 검증 (#142).
+- **오프라인 매핑 정합성 가드 추가** (`tests/test_mapping_consistency.py`, API 불필요,
+  매 PR 실행) — 라이브러리가 참조하는 (stat_code, item_code) 를 커밋된 ECOS 항목 스냅샷
+  (`tests/fixtures/ecos_item_catalog.json`) 과 대조해 ① item_code 실존 여부와 ② 선언 단위
+  ↔ 실제 단위 일치를 검증. #133/#134/#136/#142 부류(잘못된 계열·단위 오라벨)를 머지 전에
+  차단한다. 스냅샷은 `scripts/snapshot_item_units.py` 로 재생성하고 야간 e2e CI가 라이브
+  drift 를 감시.
 
 ## [0.5.2] - 2026-06-01
 
