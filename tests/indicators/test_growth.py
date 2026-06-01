@@ -137,7 +137,7 @@ class TestGetGdpGrowthRate:
             "StatisticSearch": {
                 "row": [
                     {
-                        "STAT_CODE": "200Y104",
+                        "STAT_CODE": "902Y015",
                         "TIME": "2024Q1",
                         "DATA_VALUE": "1.3",
                         "UNIT_NAME": "%",
@@ -168,7 +168,7 @@ class TestGetGdpGrowthRate:
             "StatisticSearch": {
                 "row": [
                     {
-                        "STAT_CODE": "200Y106",
+                        "STAT_CODE": "902Y015",
                         "TIME": "2023",
                         "DATA_VALUE": "1.4",
                         "UNIT_NAME": "%",

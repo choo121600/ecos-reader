@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- `get_core_cpi()` 가 근원CPI 대신 헤드라인 CPI(총지수)를 반환하던 버그 수정. `ITEM_CORE_CPI`
+  를 `"00"`(총지수) → `"DB"`(식료품·에너지제외)로 정정. 이제 `get_cpi` 와 다른 값을 반환한다. (#133)
+- `get_gdp_growth_rate()` 가 성장률(%) 대신 GDP 금액 레벨(십억원)을 반환하던 버그 수정.
+  과거 매핑 `200Y104`/`200Y106` 표는 전 항목이 금액 레벨이라 성장률 항목이 없었고 item
+  `"1101"`(농림어업) 금액을 반환했다. `902Y015`(국제 주요국 경제성장률, OECD) 한국(`KOR`)
+  계열로 재매핑해 분기 QoQ·연간 YoY 성장률(%)을 반환한다. (#134)
+
+### Tests
+- e2e 시맨틱 회귀 가드 추가: 근원CPI≠헤드라인 검증, GDP 성장률 단위(`%`)·범위 검증.
+  계열을 잘못 가리키는 매핑 버그가 "비어있지 않음" 검사를 통과해도 즉시 감지된다.
+
 ## [0.5.1] - 2026-06-01
 
 > v0.5.0 이후 추가된 도메인 큐레이션과 정적 분석 보강을 묶은 패치 릴리스.
