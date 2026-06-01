@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- `get_bond_yield()` 를 `get_bond_market()` 으로 이름 변경 (#140). 이 함수는 이름과 달리
+  채권 수익률(%)이 아니라 **채권시장 거래통계**(거래대금/거래량/상장잔액/상장종목수)를
+  반환했다. `get_bond_yield()` 는 `DeprecationWarning` 을 내는 alias로 유지되며 다음 마이너
+  릴리스에서 제거된다. 채권 수익률(연%)은 `get_treasury_yield()` 를 사용한다.
 - `get_m2_by_holder()` 가 실제로 경제주체별 분해를 제공하도록 재설계 (#141). 과거엔 holder
   선택 인자가 없고 M2 총계 항목만 가리켜 `get_m2_variants()` 와 동일값을 반환했다. 이제
   partial-coverage 규약(#56)에 따라 `sub_category` 미지정 시 전체 경제주체(가계·비금융기업·

@@ -60,6 +60,7 @@ from .indicators import (
     # 금리 지표
     get_base_rate,
     # 채권시장 지표
+    get_bond_market,
     get_bond_yield,
     get_borrower_loan,
     # 심리 지표
@@ -178,6 +179,7 @@ __all__ = [
     "get_stock_index",
     "get_investor_trading",
     # 채권시장 지표
+    "get_bond_market",
     "get_bond_yield",
     # 금리 지표
     "get_base_rate",

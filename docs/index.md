@@ -97,7 +97,7 @@ ECOS 전체 통계는 `get_series` 로 100% 도달할 수 있고, 그 위에 **�
 | 통화·가계금융 (8) | `get_money_supply`, `get_bank_lending`, `get_m1_variants`, `get_m2_variants`, `get_m2_by_holder`, `get_household_credit`, `get_household_lending_detail`, `get_borrower_loan` |
 | 실물경기 (4) | `get_industrial_production`, `get_facility_investment`, `get_composite_index`, `get_retail_sales` |
 | 심리 (2) | `get_business_sentiment`, `get_consumer_sentiment` |
-| 금융시장 (3) | `get_stock_index`, `get_investor_trading`, `get_bond_yield` |
+| 금융시장 (3) | `get_stock_index`, `get_investor_trading`, `get_bond_market` |
 | 환율 (1) | `get_exchange_rate` |
 | 국제수지 (1) | `get_balance_of_payments` |
 | 무역 (1) | `get_trade` |

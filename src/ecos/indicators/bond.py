@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import warnings
 from typing import TYPE_CHECKING, Literal
 
 from ..client import get_client
@@ -24,7 +25,7 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
-def get_bond_yield(
+def get_bond_market(
     bond_type: Literal["종류별", "시장별"] = "종류별",
     measure: Literal["거래대금", "거래량", "상장잔액", "상장종목수"] = "거래대금",
     sub_category: str | None = None,
@@ -32,11 +33,16 @@ def get_bond_yield(
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
-    채권 거래를 종류별 또는 시장별로 조회합니다.
+    채권시장 거래통계를 종류별 또는 시장별로 조회합니다.
 
-    국채/회사채 등 채권 종류별, 또는 국채전문/일반채권 등 시장별 거래를 제공합니다.
-    partial-coverage 재설계 규약(#56)을 따릅니다 — ``sub_category`` 미지정 시 전체
-    분류를 long-format으로, 지정 시 해당 분류 단일 시계열만 반환합니다.
+    국채/회사채 등 채권 종류별, 또는 국채전문/일반채권 등 시장별 거래대금·거래량·
+    상장잔액·상장종목수를 제공합니다. partial-coverage 재설계 규약(#56)을 따릅니다 —
+    ``sub_category`` 미지정 시 전체 분류를 long-format으로, 지정 시 해당 분류 단일
+    시계열만 반환합니다.
+
+    .. note::
+       이 함수는 **채권 수익률(%)이 아니라 채권시장 거래통계**를 반환합니다.
+       채권/국고채 수익률(연%)은 :func:`get_treasury_yield` 를 사용하세요.
 
     Parameters
     ----------
@@ -83,15 +89,15 @@ def get_bond_yield(
     --------
     >>> import ecos
     >>> # 종류별 거래대금 전체 (long-format)
-    >>> df = ecos.get_bond_yield()
+    >>> df = ecos.get_bond_market()
     >>> df.head()
             date category_value  value unit
 
     >>> # 국채만
-    >>> df = ecos.get_bond_yield(sub_category="국채")
+    >>> df = ecos.get_bond_market(sub_category="국채")
 
     >>> # 시장별 거래량
-    >>> df = ecos.get_bond_yield(bond_type="시장별", measure="거래량")
+    >>> df = ecos.get_bond_market(bond_type="시장별", measure="거래량")
     """
     if bond_type not in ("종류별", "시장별"):
         raise ValueError("bond_type은 '종류별' 또는 '시장별' 중 하나여야 합니다.")
@@ -138,4 +144,34 @@ def get_bond_yield(
 
     return select_subcategory(
         df, prefix="", sub_category=sub_category, context=f"bond_type='{bond_type}'"
+    )
+
+
+def get_bond_yield(
+    bond_type: Literal["종류별", "시장별"] = "종류별",
+    measure: Literal["거래대금", "거래량", "상장잔액", "상장종목수"] = "거래대금",
+    sub_category: str | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
+) -> pd.DataFrame:
+    """``get_bond_market`` 의 deprecated alias (#140).
+
+    이 함수는 이름과 달리 수익률(%)이 아니라 채권시장 거래통계를 반환했습니다.
+    이름을 :func:`get_bond_market` 으로 정정했으며, 본 alias 는 다음 마이너
+    릴리스에서 제거됩니다. 채권 수익률은 :func:`get_treasury_yield` 를 사용하세요.
+    """
+    warnings.warn(
+        "get_bond_yield()는 get_bond_market()으로 이름이 변경되었습니다 "
+        "(수익률이 아닌 채권시장 거래통계 반환). get_bond_market()을 사용하세요. "
+        "채권 수익률(%)은 get_treasury_yield()를 사용하세요. "
+        "이 alias는 다음 마이너 릴리스에서 제거됩니다.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return get_bond_market(
+        bond_type=bond_type,
+        measure=measure,
+        sub_category=sub_category,
+        start_date=start_date,
+        end_date=end_date,
     )

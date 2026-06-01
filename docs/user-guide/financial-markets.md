@@ -181,11 +181,11 @@ df.set_index('date')['value'].plot(
 import ecos
 
 # 종류별 거래대금 전체 (long-format: date, category_value, value, unit)
-df = ecos.get_bond_yield(bond_type="종류별")
+df = ecos.get_bond_market(bond_type="종류별")
 print(df.tail())
 
 # 국채만
-df = ecos.get_bond_yield(sub_category="국채")
+df = ecos.get_bond_market(sub_category="국채")
 ```
 
 ### 시장별 채권 거래
@@ -194,10 +194,10 @@ df = ecos.get_bond_yield(sub_category="국채")
 import ecos
 
 # 시장별 거래대금 전체
-df = ecos.get_bond_yield(bond_type="시장별")
+df = ecos.get_bond_market(bond_type="시장별")
 
 # 시장별 거래량, 국채전문 유통시장만
-df = ecos.get_bond_yield(bond_type="시장별", measure="거래량", sub_category="0202")
+df = ecos.get_bond_market(bond_type="시장별", measure="거래량", sub_category="0202")
 ```
 
 !!! note "v0.3.0 재설계 (#63)"
@@ -210,7 +210,7 @@ df = ecos.get_bond_yield(bond_type="시장별", measure="거래량", sub_categor
 
 ```python
 # 2024년 데이터
-df = ecos.get_bond_yield(
+df = ecos.get_bond_market(
     bond_type="종류별",
     start_date="202401",
     end_date="202412"
@@ -236,7 +236,7 @@ import ecos
 import matplotlib.pyplot as plt
 
 # 채권 종류별 수익률 추이
-df = ecos.get_bond_yield(
+df = ecos.get_bond_market(
     bond_type="종류별",
     start_date="202001"
 )
@@ -290,7 +290,7 @@ import matplotlib.pyplot as plt
 
 # 데이터 조회
 stock = ecos.get_stock_index(frequency="monthly", start_date="202001")
-bond = ecos.get_bond_yield(bond_type="종류별", start_date="202001")
+bond = ecos.get_bond_market(bond_type="종류별", start_date="202001")
 
 # 데이터 병합
 merged = pd.merge(
@@ -387,7 +387,7 @@ import matplotlib.pyplot as plt
 
 # 데이터 조회
 stock = ecos.get_stock_index(frequency="monthly", start_date="202001")
-bond = ecos.get_bond_yield(bond_type="종류별", start_date="202001")
+bond = ecos.get_bond_market(bond_type="종류별", start_date="202001")
 
 # 전월대비 변화율
 merged = pd.merge(

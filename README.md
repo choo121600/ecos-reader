@@ -173,7 +173,7 @@ print(items[["item_code", "item_name", "cycle"]].head())
 | `get_fiscal_balance()` | 통합재정수지 | 월 |
 | `get_stock_index(frequency, sub_category)` | 주가지수 KOSPI (일별/월별) | 일/월 |
 | `get_investor_trading(action, metric, sub_category)` | 투자자별 주식거래 | 월 |
-| `get_bond_yield(bond_type, measure, sub_category)` | 채권 거래 (종류별/시장별) | 월 |
+| `get_bond_market(bond_type, measure, sub_category)` | 채권 거래 (종류별/시장별) | 월 |
 
 ### 실물경기 지표
 
@@ -268,7 +268,7 @@ import ecos
 
 # 주요 금융시장 지표 수집
 stock = ecos.get_stock_index(frequency="daily", start_date="20240101", end_date="20241231")
-bond = ecos.get_bond_yield(bond_type="종류별", start_date="202401", end_date="202412")
+bond = ecos.get_bond_market(bond_type="종류별", start_date="202401", end_date="202412")
 investor = ecos.get_investor_trading(start_date="202401", end_date="202412")
 
 print("주식시장:", len(stock), "rows")

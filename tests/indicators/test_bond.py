@@ -15,7 +15,7 @@ import warnings
 import pytest
 import responses
 
-from ecos.indicators.bond import get_bond_yield
+from ecos.indicators.bond import get_bond_market, get_bond_yield
 
 
 def _type_mock() -> dict:
@@ -77,7 +77,7 @@ class TestGetBondYieldByType:
     def test_default_long_format_filters_measure(self):
         """기본(거래대금)은 거래대금 measure로 거른 채권종류 long-format을 반환한다."""
         self._add_mock()
-        df = get_bond_yield(bond_type="종류별", start_date="202401", end_date="202402")
+        df = get_bond_market(bond_type="종류별", start_date="202401", end_date="202402")
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
         assert set(df["category_value"]) == {"합계", "국채", "회사채"}
         assert len(df) == 6  # 3종류 × 2개월 (거래량 measure는 제외됨)
@@ -86,7 +86,7 @@ class TestGetBondYieldByType:
     def test_sub_category_single_series(self):
         """sub_category로 단일 채권종류 시계열을 반환한다."""
         self._add_mock()
-        df = get_bond_yield(sub_category="국채", start_date="202401", end_date="202402")
+        df = get_bond_market(sub_category="국채", start_date="202401", end_date="202402")
         assert list(df.columns) == ["date", "value", "unit"]
         assert (df["value"] == 4100).all()  # base 100 + 4*1000
 
@@ -94,7 +94,7 @@ class TestGetBondYieldByType:
     def test_measure_volume(self):
         """measure='거래량'은 거래량 measure로 필터한다."""
         self._add_mock()
-        df = get_bond_yield(
+        df = get_bond_market(
             measure="거래량", sub_category="국채", start_date="202401", end_date="202401"
         )
         assert (df["value"] == 4055).all()  # base 55 + 4*1000
@@ -103,7 +103,7 @@ class TestGetBondYieldByType:
     def test_unknown_sub_category_raises(self):
         self._add_mock()
         with pytest.raises(ValueError, match="사용 가능한 항목"):
-            get_bond_yield(sub_category="없는종류", start_date="202401", end_date="202401")
+            get_bond_market(sub_category="없는종류", start_date="202401", end_date="202401")
 
     @responses.activate
     def test_emits_no_warning(self):
@@ -111,7 +111,7 @@ class TestGetBondYieldByType:
         self._add_mock()
         with warnings.catch_warnings():
             warnings.simplefilter("error")
-            get_bond_yield(start_date="202401", end_date="202401")
+            get_bond_market(start_date="202401", end_date="202401")
 
 
 @pytest.mark.usefixtures("set_api_key")
@@ -125,7 +125,7 @@ class TestGetBondYieldByMarket:
     def test_default_long_format_promotes_market_axis(self):
         """시장별 기본은 measure로 item_code1을 거른 뒤 시장(item_code2)을 분류한다."""
         self._add_mock()
-        df = get_bond_yield(bond_type="시장별", start_date="202401", end_date="202402")
+        df = get_bond_market(bond_type="시장별", start_date="202401", end_date="202402")
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
         assert set(df["category_value"]) == {"합계", "국채전문 유통시장", "일반채권 시장"}
         assert len(df) == 6
@@ -134,7 +134,7 @@ class TestGetBondYieldByMarket:
     def test_sub_category_by_market_code(self):
         """sub_category(시장 item_code2 코드)로 단일 시장 시계열을 반환한다."""
         self._add_mock()
-        df = get_bond_yield(
+        df = get_bond_market(
             bond_type="시장별", sub_category="0202", start_date="202401", end_date="202402"
         )
         assert list(df.columns) == ["date", "value", "unit"]
@@ -144,7 +144,7 @@ class TestGetBondYieldByMarket:
     def test_measure_volume(self):
         """시장별 measure='거래량'도 동작한다."""
         self._add_mock()
-        df = get_bond_yield(
+        df = get_bond_market(
             bond_type="시장별", measure="거래량", start_date="202401", end_date="202401"
         )
         assert set(df["category_value"]) == {"합계", "국채전문 유통시장", "일반채권 시장"}
@@ -158,7 +158,7 @@ class TestGetBondYieldByMarket:
             json={"StatisticSearch": {"row": []}},
             status=200,
         )
-        df = get_bond_yield(bond_type="시장별", start_date="202401", end_date="202401")
+        df = get_bond_market(bond_type="시장별", start_date="202401", end_date="202401")
         assert df.empty
 
 
@@ -166,13 +166,27 @@ class TestGetBondYieldByMarket:
 class TestGetBondYieldValidation:
     def test_invalid_bond_type_raises(self):
         with pytest.raises(ValueError, match="bond_type"):
-            get_bond_yield(bond_type="invalid")  # type: ignore[arg-type]
+            get_bond_market(bond_type="invalid")  # type: ignore[arg-type]
 
     def test_invalid_type_measure_raises(self):
         with pytest.raises(ValueError, match="종류별 measure"):
-            get_bond_yield(bond_type="종류별", measure="없음")  # type: ignore[arg-type]
+            get_bond_market(bond_type="종류별", measure="없음")  # type: ignore[arg-type]
 
     def test_invalid_market_measure_raises(self):
         """시장별은 상장잔액/상장종목수를 지원하지 않는다."""
         with pytest.raises(ValueError, match="시장별 measure"):
-            get_bond_yield(bond_type="시장별", measure="상장잔액")  # type: ignore[arg-type]
+            get_bond_market(bond_type="시장별", measure="상장잔액")  # type: ignore[arg-type]
+
+
+@pytest.mark.usefixtures("set_api_key")
+class TestGetBondYieldDeprecatedAlias:
+    """get_bond_yield 는 get_bond_market 의 deprecated alias (#140)."""
+
+    @responses.activate
+    def test_alias_warns_and_delegates(self):
+        """get_bond_yield 는 DeprecationWarning 을 내고 get_bond_market 과 동일 결과를 반환한다."""
+        responses.add(responses.GET, url=re.compile(r".*"), json=_type_mock(), status=200)
+        with pytest.warns(DeprecationWarning, match="get_bond_market"):
+            df = get_bond_yield(bond_type="종류별", start_date="202401", end_date="202402")
+        assert list(df.columns) == ["date", "category_value", "value", "unit"]
+        assert set(df["category_value"]) == {"합계", "국채", "회사채"}
