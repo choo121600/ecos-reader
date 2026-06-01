@@ -235,6 +235,25 @@ class TestGetMoneySupply:
         with pytest.raises(ValueError, match="indicator"):
             get_money_supply(indicator="M3")  # type: ignore
 
+    @responses.activate
+    @pytest.mark.parametrize(
+        ("frequency", "marker"),
+        [("monthly", "/M/"), ("quarterly", "/Q/"), ("annual", "/A/")],
+    )
+    def test_frequency_maps_to_period(self, frequency, marker):
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("3800000", "202401"),
+            status=200,
+        )
+        get_money_supply(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    def test_invalid_frequency_raises(self):
+        with pytest.raises(ValueError, match="frequency"):
+            get_money_supply(frequency="daily")  # type: ignore[arg-type]
+
 
 @pytest.mark.usefixtures("set_api_key")
 class TestGetBankLending:
@@ -296,6 +315,25 @@ class TestGetBankLending:
         """잘못된 부문 지정 시 에러"""
         with pytest.raises(ValueError, match="sector"):
             get_bank_lending(sector="government")  # type: ignore
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        ("frequency", "marker"),
+        [("monthly", "/M/"), ("quarterly", "/Q/"), ("annual", "/A/")],
+    )
+    def test_frequency_maps_to_period(self, frequency, marker):
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("2500000", "202401"),
+            status=200,
+        )
+        get_bank_lending(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    def test_invalid_frequency_raises(self):
+        with pytest.raises(ValueError, match="frequency"):
+            get_bank_lending(frequency="weekly")  # type: ignore[arg-type]
 
 
 # ---------------------------------------------------------------------------
@@ -385,6 +423,25 @@ class TestGetM1Variants:
         with pytest.raises(ValueError, match="variant"):
             get_m1_variants(variant="없는변형")  # type: ignore[arg-type]
 
+    @responses.activate
+    @pytest.mark.parametrize(
+        ("frequency", "marker"),
+        [("monthly", "/M/"), ("quarterly", "/Q/"), ("annual", "/A/")],
+    )
+    def test_frequency_maps_to_period(self, frequency, marker):
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("450000", "202401"),
+            status=200,
+        )
+        get_m1_variants(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    def test_invalid_frequency_raises(self):
+        with pytest.raises(ValueError, match="frequency"):
+            get_m1_variants(frequency="daily")  # type: ignore[arg-type]
+
 
 @pytest.mark.usefixtures("set_api_key")
 class TestGetM2Variants:
@@ -421,6 +478,25 @@ class TestGetM2Variants:
         """잘못된 variant 지정 시 ValueError"""
         with pytest.raises(ValueError, match="variant"):
             get_m2_variants(variant="없는변형")  # type: ignore[arg-type]
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        ("frequency", "marker"),
+        [("monthly", "/M/"), ("quarterly", "/Q/"), ("annual", "/A/")],
+    )
+    def test_frequency_maps_to_period(self, frequency, marker):
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json=_simple_monthly_mock("3800000", "202401"),
+            status=200,
+        )
+        get_m2_variants(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    def test_invalid_frequency_raises(self):
+        with pytest.raises(ValueError, match="frequency"):
+            get_m2_variants(frequency="daily")  # type: ignore[arg-type]
 
 
 def _m2_holder_mock() -> dict:
@@ -499,6 +575,20 @@ class TestGetM2ByHolder:
         """잘못된 variant 지정 시 ValueError"""
         with pytest.raises(ValueError, match="variant"):
             get_m2_by_holder(variant="없는변형")  # type: ignore[arg-type]
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        ("frequency", "marker"),
+        [("monthly", "/M/"), ("quarterly", "/Q/"), ("annual", "/A/")],
+    )
+    def test_frequency_maps_to_period(self, frequency, marker):
+        responses.add(responses.GET, url=re.compile(r".*"), json=_m2_holder_mock(), status=200)
+        get_m2_by_holder(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    def test_invalid_frequency_raises(self):
+        with pytest.raises(ValueError, match="frequency"):
+            get_m2_by_holder(frequency="daily")  # type: ignore[arg-type]
 
 
 @pytest.mark.usefixtures("set_api_key")

@@ -20,6 +20,7 @@ from ..constants import (
     M2_VARIANTS,
     MONEY_SUPPLY_ITEMS,
     MONEY_SUPPLY_STAT_CODES,
+    PERIOD_ANNUAL,
     PERIOD_MONTHLY,
     PERIOD_QUARTERLY,
     STAT_BANK_LENDING,
@@ -29,7 +30,8 @@ from ..constants import (
     STAT_HOUSEHOLD_LENDING_PURPOSE,
 )
 from ..parser import normalize_stat_result, parse_response
-from ._dates import default_monthly, default_quarterly
+from ._dates import default_annual, default_monthly, default_quarterly
+from ._frequency import normalize_frequency
 from ._subcategory import select_subcategory
 
 if TYPE_CHECKING:
@@ -40,6 +42,7 @@ def get_money_supply(
     indicator: Literal["M1", "M2", "Lf"] = "M2",
     start_date: str | None = None,
     end_date: str | None = None,
+    frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """
     통화량을 조회합니다.
@@ -52,9 +55,12 @@ def get_money_supply(
         - 'M2': 광의통화 (기본값, 가장 많이 사용)
         - 'Lf': 금융기관유동성
     start_date : str, optional
-        조회 시작일 (YYYYMM 형식), 기본값: 3년 전
+        조회 시작 시점. ``frequency`` 에 맞는 형식
+        (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
-        조회 종료일 (YYYYMM 형식), 기본값: 현재
+        조회 종료 시점. (형식은 ``start_date`` 와 동일)
+    frequency : str
+        조회 주기. ``'monthly'``(기본)/``'quarterly'``/``'annual'``.
 
     Returns
     -------
@@ -63,6 +69,11 @@ def get_money_supply(
         - date: 날짜 (datetime)
         - value: 통화량 (십억원)
         - unit: 단위
+
+    Raises
+    ------
+    ValueError
+        지원하지 않는 ``indicator``/``frequency`` 일 때.
 
     Notes
     -----
@@ -75,17 +86,34 @@ def get_money_supply(
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_money_supply()  # M2 기본
+    >>> df = ecos.get_money_supply()  # M2 기본(월)
     >>> df.head()
 
     >>> df = ecos.get_money_supply(indicator="M1")
+    >>> df = ecos.get_money_supply(frequency="annual")
     """
     if indicator not in MONEY_SUPPLY_ITEMS:
         raise ValueError(f"indicator는 {list(MONEY_SUPPLY_ITEMS.keys())} 중 하나여야 합니다.")
 
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency,
+        allowed=("monthly", "quarterly", "annual"),
+        func_name="get_money_supply",
+    )
+    period = {
+        "monthly": PERIOD_MONTHLY,
+        "quarterly": PERIOD_QUARTERLY,
+        "annual": PERIOD_ANNUAL,
+    }[frequency]
+
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(36)
+        if frequency == "monthly":
+            default_start, default_end = default_monthly(36)
+        elif frequency == "quarterly":
+            default_start, default_end = default_quarterly(5)
+        else:
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -96,7 +124,7 @@ def get_money_supply(
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
-        period=PERIOD_MONTHLY,
+        period=period,
         start_date=start_date,
         end_date=end_date,
         item_code1=item_code,
@@ -110,6 +138,7 @@ def get_bank_lending(
     sector: Literal["household", "all"] = "all",
     start_date: str | None = None,
     end_date: str | None = None,
+    frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """
     은행 대출금을 조회합니다.
@@ -121,9 +150,12 @@ def get_bank_lending(
         - 'all': 예금은행 전체 대출금 (기본값)
         - 'household': 예금취급기관 가계대출
     start_date : str, optional
-        조회 시작일 (YYYYMM 형식), 기본값: 3년 전
+        조회 시작 시점. ``frequency`` 에 맞는 형식
+        (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
-        조회 종료일 (YYYYMM 형식), 기본값: 현재
+        조회 종료 시점. (형식은 ``start_date`` 와 동일)
+    frequency : str
+        조회 주기. ``'monthly'``(기본)/``'quarterly'``/``'annual'``.
 
     Returns
     -------
@@ -132,6 +164,11 @@ def get_bank_lending(
         - date: 날짜 (datetime)
         - value: 대출금 (십억원)
         - unit: 단위
+
+    Raises
+    ------
+    ValueError
+        지원하지 않는 ``sector``/``frequency`` 일 때.
 
     Notes
     -----
@@ -145,10 +182,27 @@ def get_bank_lending(
     >>> df.head()
 
     >>> df = ecos.get_bank_lending(sector="household")  # 가계대출
+    >>> df = ecos.get_bank_lending(frequency="annual")
     """
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency,
+        allowed=("monthly", "quarterly", "annual"),
+        func_name="get_bank_lending",
+    )
+    period = {
+        "monthly": PERIOD_MONTHLY,
+        "quarterly": PERIOD_QUARTERLY,
+        "annual": PERIOD_ANNUAL,
+    }[frequency]
+
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(36)
+        if frequency == "monthly":
+            default_start, default_end = default_monthly(36)
+        elif frequency == "quarterly":
+            default_start, default_end = default_quarterly(5)
+        else:
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -165,7 +219,7 @@ def get_bank_lending(
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
-        period=PERIOD_MONTHLY,
+        period=period,
         start_date=start_date,
         end_date=end_date,
         item_code1=item_code,
@@ -179,6 +233,7 @@ def get_m1_variants(
     variant: Literal["평잔_계절조정", "평잔_원계열", "말잔_계절조정"] = "말잔_계절조정",
     start_date: str | None = None,
     end_date: str | None = None,
+    frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """
     M1 세부 데이터를 조회합니다.
@@ -193,9 +248,12 @@ def get_m1_variants(
         - '평잔_원계열': 평잔 원계열
         - '말잔_계절조정': 말잔 계절조정 계열 (기본값)
     start_date : str, optional
-        조회 시작일 (YYYYMM 형식), 기본값: 3년 전
+        조회 시작 시점. ``frequency`` 에 맞는 형식
+        (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
-        조회 종료일 (YYYYMM 형식), 기본값: 현재
+        조회 종료 시점. (형식은 ``start_date`` 와 동일)
+    frequency : str
+        조회 주기. ``'monthly'``(기본)/``'quarterly'``/``'annual'``.
 
     Returns
     -------
@@ -204,6 +262,11 @@ def get_m1_variants(
         - date: 날짜 (datetime)
         - value: M1 (십억원)
         - unit: 단위
+
+    Raises
+    ------
+    ValueError
+        지원하지 않는 ``variant``/``frequency`` 일 때.
 
     Notes
     -----
@@ -218,13 +281,30 @@ def get_m1_variants(
     >>> df.head()
 
     >>> df = ecos.get_m1_variants(variant="평잔_원계열")
+    >>> df = ecos.get_m1_variants(frequency="annual")
     """
     if variant not in M1_VARIANTS:
         raise ValueError(f"variant는 {list(M1_VARIANTS.keys())} 중 하나여야 합니다.")
 
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency,
+        allowed=("monthly", "quarterly", "annual"),
+        func_name="get_m1_variants",
+    )
+    period = {
+        "monthly": PERIOD_MONTHLY,
+        "quarterly": PERIOD_QUARTERLY,
+        "annual": PERIOD_ANNUAL,
+    }[frequency]
+
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(36)
+        if frequency == "monthly":
+            default_start, default_end = default_monthly(36)
+        elif frequency == "quarterly":
+            default_start, default_end = default_quarterly(5)
+        else:
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -234,7 +314,7 @@ def get_m1_variants(
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
-        period=PERIOD_MONTHLY,
+        period=period,
         start_date=start_date,
         end_date=end_date,
         item_code1=item_code,
@@ -248,6 +328,7 @@ def get_m2_variants(
     variant: Literal["평잔_계절조정", "평잔_원계열", "말잔_계절조정"] = "말잔_계절조정",
     start_date: str | None = None,
     end_date: str | None = None,
+    frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """
     M2 세부 데이터를 조회합니다.
@@ -262,9 +343,12 @@ def get_m2_variants(
         - '평잔_원계열': 평잔 원계열
         - '말잔_계절조정': 말잔 계절조정 계열 (기본값)
     start_date : str, optional
-        조회 시작일 (YYYYMM 형식), 기본값: 3년 전
+        조회 시작 시점. ``frequency`` 에 맞는 형식
+        (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
-        조회 종료일 (YYYYMM 형식), 기본값: 현재
+        조회 종료 시점. (형식은 ``start_date`` 와 동일)
+    frequency : str
+        조회 주기. ``'monthly'``(기본)/``'quarterly'``/``'annual'``.
 
     Returns
     -------
@@ -273,6 +357,11 @@ def get_m2_variants(
         - date: 날짜 (datetime)
         - value: M2 (십억원)
         - unit: 단위
+
+    Raises
+    ------
+    ValueError
+        지원하지 않는 ``variant``/``frequency`` 일 때.
 
     Notes
     -----
@@ -289,13 +378,30 @@ def get_m2_variants(
     >>> df.head()
 
     >>> df = ecos.get_m2_variants(variant="평잔_원계열")
+    >>> df = ecos.get_m2_variants(frequency="annual")
     """
     if variant not in M2_VARIANTS:
         raise ValueError(f"variant는 {list(M2_VARIANTS.keys())} 중 하나여야 합니다.")
 
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency,
+        allowed=("monthly", "quarterly", "annual"),
+        func_name="get_m2_variants",
+    )
+    period = {
+        "monthly": PERIOD_MONTHLY,
+        "quarterly": PERIOD_QUARTERLY,
+        "annual": PERIOD_ANNUAL,
+    }[frequency]
+
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(36)
+        if frequency == "monthly":
+            default_start, default_end = default_monthly(36)
+        elif frequency == "quarterly":
+            default_start, default_end = default_quarterly(5)
+        else:
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -305,7 +411,7 @@ def get_m2_variants(
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
-        period=PERIOD_MONTHLY,
+        period=period,
         start_date=start_date,
         end_date=end_date,
         item_code1=item_code,
@@ -322,6 +428,7 @@ def get_m2_by_holder(
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
+    frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """
     M2 경제주체별 보유 현황을 조회합니다.
@@ -344,9 +451,12 @@ def get_m2_by_holder(
         미지정 시 전체 주체를 long-format으로 반환합니다.
         예) '가계 및 비영리단체', '비금융기업', 또는 item_code 'BBGAJ1'.
     start_date : str, optional
-        조회 시작일 (YYYYMM 형식), 기본값: 3년 전
+        조회 시작 시점. ``frequency`` 에 맞는 형식
+        (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
-        조회 종료일 (YYYYMM 형식), 기본값: 현재
+        조회 종료 시점. (형식은 ``start_date`` 와 동일)
+    frequency : str
+        조회 주기. ``'monthly'``(기본)/``'quarterly'``/``'annual'``.
 
     Returns
     -------
@@ -357,6 +467,11 @@ def get_m2_by_holder(
           단순 합산은 금지합니다.
         - ``sub_category`` 지정: 컬럼 ``date, value, unit`` (단일 시계열).
         - value 단위: 십억원
+
+    Raises
+    ------
+    ValueError
+        지원하지 않는 ``variant``/``frequency`` 이거나 ``sub_category`` 가 없을 때.
 
     Notes
     -----
@@ -369,13 +484,30 @@ def get_m2_by_holder(
     >>> df = ecos.get_m2_by_holder()  # 전체 주체 long-format
     >>> df = ecos.get_m2_by_holder(sub_category="가계 및 비영리단체")  # 단일 주체
     >>> df = ecos.get_m2_by_holder(variant="평잔_계절조정")
+    >>> df = ecos.get_m2_by_holder(frequency="annual")
     """
     if variant not in M2_HOLDER_VARIANTS:
         raise ValueError(f"variant는 {list(M2_HOLDER_VARIANTS.keys())} 중 하나여야 합니다.")
 
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency,
+        allowed=("monthly", "quarterly", "annual"),
+        func_name="get_m2_by_holder",
+    )
+    period = {
+        "monthly": PERIOD_MONTHLY,
+        "quarterly": PERIOD_QUARTERLY,
+        "annual": PERIOD_ANNUAL,
+    }[frequency]
+
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(36)
+        if frequency == "monthly":
+            default_start, default_end = default_monthly(36)
+        elif frequency == "quarterly":
+            default_start, default_end = default_quarterly(5)
+        else:
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -386,7 +518,7 @@ def get_m2_by_holder(
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
-        period=PERIOD_MONTHLY,
+        period=period,
         start_date=start_date,
         end_date=end_date,
     )

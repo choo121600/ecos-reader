@@ -189,6 +189,18 @@ class TestGetInvestorTrading:
             get_investor_trading(metric="없음")  # type: ignore[arg-type]
 
     @responses.activate
+    @pytest.mark.parametrize(("frequency", "marker"), [("monthly", "/M/"), ("annual", "/A/")])
+    def test_frequency_maps_to_period(self, frequency, marker):
+        self._add_mock()
+        get_investor_trading(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    def test_quarterly_frequency_raises(self):
+        """이 통계표는 분기 자료를 제공하지 않으므로 quarterly는 ValueError."""
+        with pytest.raises(ValueError, match="frequency"):
+            get_investor_trading(frequency="quarterly")  # type: ignore[arg-type]
+
+    @responses.activate
     def test_emits_no_warning(self):
         """재설계 후 어떤 경고도 발생시키지 않는다 (partial-coverage 경고 제거, #64)."""
         self._add_mock()

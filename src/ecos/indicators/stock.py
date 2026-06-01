@@ -14,6 +14,7 @@ from ..constants import (
     INVESTOR_TRADING_METRIC_CODE,
     ITEM_STOCK_INDEX_DAILY,
     ITEM_STOCK_INDEX_MONTHLY,
+    PERIOD_ANNUAL,
     PERIOD_DAILY,
     PERIOD_MONTHLY,
     STAT_INVESTOR_TRADING,
@@ -21,7 +22,7 @@ from ..constants import (
     STAT_STOCK_MONTHLY,
 )
 from ..parser import normalize_stat_result, parse_response
-from ._dates import default_daily, default_monthly
+from ._dates import default_annual, default_daily, default_monthly
 from ._frequency import normalize_frequency
 from ._subcategory import select_subcategory
 
@@ -152,6 +153,7 @@ def get_investor_trading(
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
+    frequency: Literal["monthly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """
     투자자별 주식거래를 조회합니다.
@@ -178,9 +180,13 @@ def get_investor_trading(
         반환합니다. 항목명은 ECOS 라벨(예: '개인(순매수)')을 따르며, 안정적
         선택을 위해 item_code(예: 'S22CB')도 허용합니다.
     start_date : str, optional
-        조회 시작일 (YYYYMM 형식), 기본값: 2년 전
+        조회 시작 시점. ``frequency`` 에 맞는 형식
+        (월 ``YYYYMM`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
-        조회 종료일 (YYYYMM 형식), 기본값: 현재
+        조회 종료 시점. (형식은 ``start_date`` 와 동일)
+    frequency : str
+        조회 주기. ``'monthly'``(기본)/``'annual'``.
+        이 통계표(``901Y055``)는 월·연 자료만 제공합니다.
 
     Returns
     -------
@@ -192,8 +198,8 @@ def get_investor_trading(
     Raises
     ------
     ValueError
-        action/metric이 허용 값이 아니거나, 지정한 ``sub_category`` 가 존재하지
-        않는 경우 (사용 가능 항목을 함께 안내).
+        action/metric/frequency가 허용 값이 아니거나, 지정한 ``sub_category`` 가
+        존재하지 않는 경우 (사용 가능 항목을 함께 안내).
 
     Notes
     -----
@@ -219,6 +225,9 @@ def get_investor_trading(
 
     >>> # 투자자별 매수 거래량
     >>> df = ecos.get_investor_trading(action="매수", metric="거래량")
+
+    >>> # 연간 투자자별 순매수
+    >>> df = ecos.get_investor_trading(frequency="annual")
     """
     if action not in INVESTOR_TRADING_ACTION_PREFIX:
         raise ValueError(
@@ -229,9 +238,19 @@ def get_investor_trading(
             f"metric은 {list(INVESTOR_TRADING_METRIC_CODE.keys())} 중 하나여야 합니다."
         )
 
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency,
+        allowed=("monthly", "annual"),
+        func_name="get_investor_trading",
+    )
+    period = PERIOD_MONTHLY if frequency == "monthly" else PERIOD_ANNUAL
+
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(24)
+        if frequency == "monthly":
+            default_start, default_end = default_monthly(24)
+        else:
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -243,7 +262,7 @@ def get_investor_trading(
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_INVESTOR_TRADING,
-        period=PERIOD_MONTHLY,
+        period=period,
         start_date=start_date,
         end_date=end_date,
     )

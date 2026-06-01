@@ -177,6 +177,18 @@ class TestGetBondYieldValidation:
         with pytest.raises(ValueError, match="시장별 measure"):
             get_bond_market(bond_type="시장별", measure="상장잔액")  # type: ignore[arg-type]
 
+    @responses.activate
+    @pytest.mark.parametrize(("frequency", "marker"), [("monthly", "/M/"), ("annual", "/A/")])
+    def test_frequency_maps_to_period(self, frequency, marker):
+        responses.add(responses.GET, url=re.compile(r".*"), json=_type_mock(), status=200)
+        get_bond_market(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    def test_quarterly_frequency_raises(self):
+        """이 통계표들은 분기 자료를 제공하지 않으므로 quarterly는 ValueError."""
+        with pytest.raises(ValueError, match="frequency"):
+            get_bond_market(frequency="quarterly")  # type: ignore[arg-type]
+
 
 @pytest.mark.usefixtures("set_api_key")
 class TestGetBondYieldDeprecatedAlias:
