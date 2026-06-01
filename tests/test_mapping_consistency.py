@@ -24,6 +24,9 @@ from ecos.indicators._registry import INDICATORS
 FIXTURE = Path(__file__).parent / "fixtures" / "ecos_item_catalog.json"
 CATALOG: dict[str, dict[str, list[str]]] = json.loads(FIXTURE.read_text())
 
+STRUCT_FIXTURE = Path(__file__).parent / "fixtures" / "ecos_table_structure.json"
+STRUCTURE: dict[str, dict] = json.loads(STRUCT_FIXTURE.read_text())
+
 
 def _units(stat: str, item: str) -> list[str] | None:
     """스냅샷에서 (stat, item) 의 단위 목록. item 미존재 시 None."""
@@ -138,3 +141,88 @@ def test_registry_unit_matches_catalog():
         if spec.unit.strip() not in actual:
             mismatches.append(f"{name}: registry unit {spec.unit!r} not in {sorted(actual)}")
     assert not mismatches, "registry 단위 불일치:\n" + "\n".join(mismatches)
+
+
+# ---------------------------------------------------------------------------
+# 주기(period) 유효성 — 함수가 ECOS 호출에 쓰는 period 가 해당 통계표에 실제 존재하는가.
+# 잘못된 주기는 빈 응답을 부른다(과거 v0.1.5 사례). (label, stat_code, period)
+# period 분기형 함수는 사용 가능한 모든 period 를 나열한다.
+# ---------------------------------------------------------------------------
+def _period_checks() -> list[tuple[str, str, str]]:
+    p: list[tuple[str, str, str]] = []
+    p += [
+        ("cpi", c.STAT_CPI, "M"),
+        ("core_cpi", c.STAT_CORE_CPI, "M"),
+        ("ppi", c.STAT_PPI, "M"),
+        ("cpi_monthly", c.STAT_CPI_MONTHLY, "M"),
+        ("base_rate/monthly", c.STAT_BASE_RATE, "M"),
+        ("base_rate/daily", c.STAT_BASE_RATE, "D"),
+        ("fiscal_balance", c.STAT_FISCAL_BALANCE, "M"),
+        ("gdp_growth_rate/q", c.STAT_GDP_GROWTH_RATE, "Q"),
+        ("gdp_growth_rate/a", c.STAT_GDP_GROWTH_RATE, "A"),
+        ("gdp_deflator", c.STAT_GDP_DEFLATOR, "Q"),
+        ("gdp_real/q", c.STAT_GDP_REAL, "Q"),
+        ("gdp_real/a", c.STAT_GDP_REAL, "A"),
+        ("gdp_nominal/a", c.STAT_GDP_NOMINAL, "A"),
+        ("treasury", c.STAT_MARKET_RATE, "D"),
+        ("exchange", c.STAT_EXCHANGE_RATE, "D"),
+        ("stock_daily", c.STAT_STOCK_DAILY, "D"),
+        ("stock_monthly", c.STAT_STOCK_MONTHLY, "M"),
+        ("investor_trading", c.STAT_INVESTOR_TRADING, "M"),
+        ("bsi", c.STAT_BSI, "M"),
+        ("csi", c.STAT_CSI, "M"),
+        ("composite_index", c.STAT_COMPOSITE_INDEX, "M"),
+        ("industrial_production", c.STAT_INDUSTRIAL_PRODUCTION, "M"),
+        ("facility_investment", c.STAT_FACILITY_INVESTMENT, "M"),
+        ("bond_type", c.STAT_BOND_YIELD_TYPE, "M"),
+        ("bond_market", c.STAT_BOND_MARKET, "M"),
+        ("bank_lending", c.STAT_BANK_LENDING, "M"),
+        ("household_lending_detail", c.STAT_HOUSEHOLD_LENDING, "M"),
+        # 비-월간 주기를 쓰는 함수 (테이블에 M 이 없어 Q 를 써야 함 — 회귀 시 빈 응답)
+        ("household_credit/sector", c.STAT_HOUSEHOLD_CREDIT_SECTOR, "Q"),
+        ("household_credit/purpose", c.STAT_HOUSEHOLD_CREDIT_PURPOSE, "Q"),
+        ("borrower_loan/new", c.BORROWER_LOAN_STAT_CODES["신규"], "Q"),
+        ("borrower_loan/balance", c.BORROWER_LOAN_STAT_CODES["잔액"], "Q"),
+    ]
+    # bop / retail / trade — period 분기형
+    for per in ("M", "Q", "A"):
+        p.append((f"bop/{per}", c.STAT_BOP, per))
+        p.append((f"retail/{per}", c.STAT_RETAIL_SALES, per))
+    for per in ("M", "A"):
+        p.append((f"trade/{per}", c.STAT_TRADE, per))
+    # money_supply / m1 / m2 / m2_holder — 월간
+    for stat in c.MONEY_SUPPLY_STAT_CODES.values():
+        p.append((f"money_supply[{stat}]", stat, "M"))
+    for stat in {**c.M1_VARIANTS, **c.M2_VARIANTS, **c.M2_HOLDER_VARIANTS}.values():
+        p.append((f"m_variant[{stat}]", stat, "M"))
+    return p
+
+
+PERIOD_CHECKS = _period_checks()
+
+
+@pytest.mark.parametrize(
+    ("label", "stat", "period"), PERIOD_CHECKS, ids=[x[0] for x in PERIOD_CHECKS]
+)
+def test_used_period_is_available_in_table(label, stat, period):
+    """함수가 호출에 쓰는 period 가 해당 통계표가 제공하는 주기에 있어야 한다.
+
+    없는 주기를 쓰면 ECOS 가 빈 응답을 돌려준다(silent 실패). 잘못된 주기 매핑을
+    스냅샷 대비로 차단한다.
+    """
+    info = STRUCTURE.get(stat)
+    assert info is not None, f"{label}: {stat} 구조 스냅샷 없음 (스냅샷 갱신 필요)"
+    assert period in info["cycles"], (
+        f"{label}: period '{period}' 가 통계표 {stat} 의 제공 주기 {info['cycles']} 에 없음. "
+        f"잘못된 주기 매핑(빈 응답)이거나 스냅샷 갱신 필요."
+    )
+
+
+def test_table_structure_snapshot_covers_all_used_stats():
+    """라이브러리가 쓰는 모든 stat_code 가 구조 스냅샷에 존재해야 한다(신규 표 누락 방지)."""
+    used = {stat for _label, stat, _item, _u in SINGLE_SERIES}
+    used |= {stat for _label, stat, _p in PERIOD_CHECKS}
+    missing = sorted(used - set(STRUCTURE))
+    assert not missing, (
+        f"구조 스냅샷에 없는 stat_code: {missing} (scripts/snapshot_item_units.py 재생성)"
+    )

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Tests
+- 매핑 정합성 가드를 **주기(period)·구조 차원**으로 확장 (오프라인, 매 PR). 새 스냅샷
+  `tests/fixtures/ecos_table_structure.json`(통계표별 제공 주기·항목 축 수)를 추가하고,
+  ① 함수가 호출에 쓰는 `period` 가 해당 통계표에 실제 존재하는지(없으면 빈 응답 silent
+  실패) ② 사용 stat_code 가 모두 구조 스냅샷에 존재하는지 검증한다. 라이브 전수 검사로
+  현재 주기 매핑이 전부 유효함을 확인(회귀 방지용 가드). `scripts/snapshot_item_units.py`
+  가 두 스냅샷을 함께 재생성/`--check` 하고 야간 e2e CI가 drift 를 감시한다.
+
 ## [0.5.3] - 2026-06-01
 
 > 지표 매핑 정확성 패치. 전수 조사로 발견한 stat/item·단위 오매핑 6건을 정정하고,
