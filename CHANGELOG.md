@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   실패) ② 사용 stat_code 가 모두 구조 스냅샷에 존재하는지 검증한다. 라이브 전수 검사로
   현재 주기 매핑이 전부 유효함을 확인(회귀 방지용 가드). `scripts/snapshot_item_units.py`
   가 두 스냅샷을 함께 재생성/`--check` 하고 야간 e2e CI가 drift 를 감시한다.
+- `scripts/audit_endpoints_live.py` 추가 — 실제 키로 전 엔드포인트(92 변종)를 라이브
+  호출해 단위·값범위·계열정합성·파라미터효과(변종 구분)를 1:1 대조하는 재실행 가능한
+  FM 전수 감사 하니스 (#151). 도메인별 배치(`--group`)·결과표(`--report`) 지원.
 
 ## [0.5.3] - 2026-06-01
 
