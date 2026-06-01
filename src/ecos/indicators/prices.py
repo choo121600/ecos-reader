@@ -28,9 +28,9 @@ def get_cpi(
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
-    소비자물가지수(CPI) 전년동월비를 조회합니다.
+    소비자물가지수(CPI) 총지수(지수, 2020=100)를 조회합니다.
 
-    한국은행 물가안정목표(2%)의 기준 지표입니다.
+    한국은행 물가안정목표(2%)의 기준이 되는 물가 수준 지표입니다.
 
     Parameters
     ----------
@@ -44,21 +44,23 @@ def get_cpi(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 전년동월비 (%)
-        - unit: 단위
+        - value: 소비자물가지수 (지수, 2020=100)
+        - unit: 단위 ('2020=100')
 
     Notes
     -----
-    - CPI가 2%를 상회하면 인플레이션 압력이 있음을 의미
-    - CPI가 2%를 하회하면 디플레이션 우려
+    - 반환값은 전년동월비(%)가 아니라 **지수 레벨**입니다. 인플레이션율이 필요하면
+      반환된 지수에서 전년동월 대비 변화율을 직접 계산하세요
+      (예: ``df["value"].pct_change(12) * 100``).
+    - 지수 상승률(전년동월비)이 2%를 상회하면 인플레이션 압력을 의미합니다.
 
     Examples
     --------
     >>> import ecos
     >>> df = ecos.get_cpi()
     >>> df.head()
-            date  value unit
-    0 2023-01-01   5.20    %
+            date   value      unit
+    0 2024-01-01  113.15  2020=100
     """
     # 선언적 레지스트리(#16)에 위임하는 얇은 alias.
     return get_indicator("cpi", start_date=start_date, end_date=end_date)
@@ -69,7 +71,7 @@ def get_core_cpi(
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
-    근원 소비자물가지수(Core CPI)를 조회합니다.
+    근원 소비자물가지수(Core CPI) 지수(2020=100)를 조회합니다.
 
     식료품과 에너지를 제외한 물가지수로, 일시적인 물가 변동 요인을
     제거한 기조적 인플레이션을 파악하는 데 활용됩니다.
@@ -86,11 +88,13 @@ def get_core_cpi(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 근원 CPI (%, 전년동월비)
-        - unit: 단위
+        - value: 근원 소비자물가지수 (지수, 2020=100)
+        - unit: 단위 ('2020=100')
 
     Notes
     -----
+    - 반환값은 전년동월비(%)가 아니라 **지수 레벨**입니다. 기조적 인플레이션율이
+      필요하면 반환된 지수에서 직접 변화율을 계산하세요(``pct_change(12) * 100``).
     - 근원 CPI는 일시적 충격(유가, 농산물 가격)을 제외
     - 통화정책 결정 시 참고 지표로 중요하게 활용
 
@@ -109,7 +113,7 @@ def get_ppi(
     end_date: str | None = None,
 ) -> pd.DataFrame:
     """
-    생산자물가지수(PPI) 전년동월비를 조회합니다.
+    생산자물가지수(PPI) 총지수(지수, 2020=100)를 조회합니다.
 
     생산자물가는 소비자물가의 선행 지표로 활용됩니다.
 
@@ -125,11 +129,13 @@ def get_ppi(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 전년동월비 (%)
-        - unit: 단위
+        - value: 생산자물가지수 (지수, 2020=100)
+        - unit: 단위 ('2020=100')
 
     Notes
     -----
+    - 반환값은 전년동월비(%)가 아니라 **지수 레벨**입니다. 변화율이 필요하면
+      반환된 지수에서 직접 계산하세요(``pct_change(12) * 100``).
     - PPI 상승 → CPI 상승으로 이어지는 경향
     - 기업의 원가 부담을 나타내는 지표
 
@@ -183,7 +189,7 @@ def get_cpi_monthly(
     Notes
     -----
     - 원지수는 기준년도(2020=100)를 100으로 한 지수값
-    - 전년동월비는 get_cpi() 함수 사용
+    - 총지수 단일 시계열은 get_cpi() 함수 사용 (동일하게 지수 레벨 반환)
     - CPI 통계표(901Y009)는 계층형입니다 — long-format에는 총지수(item_code '0'),
       COICOP 대분류(A=식료품 등), 중·소분류, 개별 품목(쌀 등)이 모두 포함됩니다.
       특정 시계열이 필요하면 ``sub_category`` 로 선택하세요(축 간 단순 합산 금지).

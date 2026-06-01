@@ -119,6 +119,19 @@ class TestE2EPriceIndicators:
         assert "value" in df.columns
         assert len(df) > 0
 
+    def test_price_indices_are_index_not_percent(self):
+        """(#136) get_cpi/get_core_cpi/get_ppi는 지수(2020=100)를 반환하며 %가 아니다.
+
+        docstring·registry가 한때 '전년동월비(%)'로 선언했으나 실제 반환은 지수 레벨이다.
+        지수는 100 부근 레벨이므로 단위 표기와 값 범위로 회귀를 감지한다.
+        """
+        for fn in (ecos.get_cpi, ecos.get_core_cpi, ecos.get_ppi):
+            df = fn(start_date="202602", end_date="202602")
+            assert not df.empty, fn.__name__
+            assert df["unit"].iloc[0] == "2020=100", fn.__name__
+            # 지수 레벨(보통 90~150)이어야 함; 한 자릿수면 전년동월비(%)를 반환한 것.
+            assert df["value"].iloc[0] > 50, fn.__name__
+
 
 class TestE2EGrowthIndicators:
     """성장 지표 E2E 테스트"""

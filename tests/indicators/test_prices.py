@@ -38,7 +38,8 @@ class TestGetCpi:
         assert not df.empty
         assert "date" in df.columns
         assert "value" in df.columns
-        assert df["value"].iloc[0] == 3.20
+        assert df["value"].iloc[0] == 113.52  # 지수(2020=100), 전년동월비 아님 (#136)
+        assert df["unit"].iloc[0] == "2020=100"
 
 
 @pytest.mark.usefixtures("set_api_key")
@@ -54,8 +55,8 @@ class TestGetCoreCpi:
                     {
                         "STAT_CODE": "901Y010",
                         "TIME": "202401",
-                        "DATA_VALUE": "2.80",
-                        "UNIT_NAME": "%",
+                        "DATA_VALUE": "114.87",
+                        "UNIT_NAME": "2020=100",
                     }
                 ]
             }
@@ -70,7 +71,8 @@ class TestGetCoreCpi:
 
         df = get_core_cpi(start_date="202401", end_date="202401")
         assert not df.empty
-        assert df["value"].iloc[0] == 2.80
+        assert df["value"].iloc[0] == 114.87  # 지수(2020=100), 전년동월비 아님 (#136)
+        assert df["unit"].iloc[0] == "2020=100"
 
 
 @pytest.mark.usefixtures("set_api_key")
@@ -86,8 +88,8 @@ class TestGetPpi:
                     {
                         "STAT_CODE": "404Y014",
                         "TIME": "202401",
-                        "DATA_VALUE": "1.50",
-                        "UNIT_NAME": "%",
+                        "DATA_VALUE": "123.28",
+                        "UNIT_NAME": "2020=100",
                     }
                 ]
             }
@@ -102,7 +104,8 @@ class TestGetPpi:
 
         df = get_ppi(start_date="202401", end_date="202401")
         assert not df.empty
-        assert df["value"].iloc[0] == 1.50
+        assert df["value"].iloc[0] == 123.28  # 지수(2020=100), 전년동월비 아님 (#136)
+        assert df["unit"].iloc[0] == "2020=100"
 
 
 def _cpi_monthly_mock() -> dict:
