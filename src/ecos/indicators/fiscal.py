@@ -36,7 +36,7 @@ def get_fiscal_balance(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 통합재정수지 (조원)
+        - value: 통합재정수지 (십억원)
         - unit: 단위
 
     Notes
@@ -53,9 +53,9 @@ def get_fiscal_balance(
     >>> import ecos
     >>> df = ecos.get_fiscal_balance()
     >>> df.head()
-            date  value unit
-    0 2023-01-01   -5.2  조원
-    1 2023-02-01   -3.8  조원
+            date    value  unit
+    0 2023-01-01  -5200.0  십억원
+    1 2023-02-01  -3800.0  십억원
 
     >>> df = ecos.get_fiscal_balance(start_date="202301", end_date="202312")
     """

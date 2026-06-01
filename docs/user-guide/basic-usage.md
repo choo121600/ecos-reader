@@ -145,7 +145,7 @@ df = ecos.get_gdp(
 
 - `date`: 날짜 (datetime 타입)
 - `value`: 지표 값 (float 타입)
-- `unit`: 단위 (%, 조원 등)
+- `unit`: 단위 (%, 십억원, 2020=100 등)
 
 예시:
 

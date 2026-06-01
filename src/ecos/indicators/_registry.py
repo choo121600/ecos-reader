@@ -131,7 +131,7 @@ INDICATORS: dict[str, IndicatorSpec] = {
         item_code1=ITEM_FISCAL_BALANCE,
         date_format="M",
         default_lookback=24,
-        unit="조원",
+        unit="십억원",
         category="재정",
         description="통합재정수지",
     ),

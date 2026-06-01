@@ -63,7 +63,7 @@ def get_gdp(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: GDP (조원)
+        - value: GDP (십억원)
         - unit: 단위
 
     Notes

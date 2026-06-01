@@ -12,10 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   불일치하던 문제 정정. 이 함수들은 전년동월비(%)가 아니라 **지수(2020=100)** 를 반환하며,
   문서/registry `unit` 을 실제 값(`"2020=100"`)에 맞췄다. **반환 데이터 자체는 변경 없음**
   (비파괴적, 문서·메타데이터만 정정). 인플레이션율이 필요하면 지수에서 직접 계산. (#136)
+- 금액 지표 다수의 docstring·registry 단위가 `조원` 으로 선언됐으나 ECOS 실제 반환은
+  `십억원` (1000배 오라벨) 인 문제 정정 — `get_fiscal_balance`, `get_money_supply`,
+  `get_m1_variants`, `get_m2_variants`, `get_m2_by_holder`, `get_household_credit`,
+  `get_gdp`. **반환 데이터 변경 없음**(문서·메타데이터만 정정). `get_fiscal_balance` 의
+  허구 Examples 값과 registry `unit`, 관련 문서 표기도 `십억원` 으로 정정. (#142)
 
 ### Tests
 - e2e 회귀 가드 추가: 물가지수 함수들이 `unit == "2020=100"` 의 지수 레벨을 반환하고
   전년동월비(%)가 아님을 검증.
+- e2e 회귀 가드 추가: 금액 지표(fiscal_balance/money_supply/gdp/household_credit)가
+  `unit == "십억원"` 을 반환함을 검증 (#142).
 
 ## [0.5.2] - 2026-06-01
 

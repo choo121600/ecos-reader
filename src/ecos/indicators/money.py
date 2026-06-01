@@ -62,7 +62,7 @@ def get_money_supply(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 통화량 (조원)
+        - value: 통화량 (십억원)
         - unit: 단위
 
     Notes
@@ -131,7 +131,7 @@ def get_bank_lending(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 대출금 (조원 또는 십억원)
+        - value: 대출금 (십억원)
         - unit: 단위
 
     Notes
@@ -203,7 +203,7 @@ def get_m1_variants(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: M1 (조원)
+        - value: M1 (십억원)
         - unit: 단위
 
     Notes
@@ -272,7 +272,7 @@ def get_m2_variants(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: M2 (조원)
+        - value: M2 (십억원)
         - unit: 단위
 
     Notes
@@ -346,7 +346,7 @@ def get_m2_by_holder(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: M2 보유액 (조원)
+        - value: M2 보유액 (십억원)
         - unit: 단위
 
     Notes
@@ -413,7 +413,7 @@ def get_household_credit(
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 가계신용 (조원)
+        - value: 가계신용 (십억원)
         - unit: 단위
 
     Notes
