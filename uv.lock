@@ -272,7 +272,7 @@ wheels = [
 
 [[package]]
 name = "ecos-reader"
-version = "0.5.1"
+version = "0.5.2"
 source = { editable = "." }
 dependencies = [
     { name = "pandas" },
