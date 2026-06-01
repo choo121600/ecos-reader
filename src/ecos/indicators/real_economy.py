@@ -42,35 +42,61 @@ def get_industrial_production(
     start_date: str | None = None,
     end_date: str | None = None,
     seasonal: bool = False,
+    frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """전산업생산지수를 조회합니다.
 
     ECOS 통계표 ``901Y033``(전산업생산지수, 농림어업 제외)을 사용합니다.
-    월별 지수(기준 2020=100)입니다. 2-축 구조(지수 × 계열)이므로 계열을
+    월/분기/연별 지수(기준 2020=100)입니다. 2-축 구조(지수 × 계열)이므로 계열을
     원계열/계절조정 중 하나로 고정해 단일 시계열을 반환합니다.
 
     Parameters
     ----------
     start_date : str, optional
-        조회 시작월 (``YYYYMM`` 형식). 기본값: 24개월 전.
+        조회 시작 시점. ``frequency`` 에 맞는 형식
+        (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
-        조회 종료월 (``YYYYMM`` 형식). 기본값: 현재.
+        조회 종료 시점. (형식은 ``start_date`` 와 동일)
     seasonal : bool, default False
         ``True`` 면 계절조정 계열, ``False`` 면 원계열(기본).
+    frequency : str
+        조회 주기. ``'monthly'``(기본)/``'quarterly'``/``'annual'``.
 
     Returns
     -------
     pd.DataFrame
         컬럼: ``date``, ``value``, ``unit``. ``value`` 는 지수(2020=100).
 
+    Raises
+    ------
+    ValueError
+        지원하지 않는 ``frequency`` 일 때.
+
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_industrial_production()                 # 원계열
+    >>> df = ecos.get_industrial_production()                 # 원계열(월)
     >>> df = ecos.get_industrial_production(seasonal=True)    # 계절조정
+    >>> df = ecos.get_industrial_production(frequency="annual")
     """
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency,
+        allowed=("monthly", "quarterly", "annual"),
+        func_name="get_industrial_production",
+    )
+    period = {
+        "monthly": PERIOD_MONTHLY,
+        "quarterly": PERIOD_QUARTERLY,
+        "annual": PERIOD_ANNUAL,
+    }[frequency]
+
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(24)
+        if frequency == "monthly":
+            default_start, default_end = default_monthly(24)
+        elif frequency == "quarterly":
+            default_start, default_end = default_quarterly(5)
+        else:
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -78,7 +104,7 @@ def get_industrial_production(
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_INDUSTRIAL_PRODUCTION,
-        period="M",
+        period=period,
         start_date=start_date,
         end_date=end_date,
         item_code1=ITEM_INDUSTRIAL_PRODUCTION,
@@ -93,33 +119,59 @@ def get_facility_investment(
     start_date: str | None = None,
     end_date: str | None = None,
     seasonal: bool = False,
+    frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """설비투자지수를 조회합니다.
 
-    ECOS 통계표 ``901Y066``(설비투자지수)을 사용합니다. 월별 지수(기준
+    ECOS 통계표 ``901Y066``(설비투자지수)을 사용합니다. 월/분기/연별 지수(기준
     2020=100)이며, 원지수/계절조정지수 중 하나를 반환합니다.
 
     Parameters
     ----------
     start_date : str, optional
-        조회 시작월 (``YYYYMM`` 형식). 기본값: 24개월 전.
+        조회 시작 시점. ``frequency`` 에 맞는 형식
+        (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
-        조회 종료월 (``YYYYMM`` 형식). 기본값: 현재.
+        조회 종료 시점. (형식은 ``start_date`` 와 동일)
     seasonal : bool, default False
         ``True`` 면 계절조정지수, ``False`` 면 원지수(기본).
+    frequency : str
+        조회 주기. ``'monthly'``(기본)/``'quarterly'``/``'annual'``.
 
     Returns
     -------
     pd.DataFrame
         컬럼: ``date``, ``value``, ``unit``. ``value`` 는 지수(2020=100).
 
+    Raises
+    ------
+    ValueError
+        지원하지 않는 ``frequency`` 일 때.
+
     Examples
     --------
     >>> import ecos
     >>> df = ecos.get_facility_investment()
+    >>> df = ecos.get_facility_investment(frequency="annual")
     """
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency,
+        allowed=("monthly", "quarterly", "annual"),
+        func_name="get_facility_investment",
+    )
+    period = {
+        "monthly": PERIOD_MONTHLY,
+        "quarterly": PERIOD_QUARTERLY,
+        "annual": PERIOD_ANNUAL,
+    }[frequency]
+
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(24)
+        if frequency == "monthly":
+            default_start, default_end = default_monthly(24)
+        elif frequency == "quarterly":
+            default_start, default_end = default_quarterly(5)
+        else:
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
@@ -127,7 +179,7 @@ def get_facility_investment(
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_FACILITY_INVESTMENT,
-        period="M",
+        period=period,
         start_date=start_date,
         end_date=end_date,
         item_code1=item,

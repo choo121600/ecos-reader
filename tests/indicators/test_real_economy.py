@@ -70,6 +70,20 @@ class TestGetIndustrialProduction:
         responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y033"), status=200)
         assert not get_industrial_production().empty
 
+    @responses.activate
+    @pytest.mark.parametrize(
+        ("frequency", "marker"),
+        [("monthly", "/M/"), ("quarterly", "/Q/"), ("annual", "/A/")],
+    )
+    def test_frequency_maps_to_period(self, frequency, marker):
+        responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y033"), status=200)
+        get_industrial_production(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    def test_invalid_frequency_raises(self):
+        with pytest.raises(ValueError, match="frequency"):
+            get_industrial_production(frequency="daily")  # type: ignore[arg-type]
+
 
 @pytest.mark.usefixtures("set_api_key")
 class TestGetFacilityInvestment:
@@ -90,6 +104,20 @@ class TestGetFacilityInvestment:
         responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y066"), status=200)
         get_facility_investment(start_date="202401", end_date="202402", seasonal=True)
         assert "I15B" in responses.calls[0].request.url  # 계절조정지수
+
+    @responses.activate
+    @pytest.mark.parametrize(
+        ("frequency", "marker"),
+        [("monthly", "/M/"), ("quarterly", "/Q/"), ("annual", "/A/")],
+    )
+    def test_frequency_maps_to_period(self, frequency, marker):
+        responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y066"), status=200)
+        get_facility_investment(start_date="2020", end_date="2024", frequency=frequency)
+        assert marker in responses.calls[0].request.url
+
+    def test_invalid_frequency_raises(self):
+        with pytest.raises(ValueError, match="frequency"):
+            get_facility_investment(frequency="weekly")  # type: ignore[arg-type]
 
 
 @pytest.mark.usefixtures("set_api_key")

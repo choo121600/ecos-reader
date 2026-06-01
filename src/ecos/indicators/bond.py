@@ -13,12 +13,14 @@ from ..client import get_client
 from ..constants import (
     BOND_MARKET_MEASURE_CODE,
     BOND_YIELD_TYPE_MEASURE_CODE,
+    PERIOD_ANNUAL,
     PERIOD_MONTHLY,
     STAT_BOND_MARKET,
     STAT_BOND_YIELD_TYPE,
 )
 from ..parser import parse_response
-from ._dates import default_monthly
+from ._dates import default_annual, default_monthly
+from ._frequency import normalize_frequency
 from ._subcategory import select_subcategory
 
 if TYPE_CHECKING:
@@ -31,6 +33,7 @@ def get_bond_market(
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
+    frequency: Literal["monthly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """
     채권시장 거래통계를 종류별 또는 시장별로 조회합니다.
@@ -59,9 +62,13 @@ def get_bond_market(
         반환합니다. 미지정 시 전체 분류를 long-format으로 반환합니다.
         예) 종류별: '국채' 또는 '4' / 시장별: '국채전문 유통시장' 또는 '0202'
     start_date : str, optional
-        조회 시작일 (YYYYMM 형식), 기본값: 2년 전
+        조회 시작 시점. ``frequency`` 에 맞는 형식
+        (월 ``YYYYMM`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
-        조회 종료일 (YYYYMM 형식), 기본값: 현재
+        조회 종료 시점. (형식은 ``start_date`` 와 동일)
+    frequency : str
+        조회 주기. ``'monthly'``(기본)/``'annual'``.
+        두 통계표(``901Y015``/``901Y120``)는 월·연 자료만 제공합니다.
 
     Returns
     -------
@@ -73,7 +80,7 @@ def get_bond_market(
     Raises
     ------
     ValueError
-        bond_type/measure가 허용 값이 아니거나, 지정한 ``sub_category`` 가
+        bond_type/measure/frequency가 허용 값이 아니거나, 지정한 ``sub_category`` 가
         존재하지 않는 경우 (사용 가능 항목을 함께 안내).
 
     Notes
@@ -98,9 +105,19 @@ def get_bond_market(
 
     >>> # 시장별 거래량
     >>> df = ecos.get_bond_market(bond_type="시장별", measure="거래량")
+
+    >>> # 연간 종류별 거래대금
+    >>> df = ecos.get_bond_market(frequency="annual")
     """
     if bond_type not in ("종류별", "시장별"):
         raise ValueError("bond_type은 '종류별' 또는 '시장별' 중 하나여야 합니다.")
+
+    frequency = normalize_frequency(  # type: ignore[assignment]
+        frequency,
+        allowed=("monthly", "annual"),
+        func_name="get_bond_market",
+    )
+    period = PERIOD_MONTHLY if frequency == "monthly" else PERIOD_ANNUAL
 
     # 입력 검증은 네트워크 호출 전에 수행한다 (잘못된 measure는 즉시 ValueError).
     # 두 통계표는 measure가 놓인 축이 다르다:
@@ -118,14 +135,17 @@ def get_bond_market(
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
-        default_start, default_end = default_monthly(24)
+        if frequency == "monthly":
+            default_start, default_end = default_monthly(24)
+        else:
+            default_start, default_end = default_annual(10)
         start_date = start_date or default_start
         end_date = end_date or default_end
 
     client = get_client()
     response = client.get_statistic_search(
         stat_code=stat_code,
-        period=PERIOD_MONTHLY,
+        period=period,
         start_date=start_date,
         end_date=end_date,
     )
@@ -153,6 +173,7 @@ def get_bond_yield(
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
+    frequency: Literal["monthly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """``get_bond_market`` 의 deprecated alias (#140).
 
@@ -174,4 +195,5 @@ def get_bond_yield(
         sub_category=sub_category,
         start_date=start_date,
         end_date=end_date,
+        frequency=frequency,
     )

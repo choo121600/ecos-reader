@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `get_consumer_sentiment()` 에 구성지표 선택(`sub_category`) 추가 (#155). 기본은
   종합 소비자심리지수(FME) 유지(하위호환), `sub_category` 로 생활형편전망·소비지출전망
   등 구성지표를 선택. 인구통계 축은 '전체' 고정.
+- 월간 전용 지표 9종에 `frequency` 파라미터 추가 (#156, 비파괴적 — 기본 'monthly').
+  `get_money_supply`/`get_m1_variants`/`get_m2_variants`/`get_m2_by_holder`/
+  `get_bank_lending`/`get_industrial_production`/`get_facility_investment` 는 분기·연간,
+  `get_investor_trading`/`get_bond_market` 은 연간(테이블이 A/M만 제공)까지 지원.
 
 ### Removed
 - 미사용 상수 `STAT_EXCHANGE_RATE_RELATED`(901Y050) 제거 (#157). 어떤 함수도
