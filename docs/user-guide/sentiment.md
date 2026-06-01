@@ -22,6 +22,9 @@ print(df.tail())
 # 제조업
 df = ecos.get_business_sentiment(sector="manufacturing")
 
+# 대기업
+df = ecos.get_business_sentiment(sector="large")
+
 # 비제조업, 기간 지정
 df = ecos.get_business_sentiment(
     sector="non_manufacturing",
@@ -36,7 +39,19 @@ df = ecos.get_business_sentiment(
 |----------|------|
 | `"all"` | 전산업 (기본값) |
 | `"manufacturing"` | 제조업 |
+| `"heavy_chemical"` | 중화학공업 |
+| `"light"` | 경공업 |
+| `"large"` | 대기업 |
+| `"sme"` | 중소기업 |
+| `"export"` | 수출기업 |
+| `"domestic"` | 내수기업 |
 | `"non_manufacturing"` | 비제조업 |
+| `"service"` | 서비스업 |
+
+!!! note "업종은 영문 키로 지정"
+    `sector` 는 위 영문 키 중 하나여야 합니다(예: 대기업은 `sector="large"`).
+    설문항목은 업황전망BS(`BA`)로 고정됩니다. 매출·생산·자금사정 등 세부 항목이
+    필요하면 `get_series("512Y014", "M", ...)` 로 직접 조회하세요.
 
 !!! info "날짜 형식"
     월별 데이터이므로 `YYYYMM` 형식을 사용합니다.
@@ -68,10 +83,25 @@ print(df.tail())
 df = ecos.get_consumer_sentiment(start_date="202301", end_date="202312")
 ```
 
-`get_consumer_sentiment(start_date=None, end_date=None)` 는 별도 옵션 없이 기간만 지정합니다.
+### 구성지표 선택
+
+`sub_category` 를 지정하면 종합 소비자심리지수 대신 구성지표(생활형편전망·소비지출전망 등)를 조회합니다. 미지정 시 종합 소비자심리지수(`FME`)를 반환합니다.
+
+```python
+# 소비지출전망 CSI
+df = ecos.get_consumer_sentiment(sub_category="소비지출전망CSI")
+print(df.tail())
+```
+
+`get_consumer_sentiment(start_date=None, end_date=None, sub_category=None)` 의 인자는 기간과 구성지표 선택입니다.
 
 !!! info "날짜 형식"
     월별 데이터이므로 `YYYYMM` 형식을 사용합니다. 기간을 생략하면 최근 24개월이 조회됩니다.
+
+!!! note "인구통계 축은 '전체' 고정"
+    이 함수는 인구통계 축(item_code2)을 '전체'로 고정한 단일 시계열을 반환합니다.
+    성별·연령·소득 등 인구통계별 세부가 필요하면
+    `get_series("511Y002", "M", ...)` 로 직접 조회하세요.
 
 ### 반환 데이터 구조
 
