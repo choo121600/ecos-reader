@@ -35,8 +35,18 @@ df = ecos.get_money_supply(
 )
 ```
 
+### 조회 주기 지정
+
+`frequency` 로 월(`monthly`, 기본)·분기(`quarterly`)·연(`annual`) 주기를 선택합니다. `start_date` / `end_date` 형식은 주기에 맞춰 사용합니다(월 `YYYYMM` / 분기 `YYYYQn` / 연 `YYYY`).
+
+```python
+# 분기별 M2 통화량
+df = ecos.get_money_supply("M2", frequency="quarterly")
+print(df.tail())
+```
+
 !!! info "날짜 형식"
-    통화량은 월간 데이터이므로 `YYYYMM` 형식을 사용합니다.
+    `frequency` 가 `monthly` 이면 `YYYYMM`, `quarterly` 이면 `YYYYQn`, `annual` 이면 `YYYY` 형식을 사용합니다. 기간을 생략하면 주기별 기본 범위가 적용됩니다.
 
 ### 반환 데이터 구조
 
@@ -155,6 +165,16 @@ df = ecos.get_bank_lending(
 )
 ```
 
+### 조회 주기 지정
+
+`frequency` 로 월(`monthly`, 기본)·분기(`quarterly`)·연(`annual`) 주기를 선택합니다.
+
+```python
+# 연간 가계대출
+df = ecos.get_bank_lending(sector="household", frequency="annual")
+print(df.tail())
+```
+
 ### 반환 데이터 구조
 
 | 컬럼 | 타입 | 설명 |
@@ -235,6 +255,16 @@ df = ecos.get_m1_variants(
 )
 ```
 
+### 조회 주기 지정
+
+`frequency` 로 월(`monthly`, 기본)·분기(`quarterly`)·연(`annual`) 주기를 선택합니다.
+
+```python
+# 연간 M1
+df = ecos.get_m1_variants(frequency="annual")
+print(df.tail())
+```
+
 ## M2 세부 데이터
 
 M2 통화량의 평잔/말잔, 계절조정/원계열 세부 데이터를 조회합니다.
@@ -263,28 +293,46 @@ df = ecos.get_m2_variants(variant="말잔_계절조정")
 print(df.tail())
 ```
 
+### 조회 주기 지정
+
+`frequency` 로 월(`monthly`, 기본)·분기(`quarterly`)·연(`annual`) 주기를 선택합니다.
+
+```python
+# 분기별 M2 평잔 원계열
+df = ecos.get_m2_variants(variant="평잔_원계열", frequency="quarterly")
+print(df.tail())
+```
+
 ### M2 경제주체별
 
-M2를 경제주체(가계, 기업 등)별로 분류한 데이터를 조회합니다.
+M2를 경제주체(가계, 기업 등)별로 분류한 데이터를 조회합니다. partial-coverage 규약(#56)에 따라 `sub_category` 미지정 시 전체 경제주체를 long-format으로, 지정 시 해당 주체 단일 시계열만 반환합니다. 단위는 십억원입니다.
 
 ```python
 import ecos
 
-# M2 경제주체별 (평잔 계절조정)
-df = ecos.get_m2_by_holder(variant="평잔_계절조정")
+# 전체 경제주체 long-format (date, category_value, value, unit)
+df = ecos.get_m2_by_holder()
 print(df.tail())
 
-# M2 경제주체별 (평잔 원계열)
-df = ecos.get_m2_by_holder(variant="평잔_원계열")
+# 단일 주체 (비금융기업) 시계열
+df = ecos.get_m2_by_holder(sub_category="비금융기업 2)")
+print(df.tail())
+
+# 연간 주기
+df = ecos.get_m2_by_holder(frequency="annual")
 print(df.tail())
 ```
 
+!!! note "long-format 단순 합산 주의"
+    이 통계표에는 총계(M2 전체)와 경제주체별 항목이 함께 포함되므로 주체 간 단순 합산은
+    하지 마세요. 특정 시계열이 필요하면 `sub_category` 로 선택하세요.
+
 ### 지원 유형
 
-- `평잔_계절조정` - 평균잔액, 계절조정 계열 (기본값)
+- `평잔_계절조정` - 평균잔액, 계절조정 계열
 - `평잔_원계열` - 평균잔액, 원계열
 - `말잔_계절조정` - 말일잔액, 계절조정 계열
-- `말잔_원계열` - 말일잔액, 원계열
+- `말잔_원계열` - 말일잔액, 원계열 (기본값)
 
 ## 가계신용
 
