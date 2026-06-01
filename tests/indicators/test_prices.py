@@ -41,6 +41,56 @@ class TestGetCpi:
         assert df["value"].iloc[0] == 113.52  # 지수(2020=100), 전년동월비 아님 (#136)
         assert df["unit"].iloc[0] == "2020=100"
 
+    @responses.activate
+    def test_measure_yoy_computes_change_and_trims(self):
+        """measure='yoy'는 전년동월비(%)를 계산하고 확장분을 잘라낸다 (#139)."""
+        # 202301~202402 14개월 지수 (100,101,...,113)
+        rows = []
+        for i in range(14):
+            ym = f"2023{i + 1:02d}" if i < 12 else f"2024{i - 11:02d}"
+            rows.append(
+                {"ITEM_CODE1": "0", "TIME": ym, "DATA_VALUE": str(100 + i), "UNIT_NAME": "2020=100"}
+            )
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json={"StatisticSearch": {"row": rows}},
+            status=200,
+        )
+        df = get_cpi(start_date="202401", end_date="202402", measure="yoy")
+        # 요청 구간(202401~202402)만, 확장분(2023..)은 제거
+        assert df["date"].min().strftime("%Y%m") == "202401"
+        assert df["unit"].iloc[0] == "%"
+        # 202401(value 112) vs 202301(value 100) = +12.0%
+        assert df["value"].iloc[0] == 12.0
+
+    @responses.activate
+    def test_measure_mom_unit_is_percent(self):
+        """measure='mom'는 전월비(%)를 반환한다."""
+        rows = [
+            {
+                "ITEM_CODE1": "0",
+                "TIME": f"2024{m:02d}",
+                "DATA_VALUE": str(100 + m),
+                "UNIT_NAME": "2020=100",
+            }
+            for m in range(1, 5)
+        ]
+        responses.add(
+            responses.GET,
+            url=re.compile(r".*"),
+            json={"StatisticSearch": {"row": rows}},
+            status=200,
+        )
+        df = get_cpi(start_date="202402", end_date="202404", measure="mom")
+        assert df["unit"].iloc[0] == "%"
+        assert not df.empty
+
+    def test_invalid_measure_raises(self):
+        """잘못된 measure는 ValueError."""
+        with pytest.raises(ValueError, match="measure"):
+            get_cpi(measure="quarterly")  # type: ignore[arg-type]
+
 
 @pytest.mark.usefixtures("set_api_key")
 class TestGetCoreCpi:

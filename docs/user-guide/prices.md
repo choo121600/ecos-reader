@@ -11,9 +11,15 @@
 ```python
 import ecos
 
-# CPI 전년동월비 조회
+# CPI 지수(2020=100) 조회 — 기본값
 df = ecos.get_cpi()
 print(df.tail())
+
+# 인플레이션율(전년동월비, %)이 필요하면 measure="yoy"
+inflation = ecos.get_cpi(measure="yoy")
+
+# 전월비(%)는 measure="mom"
+mom = ecos.get_cpi(measure="mom")
 ```
 
 ### 기간 지정
@@ -34,8 +40,13 @@ df = ecos.get_cpi(
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | `date` | datetime | 조회 월 |
-| `value` | float | 전년동월대비 상승률 (%) |
-| `unit` | str | 단위 (%) |
+| `value` | float | `measure='index'`면 지수(2020=100), `'yoy'`/`'mom'`이면 변화율(%) |
+| `unit` | str | 단위 (`'2020=100'` 또는 `'%'`) |
+
+!!! tip "지수 vs 인플레이션율"
+    `get_cpi()` 기본값은 **지수(2020=100)** 입니다. 인플레이션율(전년동월비 %)은
+    `get_cpi(measure="yoy")` 로 조회하세요. `get_core_cpi`, `get_ppi` 도 동일한
+    `measure` 파라미터(`index`/`yoy`/`mom`)를 지원합니다.
 
 ### 활용 예시
 
@@ -44,7 +55,7 @@ import ecos
 import matplotlib.pyplot as plt
 
 # 최근 5년 CPI 추이
-df = ecos.get_cpi(start_date="202001")
+df = ecos.get_cpi(start_date="202001", measure="yoy")
 
 # 시각화
 df.set_index('date')['value'].plot(
@@ -75,7 +86,7 @@ print(f"최저 상승률: {df['value'].min()}%")
 ```python
 import ecos
 
-# 근원 CPI 조회
+# 근원 CPI 지수(2020=100) 조회 — 기본값. 기조 인플레이션율(%)은 measure="yoy"
 df = ecos.get_core_cpi()
 print(df.tail())
 ```
@@ -97,8 +108,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 두 지표 조회
-cpi = ecos.get_cpi(start_date="202001")
-core_cpi = ecos.get_core_cpi(start_date="202001")
+cpi = ecos.get_cpi(start_date="202001", measure="yoy")
+core_cpi = ecos.get_core_cpi(start_date="202001", measure="yoy")
 
 # 데이터 병합
 merged = pd.merge(
@@ -133,7 +144,7 @@ print(f"최대 차이: {merged['diff'].max():.2f}%p")
 ```python
 import ecos
 
-# PPI 전년동월비 조회
+# PPI 지수(2020=100) 조회 — 기본값. 전년동월비(%)는 measure="yoy"
 df = ecos.get_ppi()
 print(df.tail())
 ```
@@ -152,8 +163,8 @@ df = ecos.get_ppi(
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | `date` | datetime | 조회 월 |
-| `value` | float | 전년동월대비 상승률 (%) |
-| `unit` | str | 단위 (%) |
+| `value` | float | `measure='index'`면 지수(2020=100), `'yoy'`/`'mom'`이면 변화율(%) |
+| `unit` | str | 단위 (`'2020=100'` 또는 `'%'`) |
 
 ### PPI vs CPI 비교
 
@@ -165,8 +176,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 두 지표 조회
-ppi = ecos.get_ppi(start_date="202001")
-cpi = ecos.get_cpi(start_date="202001")
+ppi = ecos.get_ppi(start_date="202001", measure="yoy")
+cpi = ecos.get_cpi(start_date="202001", measure="yoy")
 
 # 데이터 병합
 merged = pd.merge(
@@ -298,10 +309,10 @@ plt.show()
 ```python
 import ecos
 
-# 최근 데이터 조회
-cpi = ecos.get_cpi()
-core_cpi = ecos.get_core_cpi()
-ppi = ecos.get_ppi()
+# 최근 데이터 조회 (전년동월비, %)
+cpi = ecos.get_cpi(measure="yoy")
+core_cpi = ecos.get_core_cpi(measure="yoy")
+ppi = ecos.get_ppi(measure="yoy")
 
 # 최신 값
 latest_cpi = cpi.iloc[-1]['value']
@@ -336,7 +347,7 @@ else:
 ```python
 import ecos
 
-df = ecos.get_cpi(start_date="202001")
+df = ecos.get_cpi(start_date="202001", measure="yoy")
 
 # 물가안정목표 (2%) 대비 분석
 df['deviation'] = df['value'] - 2.0
@@ -359,7 +370,7 @@ print(f"\n평균 괴리도: {df['deviation'].abs().mean():.2f}%p")
 ```python
 import ecos
 
-df = ecos.get_cpi(start_date="202001")
+df = ecos.get_cpi(start_date="202001", measure="yoy")
 
 # 변화율 계산
 df['mom_change'] = df['value'].diff()  # 전월 대비 변화
@@ -390,7 +401,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 
 # 데이터 조회
-cpi = ecos.get_cpi(start_date="202001")
+cpi = ecos.get_cpi(start_date="202001", measure="yoy")
 base_rate = ecos.get_base_rate(start_date="202001")
 
 # 월 단위로 맞추기 (기준금리는 변경 시점만 기록되므로)

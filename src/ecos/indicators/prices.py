@@ -15,22 +15,60 @@ from ..constants import (
     STAT_CPI_MONTHLY,
 )
 from ..parser import normalize_stat_result, parse_response
-from ._dates import default_monthly
+from ._dates import default_monthly, shift_month
 from ._registry import get_indicator
 from ._subcategory import select_subcategory
 
 if TYPE_CHECKING:
     import pandas as pd
 
+#: measure 별 변화율 계산에 쓰는 시차(개월). 'index' 는 원지수(변화율 계산 없음).
+_MEASURE_PERIODS = {"yoy": 12, "mom": 1}
+
+
+def _price_measure(
+    name: str,
+    measure: str,
+    start_date: str | None,
+    end_date: str | None,
+) -> pd.DataFrame:
+    """registry 지수 지표(name)를 measure 에 따라 지수/전년동월비/전월비로 반환합니다.
+
+    'index' 는 원지수를 그대로, 'yoy'/'mom' 은 지수에서 변화율(%)을 파생합니다.
+    변화율은 첫 구간이 NaN 으로 잘리지 않도록 시작일을 시차만큼 앞으로 확장해
+    조회한 뒤 요청 구간으로 잘라 반환합니다.
+    """
+    if measure == "index":
+        return get_indicator(name, start_date=start_date, end_date=end_date)
+    if measure not in _MEASURE_PERIODS:
+        raise ValueError("measure는 'index', 'yoy', 'mom' 중 하나여야 합니다.")
+
+    periods = _MEASURE_PERIODS[measure]
+    # 요청 구간 확정(기본 lookback 24개월, registry spec과 동일).
+    default_start, default_end = default_monthly(24)
+    req_start = start_date or default_start
+    req_end = end_date or default_end
+
+    # 변화율 계산용으로 시작일을 periods 만큼 앞으로 확장해 지수를 조회.
+    df = get_indicator(name, start_date=shift_month(req_start, -periods), end_date=req_end)
+    df = df.sort_values("date").reset_index(drop=True)
+    df["value"] = (df["value"].pct_change(periods) * 100).round(2)
+    df["unit"] = "%"
+    # 확장분(요청 시작 이전) 및 NaN(초기 시차 구간) 제거.
+    req_start_ts = f"{req_start[:4]}-{req_start[4:6]}-01"
+    df = df[df["date"] >= req_start_ts].dropna(subset=["value"]).reset_index(drop=True)
+    return df
+
 
 def get_cpi(
     start_date: str | None = None,
     end_date: str | None = None,
+    measure: Literal["index", "yoy", "mom"] = "index",
 ) -> pd.DataFrame:
     """
-    소비자물가지수(CPI) 총지수(지수, 2020=100)를 조회합니다.
+    소비자물가지수(CPI)를 조회합니다.
 
-    한국은행 물가안정목표(2%)의 기준이 되는 물가 수준 지표입니다.
+    한국은행 물가안정목표(2%)의 기준이 되는 물가 지표입니다.
 
     Parameters
     ----------
@@ -38,40 +76,41 @@ def get_cpi(
         조회 시작일 (YYYYMM 형식), 기본값: 2년 전
     end_date : str, optional
         조회 종료일 (YYYYMM 형식), 기본값: 현재
+    measure : str
+        반환 측정값 (기본값: 'index')
+        - 'index': 원지수 (2020=100)
+        - 'yoy': 전년동월비 (%, 인플레이션율)
+        - 'mom': 전월비 (%)
 
     Returns
     -------
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 소비자물가지수 (지수, 2020=100)
-        - unit: 단위 ('2020=100')
+        - value: measure='index'면 지수(2020=100), 'yoy'/'mom'이면 변화율(%)
+        - unit: 단위 ('2020=100' 또는 '%')
 
     Notes
     -----
-    - 반환값은 전년동월비(%)가 아니라 **지수 레벨**입니다. 인플레이션율이 필요하면
-      반환된 지수에서 전년동월 대비 변화율을 직접 계산하세요
-      (예: ``df["value"].pct_change(12) * 100``).
-    - 지수 상승률(전년동월비)이 2%를 상회하면 인플레이션 압력을 의미합니다.
+    - 인플레이션율은 ``measure='yoy'`` (전년동월비)로 조회합니다.
+    - 전년동월비가 2%를 상회하면 인플레이션 압력을 의미합니다.
 
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_cpi()
-    >>> df.head()
-            date   value      unit
-    0 2024-01-01  113.15  2020=100
+    >>> df = ecos.get_cpi()                 # 지수 (2020=100)
+    >>> df = ecos.get_cpi(measure="yoy")    # 전년동월비 (%)
     """
-    # 선언적 레지스트리(#16)에 위임하는 얇은 alias.
-    return get_indicator("cpi", start_date=start_date, end_date=end_date)
+    return _price_measure("cpi", measure, start_date, end_date)
 
 
 def get_core_cpi(
     start_date: str | None = None,
     end_date: str | None = None,
+    measure: Literal["index", "yoy", "mom"] = "index",
 ) -> pd.DataFrame:
     """
-    근원 소비자물가지수(Core CPI) 지수(2020=100)를 조회합니다.
+    근원 소비자물가지수(Core CPI)를 조회합니다.
 
     식료품과 에너지를 제외한 물가지수로, 일시적인 물가 변동 요인을
     제거한 기조적 인플레이션을 파악하는 데 활용됩니다.
@@ -82,38 +121,41 @@ def get_core_cpi(
         조회 시작일 (YYYYMM 형식), 기본값: 2년 전
     end_date : str, optional
         조회 종료일 (YYYYMM 형식), 기본값: 현재
+    measure : str
+        반환 측정값 (기본값: 'index')
+        - 'index': 원지수 (2020=100)
+        - 'yoy': 전년동월비 (%, 기조적 인플레이션율)
+        - 'mom': 전월비 (%)
 
     Returns
     -------
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 근원 소비자물가지수 (지수, 2020=100)
-        - unit: 단위 ('2020=100')
+        - value: measure='index'면 지수(2020=100), 'yoy'/'mom'이면 변화율(%)
+        - unit: 단위 ('2020=100' 또는 '%')
 
     Notes
     -----
-    - 반환값은 전년동월비(%)가 아니라 **지수 레벨**입니다. 기조적 인플레이션율이
-      필요하면 반환된 지수에서 직접 변화율을 계산하세요(``pct_change(12) * 100``).
-    - 근원 CPI는 일시적 충격(유가, 농산물 가격)을 제외
-    - 통화정책 결정 시 참고 지표로 중요하게 활용
+    - 근원 CPI는 일시적 충격(유가, 농산물 가격)을 제외한 기조적 인플레이션 지표.
+    - 통화정책 결정 시 참고 지표로 중요하게 활용. 기조 인플레이션율은 ``measure='yoy'``.
 
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_core_cpi()
-    >>> df.head()
+    >>> df = ecos.get_core_cpi()                # 지수
+    >>> df = ecos.get_core_cpi(measure="yoy")   # 전년동월비 (%)
     """
-    # 선언적 레지스트리(#16)에 위임하는 얇은 alias.
-    return get_indicator("core_cpi", start_date=start_date, end_date=end_date)
+    return _price_measure("core_cpi", measure, start_date, end_date)
 
 
 def get_ppi(
     start_date: str | None = None,
     end_date: str | None = None,
+    measure: Literal["index", "yoy", "mom"] = "index",
 ) -> pd.DataFrame:
     """
-    생산자물가지수(PPI) 총지수(지수, 2020=100)를 조회합니다.
+    생산자물가지수(PPI)를 조회합니다.
 
     생산자물가는 소비자물가의 선행 지표로 활용됩니다.
 
@@ -123,30 +165,32 @@ def get_ppi(
         조회 시작일 (YYYYMM 형식), 기본값: 2년 전
     end_date : str, optional
         조회 종료일 (YYYYMM 형식), 기본값: 현재
+    measure : str
+        반환 측정값 (기본값: 'index')
+        - 'index': 원지수 (2020=100)
+        - 'yoy': 전년동월비 (%)
+        - 'mom': 전월비 (%)
 
     Returns
     -------
     pd.DataFrame
         컬럼: date, value, unit
         - date: 날짜 (datetime)
-        - value: 생산자물가지수 (지수, 2020=100)
-        - unit: 단위 ('2020=100')
+        - value: measure='index'면 지수(2020=100), 'yoy'/'mom'이면 변화율(%)
+        - unit: 단위 ('2020=100' 또는 '%')
 
     Notes
     -----
-    - 반환값은 전년동월비(%)가 아니라 **지수 레벨**입니다. 변화율이 필요하면
-      반환된 지수에서 직접 계산하세요(``pct_change(12) * 100``).
-    - PPI 상승 → CPI 상승으로 이어지는 경향
+    - PPI 상승 → CPI 상승으로 이어지는 경향. 변화율은 ``measure='yoy'``/``'mom'``.
     - 기업의 원가 부담을 나타내는 지표
 
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_ppi()
-    >>> df.head()
+    >>> df = ecos.get_ppi()                 # 지수
+    >>> df = ecos.get_ppi(measure="yoy")    # 전년동월비 (%)
     """
-    # 선언적 레지스트리(#16)에 위임하는 얇은 alias.
-    return get_indicator("ppi", start_date=start_date, end_date=end_date)
+    return _price_measure("ppi", measure, start_date, end_date)
 
 
 def get_cpi_monthly(

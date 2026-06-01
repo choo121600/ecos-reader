@@ -62,3 +62,14 @@ def default_annual(years_back: int = 10, *, today: datetime | None = None) -> tu
     """연간 기본 조회 기간을 ``YYYY`` 형식으로 반환합니다."""
     end = _reference(today)
     return str(end.year - years_back), str(end.year)
+
+
+def shift_month(yyyymm: str, delta_months: int) -> str:
+    """``YYYYMM`` 문자열을 ``delta_months`` 만큼 이동한 ``YYYYMM`` 을 반환합니다.
+
+    음수면 과거로 이동합니다 (예: ``shift_month("202401", -12) == "202301"``).
+    전년동월비/전월비 계산 시 lookback 윈도우를 앞으로 확장하는 데 사용합니다.
+    """
+    year, month = int(yyyymm[:4]), int(yyyymm[4:6])
+    total = year * 12 + (month - 1) + delta_months
+    return f"{total // 12}{total % 12 + 1:02d}"
