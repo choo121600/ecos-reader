@@ -2535,9 +2535,15 @@
 <h3 id="_2">기본 사용법<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># CPI 전년동월비 조회</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># CPI 지수(2020=100) 조회 — 기본값</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">()</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># 인플레이션율(전년동월비, %)이 필요하면 measure=&quot;yoy&quot;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">inflation</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># 전월비(%)는 measure=&quot;mom&quot;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">mom</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s2">&quot;mom&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="_3">기간 지정<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 2023년 전체 데이터</span>
@@ -2568,21 +2574,27 @@
 <tr>
 <td><code>value</code></td>
 <td>float</td>
-<td>전년동월대비 상승률 (%)</td>
+<td><code>measure='index'</code>면 지수(2020=100), <code>'yoy'</code>/<code>'mom'</code>이면 변화율(%)</td>
 </tr>
 <tr>
 <td><code>unit</code></td>
 <td>str</td>
-<td>단위 (%)</td>
+<td>단위 (<code>'2020=100'</code> 또는 <code>'%'</code>)</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition tip">
+<p class="admonition-title">지수 vs 인플레이션율</p>
+<p><code>get_cpi()</code> 기본값은 <strong>지수(2020=100)</strong> 입니다. 인플레이션율(전년동월비 %)은
+<code>get_cpi(measure="yoy")</code> 로 조회하세요. <code>get_core_cpi</code>, <code>get_ppi</code> 도 동일한
+<code>measure</code> 파라미터(<code>index</code>/<code>yoy</code>/<code>mom</code>)를 지원합니다.</p>
+</div>
 <h3 id="_5">활용 예시<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># 최근 5년 CPI 추이</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># 시각화</span>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
@@ -2608,7 +2620,7 @@
 <h3 id="_6">기본 사용법<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># 근원 CPI 조회</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># 근원 CPI 지수(2020=100) 조회 — 기본값. 기조 인플레이션율(%)은 measure=&quot;yoy&quot;</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_core_cpi</span><span class="p">()</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span></code></pre></div>
@@ -2624,8 +2636,8 @@
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># 두 지표 조회</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">)</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">core_cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_core_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">core_cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_core_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
 </span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="c1"># 데이터 병합</span>
 </span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
@@ -2655,7 +2667,7 @@
 <h3 id="_8">기본 사용법<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># PPI 전년동월비 조회</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># PPI 지수(2020=100) 조회 — 기본값. 전년동월비(%)는 measure=&quot;yoy&quot;</span>
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_ppi</span><span class="p">()</span>
 </span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span></code></pre></div>
@@ -2683,12 +2695,12 @@
 <tr>
 <td><code>value</code></td>
 <td>float</td>
-<td>전년동월대비 상승률 (%)</td>
+<td><code>measure='index'</code>면 지수(2020=100), <code>'yoy'</code>/<code>'mom'</code>이면 변화율(%)</td>
 </tr>
 <tr>
 <td><code>unit</code></td>
 <td>str</td>
-<td>단위 (%)</td>
+<td>단위 (<code>'2020=100'</code> 또는 <code>'%'</code>)</td>
 </tr>
 </tbody>
 </table>
@@ -2699,8 +2711,8 @@
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># 두 지표 조회</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">ppi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_ppi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">)</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">)</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">ppi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_ppi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
 </span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
 </span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="c1"># 데이터 병합</span>
 </span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
@@ -2839,10 +2851,10 @@
 <h3 id="_16">인플레이션 압력 분석<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># 최근 데이터 조회</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">()</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">core_cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_core_cpi</span><span class="p">()</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">ppi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_ppi</span><span class="p">()</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># 최근 데이터 조회 (전년동월비, %)</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">core_cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_core_cpi</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">ppi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_ppi</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
 </span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
 </span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="c1"># 최신 값</span>
 </span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="n">latest_cpi</span> <span class="o">=</span> <span class="n">cpi</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
@@ -2874,7 +2886,7 @@
 <h3 id="_17">물가 목표 달성률 분석<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">)</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
 </span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1"># 물가안정목표 (2%) 대비 분석</span>
 </span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">df</span><span class="p">[</span><span class="s1">&#39;deviation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2.0</span>
@@ -2894,7 +2906,7 @@
 <h3 id="_18">물가 상승 가속도 분석<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">)</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
 </span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
 </span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1"># 변화율 계산</span>
 </span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="n">df</span><span class="p">[</span><span class="s1">&#39;mom_change&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>  <span class="c1"># 전월 대비 변화</span>
@@ -2922,7 +2934,7 @@
 </span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
 </span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
 </span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="c1"># 데이터 조회</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="n">cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">)</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="n">cpi</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">&quot;yoy&quot;</span><span class="p">)</span>
 </span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">base_rate</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_base_rate</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202001&quot;</span><span class="p">)</span>
 </span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
 </span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="c1"># 월 단위로 맞추기 (기준금리는 변경 시점만 기록되므로)</span>
