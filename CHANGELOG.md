@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `get_retail_sales()` 에 상품군 분해(`sub_category`) 추가 (#150). 통계표 901Y100 은
+  상품군(item_code1, 26개) × 계열(item_code2) 2축인데 기존엔 총지수(`G0`)만 반환했다.
+  이제 partial-coverage 규약(#56)에 따라 `index` 로 계열을 고정한 뒤 `sub_category`
+  미지정 시 전체 상품군을 long-format(`date, category_value, value, unit`)으로, 지정 시
+  해당 상품군(예: '음식료품', 'G31') 단일 시계열을 반환한다. **기본 반환 형태가 단일
+  시계열 → long-format 으로 변경됨**(총지수만 필요하면 `sub_category="총지수"`).
+
 ### Tests
 - 매핑 정합성 가드를 **주기(period)·구조 차원**으로 확장 (오프라인, 매 PR). 새 스냅샷
   `tests/fixtures/ecos_table_structure.json`(통계표별 제공 주기·항목 축 수)를 추가하고,
