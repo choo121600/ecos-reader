@@ -7833,15 +7833,16 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 
 <a href="#ecos.get_retail_sales" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_retail_sales</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;nominal&#39;</span><span class="p">,</span> <span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="s1">&#39;seasonal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_retail_sales</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;nominal&#39;</span><span class="p">,</span> <span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="s1">&#39;seasonal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;monthly&#39;</span><span class="p">,</span> <span class="s1">&#39;quarterly&#39;</span><span class="p">,</span> <span class="s1">&#39;annual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;monthly&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents first">
 
-        <p>소매판매액지수(총지수)를 조회합니다.</p>
-<p>ECOS 통계표 <code>901Y100</code>(재별 및 상품군별 판매액지수)의 <strong>총지수</strong>(<code>G0</code>)를
-조회합니다. 월/분기/연 주기를 지원하며, 기준은 2020=100입니다. 2-축 구조
-(상품군 × 계열)이므로 상품군을 총지수로 고정하고 계열을 하나로 선택합니다.</p>
+        <p>소매판매액지수를 상품군별로 조회합니다.</p>
+<p>ECOS 통계표 <code>901Y100</code>(재별 및 상품군별 판매액지수)을 조회합니다. 2-축 구조
+(상품군 <code>item_code1</code> × 지수 계열 <code>item_code2</code>)로, <code>index</code> 로 계열을 고정한 뒤
+partial-coverage 규약(#56)에 따라 <code>sub_category</code> 미지정 시 전체 상품군을
+long-format으로, 지정 시 해당 상품군 단일 시계열만 반환합니다. 기준 2020=100.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -7872,6 +7873,24 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
                   <code>&#39;real&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sub_category</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>상품군(분류명 또는 item_code1). 지정 시 해당 상품군 단일 시계열만,
+미지정 시 전체 상품군을 long-format으로 반환합니다.
+예) '총지수', '내구재', '음식료품', 또는 item_code 'G31'.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -7942,7 +7961,13 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>컬럼: <code>date</code>, <code>value</code>, <code>unit</code>. <code>value</code> 는 지수(2020=100).</p>
+                <ul>
+<li><code>sub_category</code> 미지정: 컬럼 <code>date, category_value, value, unit</code>
+  (상품군별 long-format, <code>category_value</code>=상품군명). 통계표는 계층형
+  (총지수+내구재/준내구재/비내구재+세부품목)이라 단순 합산은 금지.</li>
+<li><code>sub_category</code> 지정: 컬럼 <code>date, value, unit</code> (단일 시계열).</li>
+<li>value 는 지수(2020=100).</li>
+</ul>
               </div>
             </td>
           </tr>
@@ -7965,7 +7990,7 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
             </td>
             <td>
               <div class="doc-md-description">
-                <p>지원하지 않는 <code>index</code> 또는 <code>frequency</code> 일 때.</p>
+                <p>지원하지 않는 <code>index</code>/<code>frequency</code> 이거나 <code>sub_category</code> 가 없을 때.</p>
               </div>
             </td>
           </tr>
@@ -7975,8 +8000,9 @@ partial-coverage 재설계 규약(#56)을 따릅니다 — <code>sub_category</c
 
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_retail_sales</span><span class="p">()</span>                      <span class="c1"># 불변지수(월)</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_retail_sales</span><span class="p">(</span><span class="s2">&quot;nominal&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_retail_sales</span><span class="p">()</span>                          <span class="c1"># 전체 상품군 long-format(불변지수, 월)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_retail_sales</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;총지수&quot;</span><span class="p">)</span>       <span class="c1"># 총지수 단일 시계열</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_retail_sales</span><span class="p">(</span><span class="s2">&quot;nominal&quot;</span><span class="p">,</span> <span class="n">sub_category</span><span class="o">=</span><span class="s2">&quot;음식료품&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
