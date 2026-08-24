@@ -1,7 +1,10 @@
 version: 2
 updates:
-  # Python 의존성 (pyproject.toml / uv.lock) — 주간, 묶음 PR
-  - package-ecosystem: "pip"
+  # Python 의존성 (pyproject.toml + uv.lock) — uv 에코시스템 사용.
+  # "pip"는 uv.lock을 갱신하지 못해 잠금된 취약 핀이 방치된다(pip-audit 상시 실패의 원인).
+  # 아래 minor/patch 묶음은 정기 버전 업데이트에만 적용되며, 보안 업데이트는
+  # update-types 제한과 무관하게 별도로 열려 취약점을 자동 교정한다.
+  - package-ecosystem: "uv"
     directory: "/"
     schedule:
       interval: "weekly"
