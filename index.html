@@ -2188,7 +2188,7 @@
 </span></code></pre></div>
 <h3 id="api">API 키 설정<a class="headerlink" href="#api" title="Permanent link">&para;</a></h3>
 <p>한국은행에서 발급받은 API 키를 환경 변수로 설정합니다.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ECOS_API_KEY</span><span class="o">=</span><span class="s2">&quot;your_api_key&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ECOS_API_KEY</span><span class="o">=</span><span class="s2">"your_api_key"</span>
 </span></code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">API 키 발급</p>
@@ -2212,10 +2212,10 @@
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># 통계표 찾기 → 임의 시계열 조회 (네트워크 없이 검색)</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">hits</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">search_tables</span><span class="p">(</span><span class="s2">&quot;소비자물가&quot;</span><span class="p">)</span>          <span class="c1"># 오프라인 카탈로그 검색</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">hits</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">search_tables</span><span class="p">(</span><span class="s2">"소비자물가"</span><span class="p">)</span>          <span class="c1"># 오프라인 카탈로그 검색</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_series</span><span class="p">(</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="s2">&quot;901Y009&quot;</span><span class="p">,</span> <span class="s2">&quot;monthly&quot;</span><span class="p">,</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;202401&quot;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s2">&quot;202412&quot;</span><span class="p">,</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="s2">"901Y009"</span><span class="p">,</span> <span class="s2">"monthly"</span><span class="p">,</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">start_date</span><span class="o">=</span><span class="s2">"202401"</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s2">"202412"</span><span class="p">,</span>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>자세한 범용 조회·탐색은 <a href="user-guide/universal-access/">범용 조회 &amp; 탐색</a> 가이드를 참고하세요.</p>

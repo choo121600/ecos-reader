@@ -2685,34 +2685,34 @@
 </table>
 <h2 id="_11">사용 예제<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h2>
 <h3 id="xml">XML 형식 요청<a class="headerlink" href="#xml" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/1/10/601Y002&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/1/10/601Y002"</span>
 </span></code></pre></div>
 <h3 id="json">JSON 형식 요청<a class="headerlink" href="#json" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/json/kr/1/10/601Y002&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/json/kr/1/10/601Y002"</span>
 </span></code></pre></div>
 <h3 id="_12">다양한 통계표코드 예제<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># 지역별 소비유형별 개인 신용카드</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/1/10/601Y002&quot;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/1/10/601Y002"</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># 다른 통계표 예제</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/1/10/043Y070&quot;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/1/10/043Y070"</span>
 </span></code></pre></div>
 <h3 id="_13">페이징 처리<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># 첫 10개 결과</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/1/10/601Y002&quot;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/1/10/601Y002"</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># 다음 10개 결과</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/11/20/601Y002&quot;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticItemList/YOUR_API_KEY/xml/kr/11/20/601Y002"</span>
 </span></code></pre></div>
 <h3 id="python">Python 예제<a class="headerlink" href="#python" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">urllib.parse</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;YOUR_API_KEY&quot;</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">stat_code</span> <span class="o">=</span> <span class="s2">&quot;601Y002&quot;</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticItemList&quot;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">api_key</span> <span class="o">=</span> <span class="s2">"YOUR_API_KEY"</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">stat_code</span> <span class="o">=</span> <span class="s2">"601Y002"</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">base_url</span> <span class="o">=</span> <span class="s2">"https://ecos.bok.or.kr/api/StatisticItemList"</span>
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">/xml/kr/1/10/</span><span class="si">{</span><span class="n">stat_code</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">/xml/kr/1/10/</span><span class="si">{</span><span class="n">stat_code</span><span class="si">}</span><span class="s2">"</span>
 </span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 </span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </span></code></pre></div>

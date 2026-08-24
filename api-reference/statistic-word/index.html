@@ -2567,36 +2567,36 @@
 </table>
 <h2 id="_11">사용 예제<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h2>
 <h3 id="xml">XML 형식 요청<a class="headerlink" href="#xml" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/소비자동향지수&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/소비자동향지수"</span>
 </span></code></pre></div>
 <h3 id="json">JSON 형식 요청<a class="headerlink" href="#json" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/json/kr/1/10/소비자동향지수&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/json/kr/1/10/소비자동향지수"</span>
 </span></code></pre></div>
 <h3 id="url_2">URL 인코딩이 필요한 경우<a class="headerlink" href="#url_2" title="Permanent link">&para;</a></h3>
 <p>용어에 특수문자나 공백이 포함된 경우 URL 인코딩이 필요합니다:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Python 예제</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>import<span class="w"> </span>urllib.parse
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nv">term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;소비자동향지수&quot;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nv">term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"소비자동향지수"</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nv">encoded_term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>urllib.parse.quote<span class="o">(</span>term<span class="o">)</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nv">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>f<span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/{encoded_term}&quot;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nv">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>f<span class="s2">"https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/{encoded_term}"</span>
 </span></code></pre></div>
 <h3 id="_12">페이징 처리<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># 첫 10개 결과</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/소비자동향지수&quot;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/소비자동향지수"</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># 다음 10개 결과</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/11/20/소비자동향지수&quot;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/11/20/소비자동향지수"</span>
 </span></code></pre></div>
 <h3 id="_13">다양한 용어 검색 예제<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># GDP 검색</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/GDP&quot;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/GDP"</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># 기준금리 검색</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/기준금리&quot;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/기준금리"</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># 소비자물가지수 검색</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>curl<span class="w"> </span><span class="s2">&quot;https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/소비자물가지수&quot;</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>curl<span class="w"> </span><span class="s2">"https://ecos.bok.or.kr/api/StatisticWord/YOUR_API_KEY/xml/kr/1/10/소비자물가지수"</span>
 </span></code></pre></div>
 <h2 id="_14">주의사항<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h2>
 <ol>
