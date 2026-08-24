@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 from pathlib import Path
 
@@ -19,6 +20,17 @@ import ecos.constants as c
 
 OUT = Path(__file__).parent / "audit_values.json"
 R = 3  # 비교 반올림 자리
+
+
+def _num_eq(a, b):
+    """값 동등 비교. 둘 다 NaN이면 같다고 본다 (float NaN != NaN 오탐 방지).
+
+    ECOS 원본에 결측이 있는 구간은 큐레이션·원시 get_series 양쪽 모두 NaN을
+    돌려주는데, `NaN != NaN`이 항상 참이라 동일 결측이 불일치로 오탐된다.
+    """
+    if isinstance(a, float) and isinstance(b, float) and math.isnan(a) and math.isnan(b):
+        return True
+    return a == b
 
 
 def _ser(df, valcol="value"):
@@ -506,7 +518,7 @@ def run(group=None):
         try:
             cv, rv = cur(), raw()
             keys = sorted(set(cv) & set(rv))
-            mism = [(k, cv.get(k), rv.get(k)) for k in keys if cv.get(k) != rv.get(k)]
+            mism = [(k, cv.get(k), rv.get(k)) for k in keys if not _num_eq(cv.get(k), rv.get(k))]
             only = sorted(set(cv) ^ set(rv))
             ok = not mism and not only and len(keys) > 0
             res[label] = {
