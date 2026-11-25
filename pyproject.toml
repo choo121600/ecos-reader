@@ -8,7 +8,7 @@ version = "0.7.0"
 description = "한국은행 ECOS Open API Python 클라이언트"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [
     { name = "yeonguk" }
 ]
@@ -21,7 +21,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Office/Business :: Financial",
@@ -66,7 +65,7 @@ artifacts = ["src/ecos/data/*.csv.gz"]
 artifacts = ["src/ecos/data/*.csv.gz"]
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 100
 src = ["src", "tests"]
 
@@ -117,7 +116,7 @@ markers = [
 ]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 # py.typed 광고와 실제 타입 안전성을 일치시키기 위해 strict 모드 적용 (#17).
 # strict는 disallow_untyped_defs / disallow_incomplete_defs / check_untyped_defs /
 # disallow_any_generics / warn_return_any / warn_unused_ignores /
