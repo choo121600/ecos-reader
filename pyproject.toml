@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "ecos-reader"
-version = "0.8.0"
+dynamic = ["version"]
 description = "한국은행 ECOS Open API Python 클라이언트"
 readme = "README.md"
 license = "MIT"
@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Office/Business :: Financial",
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Typing :: Typed",
@@ -55,6 +56,15 @@ Homepage = "https://github.com/choo121600/ecos-reader"
 Documentation = "https://choo121600.github.io/ecos-reader/"
 Repository = "https://github.com/choo121600/ecos-reader"
 Issues = "https://github.com/choo121600/ecos-reader/issues"
+
+[tool.hatch.version]
+# 버전의 단일 출처는 git 태그(vX.Y.Z). 태그 커밋에서 빌드하면 X.Y.Z,
+# 그 외 커밋은 X.Y.(Z+1).devN+g<hash> 형태가 된다.
+source = "vcs"
+
+[tool.uv]
+# 동적 버전이라 태그/커밋이 바뀌면 uv가 프로젝트를 다시 빌드하도록 캐시 키 지정
+cache-keys = [{ file = "pyproject.toml" }, { git = { commit = true, tags = true } }]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ecos"]

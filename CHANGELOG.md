@@ -2,8 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Changed
+- 버전의 단일 출처를 git 태그로 일원화. `pyproject.toml`의 정적 버전을 제거하고
+  `hatch-vcs`로 빌드 시 태그(`vX.Y.Z`)에서 버전을 계산한다. `ecos.__version__`은
+  `importlib.metadata`로 설치 메타데이터를 읽는다 (공개 API 변화 없음).
+- 배포 워크플로가 빌드 산출물 버전과 태그가 일치하는지 검증한다.
+- 누락된 과거 릴리스 태그(`v0.1.0`, `v0.1.1`)를 보충하고 하단 버전 비교 링크를 전체 버전으로 정비.
 
 ## [0.8.0] - 2026-11-25
 
@@ -142,7 +151,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   차단한다. 스냅샷은 `scripts/snapshot_item_units.py` 로 재생성하고 야간 e2e CI가 라이브
   drift 를 감시.
 
-## [0.5.2] - 2026-06-01
+## [0.5.2] - 2026-06-01 [UNRELEASED]
+
+> **PyPI에 배포되지 않은 버전입니다.** 버전 번호만 올라간 뒤 태그·배포 없이 0.5.3이
+> 이어졌으므로, 아래 변경사항은 모두 0.5.3 배포본에 포함되어 있습니다.
 
 > 지표 매핑 정확성 패치. `get_core_cpi`/`get_gdp_growth_rate` 가 엉뚱한 계열을
 > 반환하던 버그를 정정합니다. 두 함수의 반환 **값/단위가 바뀌므로** 해당 지표를
@@ -533,10 +545,24 @@ v0.1.6 라이브 e2e 검증에서 드러난 follow-up(#2 Reliability epic)을 �
   - 기본 사용법 (`examples/basic_usage.py`)
   - 거시경제 대시보드 (`examples/macro_dashboard.py`)
 
+[Unreleased]: https://github.com/choo121600/ecos-reader/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/choo121600/ecos-reader/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/choo121600/ecos-reader/compare/v0.6.1...v0.7.0
+[0.6.1]: https://github.com/choo121600/ecos-reader/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/choo121600/ecos-reader/compare/v0.5.3...v0.6.0
+[0.5.3]: https://github.com/choo121600/ecos-reader/compare/v0.5.1...v0.5.3
+[0.5.2]: https://github.com/choo121600/ecos-reader/commit/16fc521
 [0.5.1]: https://github.com/choo121600/ecos-reader/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/choo121600/ecos-reader/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/choo121600/ecos-reader/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/choo121600/ecos-reader/compare/v0.2.2...v0.3.0
+[0.2.2]: https://github.com/choo121600/ecos-reader/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/choo121600/ecos-reader/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/choo121600/ecos-reader/compare/v0.1.6...v0.2.0
+[0.1.6]: https://github.com/choo121600/ecos-reader/compare/v0.1.5...v0.1.6
+[0.1.5]: https://github.com/choo121600/ecos-reader/compare/v0.1.4...v0.1.5
+[0.1.4]: https://github.com/choo121600/ecos-reader/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/choo121600/ecos-reader/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/choo121600/ecos-reader/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/choo121600/ecos-reader/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/choo121600/ecos-reader/releases/tag/v0.1.0

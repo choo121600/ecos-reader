@@ -35,80 +35,75 @@ PyPI Trusted Publishers를 사용하면 API 토큰 없이 GitHub Actions에서 �
 
 ## 릴리스 프로세스
 
-### 1. 버전 업데이트
+버전의 **단일 출처는 git 태그**입니다. `pyproject.toml`에는 버전을 적지 않고
+(`dynamic = ["version"]`), [hatch-vcs](https://github.com/ofek/hatch-vcs)가 빌드 시점에
+태그 `vX.Y.Z`에서 버전을 계산합니다. `ecos.__version__`은 설치된 패키지 메타데이터
+(`importlib.metadata`)에서 읽습니다. 따라서 버전을 바꾸려고 파일을 고칠 필요가 없고,
+태그와 배포 버전이 어긋날 수 없습니다.
 
-```bash
-# pyproject.toml의 버전 업데이트
-version = "0.1.2"  # 예시
-```
+태그가 없는 커밋에서 빌드하면 `0.8.1.dev3+g1a2b3c4` 같은 개발 버전(PEP 440)이 됩니다.
 
-### 2. CHANGELOG 업데이트
+### 1. CHANGELOG 정리 (PR)
 
-`CHANGELOG.md`에 변경사항 추가:
+[Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 형식을 따릅니다. 평소에는
+`## [Unreleased]` 아래에 변경사항을 쌓고, 릴리스 PR에서 헤더를 버전으로 바꾼 뒤
+하단 비교 링크를 갱신합니다.
 
 ```markdown
-## [0.1.2] - 2024-12-31
+## [Unreleased]
+
+## [0.9.0] - 2026-12-31
 
 ### Added
 - 새로운 기능 설명
 
-### Changed
-- 변경된 사항
+...
 
-### Fixed
-- 버그 수정
-
-[0.1.2]: https://github.com/choo121600/ecos-reader/compare/v0.1.1...v0.1.2
+[Unreleased]: https://github.com/choo121600/ecos-reader/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/choo121600/ecos-reader/compare/v0.8.0...v0.9.0
 ```
 
-### 3. 테스트 실행
+### 2. 테스트 실행
 
 ```bash
-# 모든 테스트 통과 확인
-pytest
-
-# 코드 품질 검사
-ruff check src tests
-mypy src
+uv run pytest
+uv run ruff check src tests
+uv run mypy src
 ```
 
-### 4. 커밋 및 태그
+### 3. 태그 및 푸시
+
+CHANGELOG PR이 `main`에 머지된 뒤, 그 머지 커밋에 **주석 태그**를 답니다.
 
 ```bash
-# 변경사항 커밋
-git add pyproject.toml CHANGELOG.md
-git commit -m "Bump version to 0.1.2"
-
-# 태그 생성
-git tag -a v0.1.2 -m "Release v0.1.2"
-
-# 푸시
-git push origin main
-git push origin v0.1.2
+git switch main && git pull --ff-only
+git tag -a v0.9.0 -m "Release v0.9.0"
+git push origin v0.9.0
 ```
 
-### 5. 자동 배포 확인
+태그 이름은 반드시 `v` + SemVer(`vX.Y.Z`)입니다.
 
-태그를 푸시하면 GitHub Actions가 자동으로:
+### 4. 자동 배포 확인
 
-1. 패키지 빌드
-2. PyPI에 배포
-3. GitHub Release 생성 (CHANGELOG 내용 포함)
+태그를 푸시하면 `publish.yml`이 자동으로:
+
+1. CI 게이트(lint, type-check, 테스트) 통과 확인
+2. 패키지 빌드 후 산출물 버전이 태그와 같은지 검증
+3. PyPI에 배포 (Trusted Publishing)
+4. GitHub Release 생성 (CHANGELOG 해당 섹션 포함)
 
 진행 상황은 GitHub Actions 탭에서 확인할 수 있습니다.
 
 ## 버전 번호 규칙
 
-[Semantic Versioning](https://semver.org/)을 따릅니다:
+[Semantic Versioning 2.0.0](https://semver.org/lang/ko/)을 따릅니다:
 
 - **Major (X.0.0)**: 호환성이 깨지는 변경
 - **Minor (0.X.0)**: 하위 호환 가능한 기능 추가
 - **Patch (0.0.X)**: 하위 호환 가능한 버그 수정
 
-예시:
-- `0.1.0` → `0.1.1`: 버그 수정, 문서 업데이트
-- `0.1.1` → `0.2.0`: 새로운 지표 추가
-- `0.2.0` → `1.0.0`: API 변경으로 하위 호환성 깨짐
+1.0.0 이전(0.x)에는 공개 API가 안정되지 않았다는 뜻이므로, 호환성이 깨지는 변경은
+**Minor**를 올리고 그 외는 Patch를 올립니다(예: Python 3.10 지원 중단 → 0.7.0 → 0.8.0).
 
 ## 수동 배포 (비상시)
 
@@ -140,12 +135,11 @@ python -m twine upload dist/ecos_reader-X.Y.Z*
 릴리스 전 확인사항:
 
 - [ ] 모든 테스트 통과
-- [ ] CHANGELOG 업데이트
-- [ ] 버전 번호 업데이트
+- [ ] CHANGELOG 업데이트 (`[Unreleased]` → 버전 헤더, 하단 비교 링크)
 - [ ] 문서 업데이트
 - [ ] 예제 코드 동작 확인
 - [ ] 로컬에서 빌드 테스트
-- [ ] Git 태그 생성 및 푸시
+- [ ] `vX.Y.Z` 주석 태그 생성 및 푸시
 
 ## 트러블슈팅
 
@@ -167,3 +161,4 @@ python -m twine upload dist/ecos_reader-X.Y.Z*
 - `pyproject.toml` 문법 확인
 - 필수 파일 존재 확인 (README.md, LICENSE 등)
 - 로컬에서 `python -m build` 테스트
+- 버전이 `0.0.0` 또는 `.dev`로 나오면 태그가 없는 것: `git fetch --tags` 후 다시 빌드

@@ -20,7 +20,13 @@ Examples
 
 from __future__ import annotations
 
-__version__ = "0.8.0"
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    # 버전의 단일 출처는 git 태그 → 패키지 메타데이터 (hatch-vcs)
+    __version__ = version("ecos-reader")
+except PackageNotFoundError:  # 설치되지 않은 소스 트리에서 직접 import한 경우
+    __version__ = "0.0.0+unknown"
 __author__ = "yeonguk"
 
 # 범용 조회 API (#100, #104)
