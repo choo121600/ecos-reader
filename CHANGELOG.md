@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+> 하위호환을 깨는 변경 포함. Python 3.10 지원을 중단합니다 (3.10은 2026-10 EOL).
+
+### Removed
+- **Python 3.10 지원 중단.** `requires-python = ">=3.11"`. 개발 의존성(filelock)의
+  보안 패치 버전이 Python 3.11 이상만 지원해 3.10 lock 분기에서 취약 버전이 남던 문제 해소.
+  CI 매트릭스는 3.11/3.12/3.13.
+
 ## [0.7.0] - 2026-06-02
 
 > 하위호환을 깨는 변경 포함. `get_bond_yield` deprecated alias를 제거합니다
