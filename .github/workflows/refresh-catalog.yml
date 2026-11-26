@@ -45,9 +45,21 @@ jobs:
           ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
         run: uv run python scripts/audit_codes.py snapshot
 
+      # GITHUB_TOKEN으로 만든 PR에는 pull_request 워크플로(CI)가 트리거되지 않아
+      # main ruleset의 필수 체크가 영원히 대기한다. 전용 GitHub App(ecos-reader-bot,
+      # contents/pull-requests write, 이 저장소에만 설치) 토큰으로 PR을 만든다.
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.CATALOG_BOT_APP_ID }}
+          private-key: ${{ secrets.CATALOG_BOT_PRIVATE_KEY }}
+
       - name: Create Pull Request if snapshot changed
+        id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
+          token: ${{ steps.app-token.outputs.token }}
           commit-message: "chore: ECOS 카탈로그 스냅샷 갱신 (#105)"
           title: "chore: ECOS 카탈로그 스냅샷 갱신"
           body: |
@@ -61,3 +73,10 @@ jobs:
           delete-branch: true
           add-paths: src/ecos/data/catalog.csv.gz
           labels: chore
+
+      # 필수 CI가 통과하면 squash 머지된다. 실패하면 PR이 열린 채 남는다.
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash --repo "${{ github.repository }}"
