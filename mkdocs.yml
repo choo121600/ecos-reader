@@ -132,6 +132,7 @@ nav:
   - 개발:
       - 기여하기: development/contributing.md
       - 릴리스 가이드: development/release.md
+      - 하위호환·Deprecation 정책: development/deprecation-policy.md
       - 지표 레지스트리: development/indicator-registry.md
       - Partial-coverage 재설계 규약: development/partial-coverage-redesign.md
   - 설계 결정(ADR):

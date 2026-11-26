@@ -27,5 +27,9 @@ ecos-reader가 발생시키는 예외 및 경고 클래스의 자동 생성 API 
       heading_level: 2
 
 ::: ecos.EcosValidationError
+
+## 경고
+
+::: ecos.EcosDeprecationWarning
     options:
       heading_level: 2

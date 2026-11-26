@@ -47,6 +47,7 @@ from .config import clear_api_key, get_api_key, load_env, set_api_key
 from .exceptions import (
     EcosAPIError,
     EcosConfigError,
+    EcosDeprecationWarning,
     EcosError,
     EcosNetworkError,
     EcosRateLimitError,
@@ -164,6 +165,7 @@ __all__ = [
     "EcosRateLimitError",
     "EcosServerError",
     "EcosValidationError",
+    "EcosDeprecationWarning",
     # 재정 지표
     "get_fiscal_balance",
     # 환율 지표

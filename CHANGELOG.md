@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `ecos.EcosDeprecationWarning`: 제거 예정 공개 API 사용 시 발생하는 경고 (`FutureWarning` 상속).
+- 하위호환·사용 중단 정책 문서(`docs/development/deprecation-policy.md`): 공개 API 범위,
+  버전 규칙, 제거 전 최소 한 Minor 릴리스·3개월 경고 유예 기간을 정의.
+
 ### Changed
 - 버전의 단일 출처를 git 태그로 일원화. `pyproject.toml`의 정적 버전을 제거하고
   `hatch-vcs`로 빌드 시 태그(`vX.Y.Z`)에서 버전을 계산한다. `ecos.__version__`은

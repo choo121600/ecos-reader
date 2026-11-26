@@ -130,3 +130,15 @@ class TestErrorDispatch:
         _add_error_response("INFO-200")
         result = _call(_make_client())
         assert "RESULT" in result
+
+
+def test_deprecation_warning_is_public_and_visible_by_default():
+    import warnings
+
+    import ecos
+
+    assert "EcosDeprecationWarning" in ecos.__all__
+    assert issubclass(ecos.EcosDeprecationWarning, FutureWarning)
+    # FutureWarning은 기본 필터에서 숨겨지지 않는다 (DeprecationWarning과 달리)
+    with pytest.warns(ecos.EcosDeprecationWarning):
+        warnings.warn("x", ecos.EcosDeprecationWarning, stacklevel=1)
