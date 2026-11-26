@@ -71,6 +71,15 @@ class EcosRateLimitError(EcosError):
         super().__init__(f"[{code}] {message}")
 
 
+class EcosDeprecationWarning(FutureWarning):
+    """제거 예정인 공개 API(함수·인자·값)를 사용할 때 발생하는 경고.
+
+    기본 경고 필터에서 숨겨지는 ``DeprecationWarning`` 대신 ``FutureWarning`` 을
+    상속해 스크립트·노트북 사용자에게도 기본으로 보이게 한다. 메시지에는 대체
+    방법과 제거 예정 버전을 포함한다. 정책은 ``docs/development/deprecation-policy.md``.
+    """
+
+
 # ECOS 에러 코드 단일 진실원천 (Single Source of Truth)
 #
 # 키는 ECOS API가 실제로 반환하는 하이픈 형식("ERROR-602")으로 통일한다.
