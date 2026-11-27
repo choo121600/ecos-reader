@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-11-27
+
+> 하위호환 경고 릴리스. 기존 호출은 그대로 동작하며 `EcosDeprecationWarning`을 표시합니다.
+> 경고가 나는 경로는 1.0.0에서 제거됩니다. [마이그레이션 가이드](docs/user-guide/migration-v0.9.0.md)
+
 ### Added
 - `ecos.EcosDeprecationWarning`: 제거 예정 공개 API 사용 시 발생하는 경고 (`FutureWarning` 상속).
 - 하위호환·사용 중단 정책 문서(`docs/development/deprecation-policy.md`): 공개 API 범위,
@@ -567,7 +572,8 @@ v0.1.6 라이브 e2e 검증에서 드러난 follow-up(#2 Reliability epic)을 �
   - 기본 사용법 (`examples/basic_usage.py`)
   - 거시경제 대시보드 (`examples/macro_dashboard.py`)
 
-[Unreleased]: https://github.com/choo121600/ecos-reader/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/choo121600/ecos-reader/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/choo121600/ecos-reader/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/choo121600/ecos-reader/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/choo121600/ecos-reader/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/choo121600/ecos-reader/compare/v0.6.0...v0.6.1
