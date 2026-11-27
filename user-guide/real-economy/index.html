@@ -1381,6 +1381,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration-v0.9.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v0.9.0 마이그레이션
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2443,9 +2471,9 @@
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">)</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># 계절조정 계열</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_industrial_production</span><span class="p">(</span><span class="n">seasonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_industrial_production</span><span class="p">(</span><span class="n">seasonal_adj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
-<p><code>get_industrial_production(start_date=None, end_date=None, seasonal=False, frequency="monthly")</code> 의 <code>seasonal=True</code> 를 지정하면 원계열 대신 계절조정 계열을 조회합니다. <code>frequency</code> 로 월(<code>monthly</code>, 기본)·분기(<code>quarterly</code>)·연(<code>annual</code>) 주기를 선택합니다.</p>
+<p><code>get_industrial_production(start_date=None, end_date=None, seasonal_adj=False, frequency="monthly")</code> 의 <code>seasonal_adj=True</code> 를 지정하면 원계열 대신 계절조정 계열을 조회합니다. <code>frequency</code> 로 월(<code>monthly</code>, 기본)·분기(<code>quarterly</code>)·연(<code>annual</code>) 주기를 선택합니다.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 연간 주기</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_industrial_production</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">"annual"</span><span class="p">)</span>
 </span></code></pre></div>
@@ -2455,9 +2483,9 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">계절조정 + 연간 조합 불가</p>
-<p><code>seasonal=True</code> 와 <code>frequency="annual"</code> 을 함께 지정하면 <code>ValueError</code> 가 발생합니다.
+<p><code>seasonal_adj=True</code> 와 <code>frequency="annual"</code> 을 함께 지정하면 <code>ValueError</code> 가 발생합니다.
 ECOS가 계절조정 연간 계열을 제공하지 않기 때문입니다(연간 데이터엔 계절성이 없음).
-<code>seasonal=False</code> 또는 <code>frequency="monthly"</code>/<code>"quarterly"</code> 를 사용하세요.</p>
+<code>seasonal_adj=False</code> 또는 <code>frequency="monthly"</code>/<code>"quarterly"</code> 를 사용하세요.</p>
 </div>
 <h3 id="_5">반환 데이터 구조<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
 <table>
@@ -2499,16 +2527,16 @@ ECOS가 계절조정 연간 계열을 제공하지 않기 때문입니다(연간
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_facility_investment</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s2">"202412"</span><span class="p">)</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># 계절조정 계열</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_facility_investment</span><span class="p">(</span><span class="n">seasonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_facility_investment</span><span class="p">(</span><span class="n">seasonal_adj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># 연간 주기</span>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_facility_investment</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">"annual"</span><span class="p">)</span>
 </span></code></pre></div>
-<p><code>get_facility_investment(start_date=None, end_date=None, seasonal=False, frequency="monthly")</code> 의 인자 구조는 전산업생산지수와 동일합니다. <code>frequency</code> 로 월(<code>monthly</code>, 기본)·분기(<code>quarterly</code>)·연(<code>annual</code>) 주기를 선택합니다.</p>
+<p><code>get_facility_investment(start_date=None, end_date=None, seasonal_adj=False, frequency="monthly")</code> 의 인자 구조는 전산업생산지수와 동일합니다. <code>frequency</code> 로 월(<code>monthly</code>, 기본)·분기(<code>quarterly</code>)·연(<code>annual</code>) 주기를 선택합니다.</p>
 <div class="admonition warning">
 <p class="admonition-title">계절조정 + 연간 조합 불가</p>
-<p>전산업생산지수와 동일하게 <code>seasonal=True</code> 와 <code>frequency="annual"</code> 조합은 <code>ValueError</code> 가
-발생합니다. <code>seasonal=False</code> 또는 <code>frequency="monthly"</code>/<code>"quarterly"</code> 를 사용하세요.</p>
+<p>전산업생산지수와 동일하게 <code>seasonal_adj=True</code> 와 <code>frequency="annual"</code> 조합은 <code>ValueError</code> 가
+발생합니다. <code>seasonal_adj=False</code> 또는 <code>frequency="monthly"</code>/<code>"quarterly"</code> 를 사용하세요.</p>
 </div>
 <h3 id="_9">반환 데이터 구조<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
 <table>
@@ -2621,7 +2649,7 @@ ECOS가 계절조정 연간 계열을 제공하지 않기 때문입니다(연간
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_retail_sales</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">"음식료품"</span><span class="p">)</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># 경상지수, 음식료품, 연 주기 조합</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_retail_sales</span><span class="p">(</span><span class="s2">"nominal"</span><span class="p">,</span> <span class="n">sub_category</span><span class="o">=</span><span class="s2">"음식료품"</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">"annual"</span><span class="p">)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_retail_sales</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">"nominal"</span><span class="p">,</span> <span class="n">sub_category</span><span class="o">=</span><span class="s2">"음식료품"</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">"annual"</span><span class="p">)</span>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># 계절조정지수, 분기 주기</span>
 </span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_retail_sales</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">"seasonal"</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">"quarterly"</span><span class="p">)</span>

@@ -1447,6 +1447,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration-v0.9.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v0.9.0 마이그레이션
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2778,15 +2806,15 @@
 <p>상품·서비스·식품 에너지 제외 등 특수분류 및 COICOP 1단계(식료품, 주거, 교통 등) 항목별 CPI를 조회합니다.</p>
 <h3 id="_11">매개변수<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>category</code>: CPI 세부 항목 (기본값: <code>"전체"</code>)<ul>
-<li><code>"전체"</code> - 소비자물가지수 전체</li>
-<li><code>"상품"</code> - 상품 물가지수</li>
-<li><code>"서비스"</code> - 서비스 물가지수</li>
-<li><code>"식품_에너지제외"</code> - 식품 및 에너지 제외 지수 (근원 물가와 유사)</li>
-<li><code>"농산물_석유제외"</code> - 농산물 및 석유류 제외 지수</li>
-<li><code>"식료품_비주류음료"</code> - 식료품 및 비주류음료</li>
-<li><code>"주거_수도_전기"</code> - 주거, 수도, 전기 및 연료</li>
-<li><code>"교통"</code> - 교통</li>
+<li><code>category</code>: CPI 세부 항목 (기본값: <code>"all"</code>)<ul>
+<li><code>"all"</code> - 소비자물가지수 전체</li>
+<li><code>"goods"</code> - 상품 물가지수</li>
+<li><code>"services"</code> - 서비스 물가지수</li>
+<li><code>"ex_food_energy"</code> - 식품 및 에너지 제외 지수 (근원 물가와 유사)</li>
+<li><code>"ex_agri_oil"</code> - 농산물 및 석유류 제외 지수</li>
+<li><code>"food_beverages"</code> - 식료품 및 비주류음료</li>
+<li><code>"housing_utilities"</code> - 주거, 수도, 전기 및 연료</li>
+<li><code>"transport"</code> - 교통</li>
 </ul>
 </li>
 </ul>
@@ -2794,20 +2822,20 @@
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># 전체 소비자물가지수</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"전체"</span><span class="p">)</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span>
 </span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
 </span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># 식품 및 에너지 제외 (근원 물가 유사)</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"식품_에너지제외"</span><span class="p">)</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"ex_food_energy"</span><span class="p">)</span>
 </span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
 </span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="c1"># 서비스 물가</span>
-</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"서비스"</span><span class="p">)</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"services"</span><span class="p">)</span>
 </span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span></code></pre></div>
 <h3 id="_13">기간 지정<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">category</span><span class="o">=</span><span class="s2">"상품"</span><span class="p">,</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">category</span><span class="o">=</span><span class="s2">"goods"</span><span class="p">,</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">start_date</span><span class="o">=</span><span class="s2">"202301"</span><span class="p">,</span>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">end_date</span><span class="o">=</span><span class="s2">"202412"</span>
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">)</span>
@@ -2849,9 +2877,9 @@
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 </span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
 </span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1"># 상품·서비스·근원 물가 조회</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">goods</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"상품"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">services</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"서비스"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">core</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"식품_에너지제외"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">goods</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"goods"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">services</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"services"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">core</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_cpi_by_category</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">"ex_food_energy"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
 </span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
 </span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># 데이터 병합</span>
 </span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>

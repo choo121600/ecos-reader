@@ -1452,6 +1452,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration-v0.9.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v0.9.0 마이그레이션
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2679,8 +2707,8 @@
 <code>metric</code>(거래대금/거래량)을 선택할 수 있습니다.</p>
 <h3 id="_7">매개변수<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>action</code>: 거래 행위 — <code>순매수</code>(기본값) / <code>매수</code> / <code>매도</code></li>
-<li><code>metric</code>: 측정 지표 — <code>거래대금</code>(기본값) / <code>거래량</code></li>
+<li><code>action</code>: 거래 행위 — <code>"net_buy"</code>(기본값) / <code>"buy"</code> / <code>"sell"</code></li>
+<li><code>metric</code>: 측정 지표 — <code>"value"</code>(기본값) / <code>"volume"</code></li>
 <li><code>sub_category</code>: 특정 투자자 선택 (항목명 또는 item_code). 미지정 시 전체 투자자
   long-format 반환.</li>
 </ul>
@@ -2695,7 +2723,7 @@
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">(</span><span class="n">sub_category</span><span class="o">=</span><span class="s2">"S22CC"</span><span class="p">)</span>
 </span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
 </span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1"># 투자자별 매수 거래량</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">"매수"</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"거래량"</span><span class="p">)</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_investor_trading</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">"buy"</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"volume"</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">v0.3.0 재설계 (#60)</p>
@@ -2752,20 +2780,20 @@
 <p>국채 및 회사채 수익률을 조회합니다.</p>
 <h3 id="_12">지원 유형<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>종류별</code> - 채권 종류별 수익률 (기본값)</li>
-<li><code>시장별</code> - 시장별 채권 거래 현황</li>
+<li><code>"by_type"</code> - 채권 종류별 수익률 (기본값)</li>
+<li><code>"by_market"</code> - 시장별 채권 거래 현황</li>
 </ul>
 <h3 id="_13">매개변수<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>bond_type</code>: 분류 기준 — <code>종류별</code>(기본값, 합계/국채/지방채/특수채/회사채/외국채) / <code>시장별</code>(합계/국채전문/일반채권/소액채권/신고매매)</li>
-<li><code>measure</code>: 측정 지표 — <code>거래대금</code>(기본값) / <code>거래량</code> / <code>상장잔액</code>·<code>상장종목수</code>(종류별 전용)</li>
+<li><code>bond_type</code>: 분류 기준 — <code>"by_type"</code>(기본값, 합계/국채/지방채/특수채/회사채/외국채) / <code>"by_market"</code>(합계/국채전문/일반채권/소액채권/신고매매)</li>
+<li><code>measure</code>: 측정 지표 — <code>"value"</code>(기본값) / <code>"volume"</code> / <code>"listed_balance"</code>·<code>"listed_count"</code>(종류별 전용)</li>
 <li><code>sub_category</code>: 세부 분류(분류명 또는 item_code). 미지정 시 전체 분류 long-format 반환.</li>
 </ul>
 <h3 id="_14">종류별 채권 거래<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># 종류별 거래대금 전체 (long-format: date, category_value, value, unit)</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"종류별"</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"by_type"</span><span class="p">)</span>
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
 </span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># 국채만</span>
@@ -2775,10 +2803,10 @@
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">ecos</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># 시장별 거래대금 전체</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"시장별"</span><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"by_market"</span><span class="p">)</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># 시장별 거래량, 국채전문 유통시장만</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"시장별"</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">"거래량"</span><span class="p">,</span> <span class="n">sub_category</span><span class="o">=</span><span class="s2">"0202"</span><span class="p">)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"by_market"</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">"volume"</span><span class="p">,</span> <span class="n">sub_category</span><span class="o">=</span><span class="s2">"0202"</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">v0.3.0 재설계 (#63)</p>
@@ -2790,7 +2818,7 @@ long-format에는 '합계' 행도 포함되므로 단순 합산에 주의하세�
 <h3 id="_16">기간 지정<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># 2024년 데이터</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">bond_type</span><span class="o">=</span><span class="s2">"종류별"</span><span class="p">,</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">bond_type</span><span class="o">=</span><span class="s2">"by_type"</span><span class="p">,</span>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">start_date</span><span class="o">=</span><span class="s2">"202401"</span><span class="p">,</span>
 </span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">end_date</span><span class="o">=</span><span class="s2">"202412"</span>
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="p">)</span>
@@ -2837,7 +2865,7 @@ long-format에는 '합계' 행도 포함되므로 단순 합산에 주의하세�
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># 채권 종류별 수익률 추이</span>
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">bond_type</span><span class="o">=</span><span class="s2">"종류별"</span><span class="p">,</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">bond_type</span><span class="o">=</span><span class="s2">"by_type"</span><span class="p">,</span>
 </span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span>
 </span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">)</span>
 </span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
@@ -2883,7 +2911,7 @@ long-format에는 '합계' 행도 포함되므로 단순 합산에 주의하세�
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1"># 데이터 조회</span>
 </span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">stock</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_stock_index</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">"monthly"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">bond</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"종류별"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">bond</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"by_type"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
 </span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
 </span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="c1"># 데이터 병합</span>
 </span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
@@ -2974,7 +3002,7 @@ long-format에는 '합계' 행도 포함되므로 단순 합산에 주의하세�
 </span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
 </span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1"># 데이터 조회</span>
 </span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="n">stock</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_stock_index</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="s2">"monthly"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="n">bond</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"종류별"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="n">bond</span> <span class="o">=</span> <span class="n">ecos</span><span class="o">.</span><span class="n">get_bond_market</span><span class="p">(</span><span class="n">bond_type</span><span class="o">=</span><span class="s2">"by_type"</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">"202001"</span><span class="p">)</span>
 </span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
 </span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="c1"># 전월대비 변화율</span>
 </span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
