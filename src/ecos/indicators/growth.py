@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     GDP_BY_EXPENDITURE_VARIANTS,
@@ -32,7 +33,9 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition()
 def get_gdp(
+    *,
     frequency: Literal["quarterly", "annual"] = "quarterly",
     basis: Literal["real", "nominal"] = "real",
     start_date: str | None = None,
@@ -109,7 +112,9 @@ def get_gdp(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_gdp_deflator(
+    *,
     frequency: Literal["quarterly", "annual"] = "quarterly",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -180,7 +185,9 @@ def get_gdp_deflator(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_gdp_growth_rate(
+    *,
     frequency: Literal["quarterly", "annual"] = "quarterly",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -258,7 +265,9 @@ def get_gdp_growth_rate(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_gdp_by_industry(
+    *,
     basis: Literal["real", "nominal"] = "real",
     seasonal_adj: bool = True,
     frequency: Literal["quarterly", "annual"] = "quarterly",
@@ -380,7 +389,9 @@ def get_gdp_by_industry(
     )
 
 
+@api_transition()
 def get_gdp_by_expenditure(
+    *,
     basis: Literal["real", "nominal"] = "real",
     frequency: Literal["quarterly", "annual"] = "quarterly",
     sub_category: str | None = None,
@@ -495,7 +506,9 @@ def get_gdp_by_expenditure(
     )
 
 
+@api_transition()
 def get_gdp_deflator_by_industry(
+    *,
     frequency: Literal["quarterly", "annual"] = "quarterly",
     sub_category: str | None = None,
     start_date: str | None = None,

@@ -96,7 +96,7 @@ class TestGetBorrowerLoan:
         """sub_category 미지정 시 분류축 전체를 long-format으로 반환한다."""
         self._add_mock()
         df = get_borrower_loan(
-            loan_type="잔액", category="연령별", start_date="2024Q1", end_date="2024Q2"
+            loan_type="outstanding", category="by_age", start_date="2024Q1", end_date="2024Q2"
         )
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
         # C001(20대), C002(30대) × 2분기 = 4행. 다른 축(D/E/0000)은 제외돼야 함.
@@ -108,8 +108,8 @@ class TestGetBorrowerLoan:
         """sub_category 지정 시 해당 항목 단일 시계열만 반환한다."""
         self._add_mock()
         df = get_borrower_loan(
-            loan_type="잔액",
-            category="연령별",
+            loan_type="outstanding",
+            category="by_age",
             sub_category="30대",
             start_date="2024Q1",
             end_date="2024Q2",
@@ -123,8 +123,8 @@ class TestGetBorrowerLoan:
         """sub_category로 item_code도 허용한다."""
         self._add_mock()
         df = get_borrower_loan(
-            loan_type="잔액",
-            category="연령별",
+            loan_type="outstanding",
+            category="by_age",
             sub_category="C001",
             start_date="2024Q1",
             end_date="2024Q2",
@@ -133,20 +133,20 @@ class TestGetBorrowerLoan:
 
     @responses.activate
     def test_category_all_uses_single_code(self):
-        """category='전체'는 item_code 0000만 매칭한다."""
+        """category='all'는 item_code 0000만 매칭한다."""
         self._add_mock()
         df = get_borrower_loan(
-            loan_type="잔액", category="전체", start_date="2024Q1", end_date="2024Q2"
+            loan_type="outstanding", category="all", start_date="2024Q1", end_date="2024Q2"
         )
         assert set(df["category_value"]) == {"전체"}
         assert (df["value"] == 100).all()
 
     @responses.activate
     def test_category_sex_axis(self):
-        """category='성별'(prefix B)은 남성/여성만 묶는다."""
+        """category='by_gender'(prefix B)은 남성/여성만 묶는다."""
         self._add_mock()
         df = get_borrower_loan(
-            loan_type="잔액", category="성별", start_date="2024Q1", end_date="2024Q2"
+            loan_type="outstanding", category="by_gender", start_date="2024Q1", end_date="2024Q2"
         )
         assert set(df["category_value"]) == {"남성", "여성"}
         assert len(df) == 4
@@ -157,8 +157,8 @@ class TestGetBorrowerLoan:
         self._add_mock()
         with pytest.raises(ValueError, match="사용 가능한 항목"):
             get_borrower_loan(
-                loan_type="잔액",
-                category="연령별",
+                loan_type="outstanding",
+                category="by_age",
                 sub_category="없는항목",
                 start_date="2024Q1",
                 end_date="2024Q2",
@@ -388,7 +388,7 @@ class TestGetM1Variants:
             json=_simple_monthly_mock("450000", "202401"),
             status=200,
         )
-        df = get_m1_variants(variant="말잔_계절조정", start_date="202401", end_date="202401")
+        df = get_m1_variants(variant="end_sa", start_date="202401", end_date="202401")
         assert not df.empty
         assert list(df.columns) == ["date", "value", "unit"]
         assert df["value"].iloc[0] == 450000.0
@@ -402,7 +402,7 @@ class TestGetM1Variants:
             json=_simple_monthly_mock("430000", "202401"),
             status=200,
         )
-        df = get_m1_variants(variant="평잔_원계열", start_date="202401", end_date="202401")
+        df = get_m1_variants(variant="average_nsa", start_date="202401", end_date="202401")
         assert not df.empty
         assert list(df.columns) == ["date", "value", "unit"]
 
@@ -415,7 +415,7 @@ class TestGetM1Variants:
             json=_simple_monthly_mock("440000", "202401"),
             status=200,
         )
-        df = get_m1_variants(variant="평잔_계절조정", start_date="202401", end_date="202401")
+        df = get_m1_variants(variant="average_sa", start_date="202401", end_date="202401")
         assert not df.empty
 
     def test_invalid_variant_raises(self):
@@ -456,7 +456,7 @@ class TestGetM2Variants:
             json=_simple_monthly_mock("3800000", "202401"),
             status=200,
         )
-        df = get_m2_variants(variant="말잔_계절조정", start_date="202401", end_date="202401")
+        df = get_m2_variants(variant="end_sa", start_date="202401", end_date="202401")
         assert not df.empty
         assert list(df.columns) == ["date", "value", "unit"]
         assert df["value"].iloc[0] == 3800000.0
@@ -470,7 +470,7 @@ class TestGetM2Variants:
             json=_simple_monthly_mock("3700000", "202401"),
             status=200,
         )
-        df = get_m2_variants(variant="평잔_원계열", start_date="202401", end_date="202401")
+        df = get_m2_variants(variant="average_nsa", start_date="202401", end_date="202401")
         assert not df.empty
         assert list(df.columns) == ["date", "value", "unit"]
 
@@ -540,7 +540,7 @@ class TestGetM2ByHolder:
     def test_default_returns_long_format_holders(self):
         """sub_category 미지정 시 전체 경제주체를 long-format으로 반환 (#141)."""
         responses.add(responses.GET, url=re.compile(r".*"), json=_m2_holder_mock(), status=200)
-        df = get_m2_by_holder(variant="말잔_원계열", start_date="202401", end_date="202402")
+        df = get_m2_by_holder(variant="end_nsa", start_date="202401", end_date="202402")
         assert not df.empty
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
         # 총계와 주체별 항목이 함께 포함된다.
@@ -604,7 +604,7 @@ class TestGetHouseholdCredit:
             json=_simple_quarterly_mock("1900000", "2024Q1"),
             status=200,
         )
-        df = get_household_credit(category="업권별", start_date="2024Q1", end_date="2024Q1")
+        df = get_household_credit(category="by_lender", start_date="2024Q1", end_date="2024Q1")
         assert not df.empty
         assert list(df.columns) == ["date", "value", "unit"]
         assert df["value"].iloc[0] == 1900000.0
@@ -618,7 +618,7 @@ class TestGetHouseholdCredit:
             json=_simple_quarterly_mock("1850000", "2024Q1"),
             status=200,
         )
-        df = get_household_credit(category="용도별", start_date="2024Q1", end_date="2024Q1")
+        df = get_household_credit(category="by_purpose", start_date="2024Q1", end_date="2024Q1")
         assert not df.empty
         assert list(df.columns) == ["date", "value", "unit"]
 
@@ -779,7 +779,10 @@ class TestGetBorrowerLoanExtra:
             responses.GET, url=re.compile(r".*"), json=self._mock_with_prefixes(), status=200
         )
         df = get_borrower_loan(
-            loan_type="잔액", category="담보유형별", start_date="2024Q1", end_date="2024Q1"
+            loan_type="outstanding",
+            category="by_collateral",
+            start_date="2024Q1",
+            end_date="2024Q1",
         )
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
         assert set(df["category_value"]) == {"주택담보", "신용대출"}
@@ -791,7 +794,7 @@ class TestGetBorrowerLoanExtra:
             responses.GET, url=re.compile(r".*"), json=self._mock_with_prefixes(), status=200
         )
         df = get_borrower_loan(
-            loan_type="신규", category="다중대출별", start_date="2024Q1", end_date="2024Q1"
+            loan_type="new", category="by_loan_count", start_date="2024Q1", end_date="2024Q1"
         )
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
         assert set(df["category_value"]) == {"1건", "2건이상"}
@@ -803,8 +806,8 @@ class TestGetBorrowerLoanExtra:
             responses.GET, url=re.compile(r".*"), json=self._mock_with_prefixes(), status=200
         )
         df = get_borrower_loan(
-            loan_type="잔액",
-            category="담보유형별",
+            loan_type="outstanding",
+            category="by_collateral",
             sub_category="주택담보",
             start_date="2024Q1",
             end_date="2024Q1",

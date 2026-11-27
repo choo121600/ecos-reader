@@ -110,8 +110,8 @@ print(f"변동성 (표준편차): {df['value'].std():.2f}")
 
 ### 매개변수
 
-- `action`: 거래 행위 — `순매수`(기본값) / `매수` / `매도`
-- `metric`: 측정 지표 — `거래대금`(기본값) / `거래량`
+- `action`: 거래 행위 — `"net_buy"`(기본값) / `"buy"` / `"sell"`
+- `metric`: 측정 지표 — `"value"`(기본값) / `"volume"`
 - `sub_category`: 특정 투자자 선택 (항목명 또는 item_code). 미지정 시 전체 투자자
   long-format 반환.
 
@@ -128,7 +128,7 @@ print(df.tail())
 df = ecos.get_investor_trading(sub_category="S22CC")
 
 # 투자자별 매수 거래량
-df = ecos.get_investor_trading(action="매수", metric="거래량")
+df = ecos.get_investor_trading(action="buy", metric="volume")
 ```
 
 !!! note "v0.3.0 재설계 (#60)"
@@ -166,13 +166,13 @@ df.set_index('date')['value'].plot(
 
 ### 지원 유형
 
-- `종류별` - 채권 종류별 수익률 (기본값)
-- `시장별` - 시장별 채권 거래 현황
+- `"by_type"` - 채권 종류별 수익률 (기본값)
+- `"by_market"` - 시장별 채권 거래 현황
 
 ### 매개변수
 
-- `bond_type`: 분류 기준 — `종류별`(기본값, 합계/국채/지방채/특수채/회사채/외국채) / `시장별`(합계/국채전문/일반채권/소액채권/신고매매)
-- `measure`: 측정 지표 — `거래대금`(기본값) / `거래량` / `상장잔액`·`상장종목수`(종류별 전용)
+- `bond_type`: 분류 기준 — `"by_type"`(기본값, 합계/국채/지방채/특수채/회사채/외국채) / `"by_market"`(합계/국채전문/일반채권/소액채권/신고매매)
+- `measure`: 측정 지표 — `"value"`(기본값) / `"volume"` / `"listed_balance"`·`"listed_count"`(종류별 전용)
 - `sub_category`: 세부 분류(분류명 또는 item_code). 미지정 시 전체 분류 long-format 반환.
 
 ### 종류별 채권 거래
@@ -181,7 +181,7 @@ df.set_index('date')['value'].plot(
 import ecos
 
 # 종류별 거래대금 전체 (long-format: date, category_value, value, unit)
-df = ecos.get_bond_market(bond_type="종류별")
+df = ecos.get_bond_market(bond_type="by_type")
 print(df.tail())
 
 # 국채만
@@ -194,10 +194,10 @@ df = ecos.get_bond_market(sub_category="국채")
 import ecos
 
 # 시장별 거래대금 전체
-df = ecos.get_bond_market(bond_type="시장별")
+df = ecos.get_bond_market(bond_type="by_market")
 
 # 시장별 거래량, 국채전문 유통시장만
-df = ecos.get_bond_market(bond_type="시장별", measure="거래량", sub_category="0202")
+df = ecos.get_bond_market(bond_type="by_market", measure="volume", sub_category="0202")
 ```
 
 !!! note "v0.3.0 재설계 (#63)"
@@ -211,7 +211,7 @@ df = ecos.get_bond_market(bond_type="시장별", measure="거래량", sub_catego
 ```python
 # 2024년 데이터
 df = ecos.get_bond_market(
-    bond_type="종류별",
+    bond_type="by_type",
     start_date="202401",
     end_date="202412"
 )
@@ -237,7 +237,7 @@ import matplotlib.pyplot as plt
 
 # 채권 종류별 수익률 추이
 df = ecos.get_bond_market(
-    bond_type="종류별",
+    bond_type="by_type",
     start_date="202001"
 )
 
@@ -290,7 +290,7 @@ import matplotlib.pyplot as plt
 
 # 데이터 조회
 stock = ecos.get_stock_index(frequency="monthly", start_date="202001")
-bond = ecos.get_bond_market(bond_type="종류별", start_date="202001")
+bond = ecos.get_bond_market(bond_type="by_type", start_date="202001")
 
 # 데이터 병합
 merged = pd.merge(
@@ -387,7 +387,7 @@ import matplotlib.pyplot as plt
 
 # 데이터 조회
 stock = ecos.get_stock_index(frequency="monthly", start_date="202001")
-bond = ecos.get_bond_market(bond_type="종류별", start_date="202001")
+bond = ecos.get_bond_market(bond_type="by_type", start_date="202001")
 
 # 전월대비 변화율
 merged = pd.merge(

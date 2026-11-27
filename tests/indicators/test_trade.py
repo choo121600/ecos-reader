@@ -42,7 +42,7 @@ class TestGetTrade:
     @responses.activate
     def test_success_columns(self):
         responses.add(responses.GET, re.compile(r".*"), json=_trade_response(), status=200)
-        df = get_trade("export", start_date="202401", end_date="202402")
+        df = get_trade(flow="export", start_date="202401", end_date="202402")
         assert df.columns.tolist() == ["date", "value", "unit"]
         assert df["unit"].iloc[0] == "천불"
 
@@ -50,14 +50,14 @@ class TestGetTrade:
     @pytest.mark.parametrize(("flow", "item_code"), [("export", "T002"), ("import", "T004")])
     def test_flow_maps_to_item(self, flow, item_code):
         responses.add(responses.GET, re.compile(r".*"), json=_trade_response(item_code), status=200)
-        get_trade(flow, start_date="202401", end_date="202402")
+        get_trade(flow=flow, start_date="202401", end_date="202402")
         assert item_code in responses.calls[0].request.url
 
     @responses.activate
     @pytest.mark.parametrize(("frequency", "marker"), [("monthly", "/M/"), ("annual", "/A/")])
     def test_frequency_maps_to_period(self, frequency, marker):
         responses.add(responses.GET, re.compile(r".*"), json=_trade_response(), status=200)
-        get_trade("export", start_date="2020", end_date="2024", frequency=frequency)
+        get_trade(flow="export", start_date="2020", end_date="2024", frequency=frequency)
         assert marker in responses.calls[0].request.url
 
     @responses.activate
@@ -67,11 +67,11 @@ class TestGetTrade:
 
     def test_invalid_flow_raises(self):
         with pytest.raises(ValueError, match="flow"):
-            get_trade("balance", start_date="202401", end_date="202402")
+            get_trade(flow="balance", start_date="202401", end_date="202402")
 
     def test_invalid_frequency_raises(self):
         with pytest.raises(ValueError, match="frequency"):
-            get_trade("export", frequency="daily")
+            get_trade(flow="export", frequency="daily")
 
 
 def test_public_export():

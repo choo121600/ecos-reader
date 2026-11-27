@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import EXCHANGE_RATE_ITEMS, STAT_EXCHANGE_RATE
 from ..parser import normalize_stat_result, parse_response
@@ -18,7 +19,9 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition()
 def get_exchange_rate(
+    *,
     currency: Literal["USD", "JPY", "EUR", "CNY"] = "USD",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -57,13 +60,13 @@ def get_exchange_rate(
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_exchange_rate("USD")
+    >>> df = ecos.get_exchange_rate(currency="USD")
     >>> df.head(1)
             date   value unit
     0 2024-01-02  1289.4    원
 
     >>> # 기간 지정
-    >>> df = ecos.get_exchange_rate("JPY", start_date="20240101", end_date="20241231")
+    >>> df = ecos.get_exchange_rate(currency="JPY", start_date="20240101", end_date="20241231")
     """
     if currency not in EXCHANGE_RATE_ITEMS:
         allowed = ", ".join(repr(c) for c in EXCHANGE_RATE_ITEMS)

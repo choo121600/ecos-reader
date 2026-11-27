@@ -181,8 +181,8 @@ def _period_checks() -> list[tuple[str, str, str]]:
         # 비-월간 주기를 쓰는 함수 (테이블에 M 이 없어 Q 를 써야 함 — 회귀 시 빈 응답)
         ("household_credit/sector", c.STAT_HOUSEHOLD_CREDIT_SECTOR, "Q"),
         ("household_credit/purpose", c.STAT_HOUSEHOLD_CREDIT_PURPOSE, "Q"),
-        ("borrower_loan/new", c.BORROWER_LOAN_STAT_CODES["신규"], "Q"),
-        ("borrower_loan/balance", c.BORROWER_LOAN_STAT_CODES["잔액"], "Q"),
+        ("borrower_loan/new", c.BORROWER_LOAN_STAT_CODES["new"], "Q"),
+        ("borrower_loan/balance", c.BORROWER_LOAN_STAT_CODES["outstanding"], "Q"),
     ]
     # bop / retail / trade — period 분기형
     for per in ("M", "Q", "A"):

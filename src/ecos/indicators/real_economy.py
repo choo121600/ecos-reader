@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     COMPOSITE_INDEX_ITEMS,
@@ -38,10 +39,12 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition(renamed={"seasonal": "seasonal_adj"})
 def get_industrial_production(
+    *,
     start_date: str | None = None,
     end_date: str | None = None,
-    seasonal: bool = False,
+    seasonal_adj: bool = False,
     frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """전산업생산지수를 조회합니다.
@@ -57,7 +60,7 @@ def get_industrial_production(
         (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
         조회 종료 시점. (형식은 ``start_date`` 와 동일)
-    seasonal : bool, default False
+    seasonal_adj : bool, default False
         ``True`` 면 계절조정 계열, ``False`` 면 원계열(기본).
     frequency : str
         조회 주기. ``'monthly'``(기본)/``'quarterly'``/``'annual'``.
@@ -76,7 +79,7 @@ def get_industrial_production(
     --------
     >>> import ecos
     >>> df = ecos.get_industrial_production()                 # 원계열(월)
-    >>> df = ecos.get_industrial_production(seasonal=True)    # 계절조정
+    >>> df = ecos.get_industrial_production(seasonal_adj=True)    # 계절조정
     >>> df = ecos.get_industrial_production(frequency="annual")
     """
     frequency = normalize_frequency(  # type: ignore[assignment]
@@ -84,10 +87,10 @@ def get_industrial_production(
         allowed=("monthly", "quarterly", "annual"),
         func_name="get_industrial_production",
     )
-    if seasonal and frequency == "annual":
+    if seasonal_adj and frequency == "annual":
         raise ValueError(
             "get_industrial_production(): 계절조정 계열은 연간(annual)으로 제공되지 않습니다 "
-            "(연간 데이터엔 계절성이 없음). seasonal=False 또는 frequency='monthly'/'quarterly'를 사용하세요."
+            "(연간 데이터엔 계절성이 없음). seasonal_adj=False 또는 frequency='monthly'/'quarterly'를 사용하세요."
         )
     period = {
         "monthly": PERIOD_MONTHLY,
@@ -105,7 +108,7 @@ def get_industrial_production(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    series = ITEM_INDUSTRIAL_SEASONAL if seasonal else ITEM_INDUSTRIAL_ORIGINAL
+    series = ITEM_INDUSTRIAL_SEASONAL if seasonal_adj else ITEM_INDUSTRIAL_ORIGINAL
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_INDUSTRIAL_PRODUCTION,
@@ -120,10 +123,12 @@ def get_industrial_production(
     return normalize_stat_result(df)
 
 
+@api_transition(renamed={"seasonal": "seasonal_adj"})
 def get_facility_investment(
+    *,
     start_date: str | None = None,
     end_date: str | None = None,
-    seasonal: bool = False,
+    seasonal_adj: bool = False,
     frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
 ) -> pd.DataFrame:
     """설비투자지수를 조회합니다.
@@ -138,7 +143,7 @@ def get_facility_investment(
         (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
     end_date : str, optional
         조회 종료 시점. (형식은 ``start_date`` 와 동일)
-    seasonal : bool, default False
+    seasonal_adj : bool, default False
         ``True`` 면 계절조정지수, ``False`` 면 원지수(기본).
     frequency : str
         조회 주기. ``'monthly'``(기본)/``'quarterly'``/``'annual'``.
@@ -164,10 +169,10 @@ def get_facility_investment(
         allowed=("monthly", "quarterly", "annual"),
         func_name="get_facility_investment",
     )
-    if seasonal and frequency == "annual":
+    if seasonal_adj and frequency == "annual":
         raise ValueError(
             "get_facility_investment(): 계절조정지수는 연간(annual)으로 제공되지 않습니다. "
-            "seasonal=False 또는 frequency='monthly'/'quarterly'를 사용하세요."
+            "seasonal_adj=False 또는 frequency='monthly'/'quarterly'를 사용하세요."
         )
     period = {
         "monthly": PERIOD_MONTHLY,
@@ -185,7 +190,7 @@ def get_facility_investment(
         start_date = start_date or default_start
         end_date = end_date or default_end
 
-    item = ITEM_FACILITY_INVESTMENT_SA if seasonal else ITEM_FACILITY_INVESTMENT
+    item = ITEM_FACILITY_INVESTMENT_SA if seasonal_adj else ITEM_FACILITY_INVESTMENT
     client = get_client()
     response = client.get_statistic_search(
         stat_code=STAT_FACILITY_INVESTMENT,
@@ -199,7 +204,9 @@ def get_facility_investment(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_composite_index(
+    *,
     index: Literal["leading", "coincident", "lagging"] = "coincident",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -234,7 +241,7 @@ def get_composite_index(
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_composite_index("leading")
+    >>> df = ecos.get_composite_index(index="leading")
     """
     if index not in COMPOSITE_INDEX_ITEMS:
         allowed = ", ".join(repr(i) for i in COMPOSITE_INDEX_ITEMS)
@@ -260,7 +267,9 @@ def get_composite_index(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_retail_sales(
+    *,
     index: Literal["nominal", "real", "seasonal"] = "real",
     sub_category: str | None = None,
     start_date: str | None = None,
@@ -312,7 +321,7 @@ def get_retail_sales(
     >>> import ecos
     >>> df = ecos.get_retail_sales()                          # 전체 상품군 long-format(불변지수, 월)
     >>> df = ecos.get_retail_sales(sub_category="총지수")       # 총지수 단일 시계열
-    >>> df = ecos.get_retail_sales("nominal", sub_category="음식료품", frequency="annual")
+    >>> df = ecos.get_retail_sales(index="nominal", sub_category="음식료품", frequency="annual")
     """
     if index not in RETAIL_SALES_INDEX_ITEMS:
         allowed = ", ".join(repr(i) for i in RETAIL_SALES_INDEX_ITEMS)

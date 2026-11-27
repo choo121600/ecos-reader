@@ -41,7 +41,7 @@ df = ecos.get_money_supply(
 
 ```python
 # 분기별 M2 통화량
-df = ecos.get_money_supply("M2", frequency="quarterly")
+df = ecos.get_money_supply(indicator="M2", frequency="quarterly")
 print(df.tail())
 ```
 
@@ -227,9 +227,9 @@ M1 통화량의 평잔/말잔, 계절조정/원계열 세부 데이터를 조회
 
 ### 지원 유형
 
-- `평잔_계절조정` - 평균잔액, 계절조정 계열
-- `평잔_원계열` - 평균잔액, 원계열
-- `말잔_계절조정` - 말일잔액, 계절조정 계열 (기본값)
+- `"average_sa"` - 평균잔액, 계절조정 계열
+- `"average_nsa"` - 평균잔액, 원계열
+- `"end_sa"` - 말일잔액, 계절조정 계열 (기본값)
 
 ### 기본 사용법
 
@@ -237,11 +237,11 @@ M1 통화량의 평잔/말잔, 계절조정/원계열 세부 데이터를 조회
 import ecos
 
 # M1 평잔 계절조정
-df = ecos.get_m1_variants(variant="평잔_계절조정")
+df = ecos.get_m1_variants(variant="average_sa")
 print(df.tail())
 
 # M1 말잔 계절조정
-df = ecos.get_m1_variants(variant="말잔_계절조정")
+df = ecos.get_m1_variants(variant="end_sa")
 print(df.tail())
 ```
 
@@ -249,7 +249,7 @@ print(df.tail())
 
 ```python
 df = ecos.get_m1_variants(
-    variant="평잔_계절조정",
+    variant="average_sa",
     start_date="202001",
     end_date="202412"
 )
@@ -271,13 +271,13 @@ M2 통화량의 평잔/말잔, 계절조정/원계열 세부 데이터를 조회
 
 ### 매개변수
 
-- `variant`: M2 변형 종류 (기본값: `"말잔_계절조정"`)
+- `variant`: M2 변형 종류 (기본값: `"end_sa"`)
 
 | variant 값 | 설명 |
 |---|---|
-| `"평잔_계절조정"` | 기간 중 평균잔액, 계절조정 계열 |
-| `"평잔_원계열"` | 기간 중 평균잔액, 원계열 |
-| `"말잔_계절조정"` | 기말 잔액, 계절조정 계열 (기본값) |
+| `"average_sa"` | 기간 중 평균잔액, 계절조정 계열 |
+| `"average_nsa"` | 기간 중 평균잔액, 원계열 |
+| `"end_sa"` | 기말 잔액, 계절조정 계열 (기본값) |
 
 ### 기본 사용법
 
@@ -285,11 +285,11 @@ M2 통화량의 평잔/말잔, 계절조정/원계열 세부 데이터를 조회
 import ecos
 
 # M2 평잔 계절조정
-df = ecos.get_m2_variants(variant="평잔_계절조정")
+df = ecos.get_m2_variants(variant="average_sa")
 print(df.tail())
 
 # M2 말잔 계절조정
-df = ecos.get_m2_variants(variant="말잔_계절조정")
+df = ecos.get_m2_variants(variant="end_sa")
 print(df.tail())
 ```
 
@@ -299,7 +299,7 @@ print(df.tail())
 
 ```python
 # 분기별 M2 평잔 원계열
-df = ecos.get_m2_variants(variant="평잔_원계열", frequency="quarterly")
+df = ecos.get_m2_variants(variant="average_nsa", frequency="quarterly")
 print(df.tail())
 ```
 
@@ -329,10 +329,10 @@ print(df.tail())
 
 ### 지원 유형
 
-- `평잔_계절조정` - 평균잔액, 계절조정 계열
-- `평잔_원계열` - 평균잔액, 원계열
-- `말잔_계절조정` - 말일잔액, 계절조정 계열
-- `말잔_원계열` - 말일잔액, 원계열 (기본값)
+- `"average_sa"` - 평균잔액, 계절조정 계열
+- `"average_nsa"` - 평균잔액, 원계열
+- `"end_sa"` - 말일잔액, 계절조정 계열
+- `"end_nsa"` - 말일잔액, 원계열 (기본값)
 
 ## 가계신용
 
@@ -340,8 +340,8 @@ print(df.tail())
 
 ### 지원 카테고리
 
-- `업권별` - 예금은행, 비은행예금취급기관 등 업권별 분류 (기본값)
-- `용도별` - 주택구입, 생활비 등 용도별 분류
+- `"by_lender"` - 예금은행, 비은행예금취급기관 등 업권별 분류 (기본값)
+- `"by_purpose"` - 주택구입, 생활비 등 용도별 분류
 
 ### 기본 사용법
 
@@ -349,11 +349,11 @@ print(df.tail())
 import ecos
 
 # 가계신용 (업권별)
-df = ecos.get_household_credit(category="업권별")
+df = ecos.get_household_credit(category="by_lender")
 print(df.tail())
 
 # 가계신용 (용도별)
-df = ecos.get_household_credit(category="용도별")
+df = ecos.get_household_credit(category="by_purpose")
 print(df.tail())
 ```
 
@@ -362,7 +362,7 @@ print(df.tail())
 ```python
 # 2023년 데이터 (분기별)
 df = ecos.get_household_credit(
-    category="업권별",
+    category="by_lender",
     start_date="2023Q1",
     end_date="2023Q4"
 )
@@ -417,7 +417,7 @@ df = ecos.get_household_lending_detail(
 ### 지원 유형
 
 - `신규` - 신규 취급액 기준
-- `잔액` - 대출 잔액 기준 (기본값)
+- `"outstanding"` - 대출 잔액 기준 (기본값)
 
 ### 기본 사용법
 
@@ -425,11 +425,11 @@ df = ecos.get_household_lending_detail(
 import ecos
 
 # 차주별 신규 대출
-df = ecos.get_borrower_loan(loan_type="신규")
+df = ecos.get_borrower_loan(loan_type="new")
 print(df.tail())
 
 # 차주별 대출 잔액
-df = ecos.get_borrower_loan(loan_type="잔액")
+df = ecos.get_borrower_loan(loan_type="outstanding")
 print(df.tail())
 ```
 
@@ -438,7 +438,7 @@ print(df.tail())
 ```python
 # 2023년 데이터 (분기별)
 df = ecos.get_borrower_loan(
-    loan_type="잔액",
+    loan_type="outstanding",
     start_date="2023Q1",
     end_date="2023Q4"
 )
@@ -463,7 +463,7 @@ import matplotlib.pyplot as plt
 
 # 차주별 대출 잔액 조회
 df = ecos.get_borrower_loan(
-    loan_type="잔액",
+    loan_type="outstanding",
     start_date="2020Q1"
 )
 

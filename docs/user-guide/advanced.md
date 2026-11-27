@@ -525,7 +525,7 @@ def create_macro_dataset(start_date="202001"):
     # 데이터 조회
     base_rate = ecos.get_base_rate(start_date=start_date)
     cpi = ecos.get_cpi(start_date=start_date)
-    m2 = ecos.get_money_supply("M2", start_date=start_date)
+    m2 = ecos.get_money_supply(indicator="M2", start_date=start_date)
 
     # 월 기준으로 통합
     base_rate['month'] = base_rate['date'].dt.to_period('M')

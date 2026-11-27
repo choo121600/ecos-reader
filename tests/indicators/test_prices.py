@@ -266,7 +266,7 @@ class TestGetCpiByCategory:
             status=200,
         )
 
-        df = get_cpi_by_category(category="식품_에너지제외", start_date="202401", end_date="202402")
+        df = get_cpi_by_category(category="ex_food_energy", start_date="202401", end_date="202402")
 
         assert not df.empty
         assert "date" in df.columns
@@ -300,7 +300,7 @@ class TestGetCpiByCategory:
             status=200,
         )
 
-        df = get_cpi_by_category(category="교통", start_date="202401", end_date="202401")
+        df = get_cpi_by_category(category="transport", start_date="202401", end_date="202401")
 
         assert not df.empty
         assert df["value"].iloc[0] == 107.30

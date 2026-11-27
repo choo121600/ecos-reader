@@ -19,6 +19,13 @@ ecos-reader는 [Semantic Versioning 2.0.0](https://semver.org/lang/ko/)을 따�
 - 경고·예외·로그 **메시지 문구**
 - ECOS 원천 데이터의 변경: 값 수정, 항목 추가·삭제, 통계표 개편 (아래 "ECOS 측 변경" 참고)
 - 성능 특성, 캐시 파일 형식
+- `ecos.__all__`에 있더라도 다음 고급·내부용 이름은 **형태가 바뀔 수 있습니다**.
+  이름 자체는 유지하지만 구조·시그니처는 Minor 릴리스에서 바뀔 수 있습니다.
+    - `INDICATORS`: 지표 레지스트리 dict의 키·값 구조. 지표 목록은
+      `list_indicators()`·`get_indicator()`를 사용하세요.
+    - `RateLimiter`의 테스트용 훅 인자(`clock=`, `sleep=`)
+    - `parse_response`, `normalize_stat_result`: ECOS 원시 응답 파서. 반환 형식이
+      ECOS 응답 구조를 따라 바뀔 수 있습니다.
 
 ## 버전 번호 규칙
 

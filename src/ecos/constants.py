@@ -253,13 +253,13 @@ ITEM_STOCK_INDEX_MONTHLY = "1070000"
 #   item_code2: VA 거래대금 / VO 거래량
 STAT_INVESTOR_TRADING = "901Y055"
 INVESTOR_TRADING_ACTION_PREFIX: dict[str, str] = {
-    "매도": "S22A",
-    "매수": "S22B",
-    "순매수": "S22C",
+    "sell": "S22A",
+    "buy": "S22B",
+    "net_buy": "S22C",
 }
 INVESTOR_TRADING_METRIC_CODE: dict[str, str] = {
-    "거래대금": "VA",
-    "거래량": "VO",
+    "value": "VA",
+    "volume": "VO",
 }
 
 
@@ -276,14 +276,14 @@ STAT_BOND_MARKET = "901Y120"  # 채권시장별 거래
 #   시장별(901Y120): item_code1=measure, item_code2=시장(분류축)
 # measure로 한 차원을 고정한 뒤 나머지 분류축을 long-format으로 분류한다.
 BOND_YIELD_TYPE_MEASURE_CODE: dict[str, str] = {  # 종류별 → item_code2
-    "상장종목수": "2010000",
-    "상장잔액": "2020000",
-    "거래량": "2030000",
-    "거래대금": "2040000",
+    "listed_count": "2010000",
+    "listed_balance": "2020000",
+    "volume": "2030000",
+    "value": "2040000",
 }
 BOND_MARKET_MEASURE_CODE: dict[str, str] = {  # 시장별 → item_code1
-    "거래대금": "AMT",
-    "거래량": "VOL",
+    "value": "AMT",
+    "volume": "VOL",
 }
 
 
@@ -293,43 +293,43 @@ BOND_MARKET_MEASURE_CODE: dict[str, str] = {  # 시장별 → item_code1
 
 # M1 세부 변형 (평잔/말잔, 계절조정/원계열)
 M1_VARIANTS: dict[str, str] = {
-    "평잔_계절조정": "161Y001",  # M1 상품별 구성내역(평잔, 계절조정)
-    "평잔_원계열": "161Y002",  # M1 상품별 구성내역(평잔, 원계열)
-    "말잔_계절조정": "161Y003",  # M1 상품별 구성내역(말잔, 계절조정)
+    "average_sa": "161Y001",  # M1 상품별 구성내역(평잔, 계절조정)
+    "average_nsa": "161Y002",  # M1 상품별 구성내역(평잔, 원계열)
+    "end_sa": "161Y003",  # M1 상품별 구성내역(말잔, 계절조정)
 }
 
 M1_ITEMS: dict[str, str] = {
-    "평잔_계절조정": "BBLS00",  # M1 (평잔, 계절조정계열)
-    "평잔_원계열": "BBLA00",  # M1 (평잔, 원계열)
-    "말잔_계절조정": "BBKS00",  # M1 (말잔, 계절조정계열)
+    "average_sa": "BBLS00",  # M1 (평잔, 계절조정계열)
+    "average_nsa": "BBLA00",  # M1 (평잔, 원계열)
+    "end_sa": "BBKS00",  # M1 (말잔, 계절조정계열)
 }
 
 # M2 세부 변형 (평잔/말잔, 계절조정/원계열)
 M2_VARIANTS: dict[str, str] = {
-    "평잔_계절조정": "161Y005",  # M2 상품별 구성내역(평잔, 계절조정)
-    "평잔_원계열": "161Y006",  # M2 상품별 구성내역(평잔, 원계열)
-    "말잔_계절조정": "161Y007",  # M2 상품별 구성내역(말잔, 계절조정)
+    "average_sa": "161Y005",  # M2 상품별 구성내역(평잔, 계절조정)
+    "average_nsa": "161Y006",  # M2 상품별 구성내역(평잔, 원계열)
+    "end_sa": "161Y007",  # M2 상품별 구성내역(말잔, 계절조정)
 }
 
 M2_ITEMS: dict[str, str] = {
-    "평잔_계절조정": "BBHS00",  # M2 (평잔, 계절조정계열)
-    "평잔_원계열": "BBHA00",  # M2 (평잔, 원계열)
-    "말잔_계절조정": "BBGS00",  # M2 (말잔, 계절조정계열)
+    "average_sa": "BBHS00",  # M2 (평잔, 계절조정계열)
+    "average_nsa": "BBHA00",  # M2 (평잔, 원계열)
+    "end_sa": "BBGS00",  # M2 (말잔, 계절조정계열)
 }
 
 # M2 경제주체별
 M2_HOLDER_VARIANTS: dict[str, str] = {
-    "평잔_계절조정": "161Y009",  # M2 보유주체별(평잔, 계절조정)
-    "평잔_원계열": "161Y010",  # M2 보유주체별(평잔, 원계열)
-    "말잔_계절조정": "161Y011",  # M2 보유주체별(말잔, 계절조정)
-    "말잔_원계열": "161Y012",  # M2 보유주체별(말잔, 원계열)
+    "average_sa": "161Y009",  # M2 보유주체별(평잔, 계절조정)
+    "average_nsa": "161Y010",  # M2 보유주체별(평잔, 원계열)
+    "end_sa": "161Y011",  # M2 보유주체별(말잔, 계절조정)
+    "end_nsa": "161Y012",  # M2 보유주체별(말잔, 원계열)
 }
 
 M2_HOLDER_ITEMS: dict[str, str] = {
-    "평잔_계절조정": "BBHS00",  # M2(평잔, 계절조정계열)
-    "평잔_원계열": "BBHA00",  # M2(평잔, 원계열)
-    "말잔_계절조정": "BBGS00",  # M2(말잔, 계절조정계열) — 161Y011의 실제 item_code
-    "말잔_원계열": "BBGA00",  # M2(말잔, 원계열) — 161Y012의 실제 item_code
+    "average_sa": "BBHS00",  # M2(평잔, 계절조정계열)
+    "average_nsa": "BBHA00",  # M2(평잔, 원계열)
+    "end_sa": "BBGS00",  # M2(말잔, 계절조정계열) — 161Y011의 실제 item_code
+    "end_nsa": "BBGA00",  # M2(말잔, 원계열) — 161Y012의 실제 item_code
 }
 
 
@@ -351,8 +351,8 @@ STAT_HOUSEHOLD_LENDING_PURPOSE = "151Y005"  # 예금취급기관 가계대출 (�
 #   - 181Y001: 차주별 가계대출 신규취급액
 #   - 181Y002: 차주별 가계대출 잔액
 BORROWER_LOAN_STAT_CODES: dict[str, str] = {
-    "신규": "181Y001",
-    "잔액": "181Y002",
+    "new": "181Y001",
+    "outstanding": "181Y002",
 }
 
 # 분류축 → item_code1 prefix.
@@ -361,13 +361,13 @@ BORROWER_LOAN_STAT_CODES: dict[str, str] = {
 #     B0xx 성별 / C0xx 연령대 / D0xx 지역 / E0xx 업권(은행/비은행) /
 #     F0xx 담보유형 / G0xx 다중대출 건수
 BORROWER_LOAN_CATEGORY_PREFIX: dict[str, str] = {
-    "전체": "0000",
-    "성별": "B",
-    "연령별": "C",
-    "지역별": "D",
-    "업권별": "E",
-    "담보유형별": "F",
-    "다중대출별": "G",
+    "all": "0000",
+    "by_gender": "B",
+    "by_age": "C",
+    "by_region": "D",
+    "by_lender": "E",
+    "by_collateral": "F",
+    "by_loan_count": "G",
 }
 
 
@@ -433,12 +433,12 @@ STAT_CPI_MONTHLY = "901Y009"  # 소비자물가지수
 # - 특수분류(전체/상품/서비스/제외 시리즈): 901Y010 (소비자물가지수 특수분류)
 # - COICOP 1단계(식료품/주거/교통 등): 901Y009 (소비자물가지수)
 CPI_CATEGORY_CODES: dict[str, tuple[str, str]] = {
-    "전체": ("901Y010", "00"),  # 총지수 (특수분류)
-    "상품": ("901Y010", "21"),  # 상품
-    "서비스": ("901Y010", "22"),  # 서비스
-    "식품_에너지제외": ("901Y010", "DB"),  # 식료품 및 에너지제외 지수
-    "농산물_석유제외": ("901Y010", "QB"),  # 농산물및석유류제외지수
-    "식료품_비주류음료": ("901Y009", "A"),  # COICOP A
-    "주거_수도_전기": ("901Y009", "D"),  # COICOP D: 주택, 수도, 전기 및 연료
-    "교통": ("901Y009", "G"),  # COICOP G
+    "all": ("901Y010", "00"),  # 총지수 (특수분류)
+    "goods": ("901Y010", "21"),  # 상품
+    "services": ("901Y010", "22"),  # 서비스
+    "ex_food_energy": ("901Y010", "DB"),  # 식료품 및 에너지제외 지수
+    "ex_agri_oil": ("901Y010", "QB"),  # 농산물및석유류제외지수
+    "food_beverages": ("901Y009", "A"),  # COICOP A
+    "housing_utilities": ("901Y009", "D"),  # COICOP D: 주택, 수도, 전기 및 연료
+    "transport": ("901Y009", "G"),  # COICOP G
 }

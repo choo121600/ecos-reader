@@ -47,7 +47,7 @@ class TestGetBusinessSentiment:
             json=_index_response("512Y014", "99988", "전산업"),
             status=200,
         )
-        df = get_business_sentiment("all", start_date="202401", end_date="202402")
+        df = get_business_sentiment(sector="all", start_date="202401", end_date="202402")
         assert "date" in df.columns
         assert "value" in df.columns
         assert df["value"].iloc[0] == 92.3
@@ -75,7 +75,7 @@ class TestGetBusinessSentiment:
             json=_index_response("512Y014", item_code1, "x"),
             status=200,
         )
-        get_business_sentiment(sector, start_date="202401", end_date="202402")
+        get_business_sentiment(sector=sector, start_date="202401", end_date="202402")
         url = responses.calls[0].request.url
         # 업종(item_code1) + 업황전망BSI(item_code2=BA) 2-축이 URL에 반영됨
         assert item_code1 in url
@@ -94,7 +94,7 @@ class TestGetBusinessSentiment:
 
     def test_invalid_sector_raises(self):
         with pytest.raises(ValueError, match="sector"):
-            get_business_sentiment("financial", start_date="202401", end_date="202402")
+            get_business_sentiment(sector="financial", start_date="202401", end_date="202402")
 
 
 @pytest.mark.usefixtures("set_api_key")

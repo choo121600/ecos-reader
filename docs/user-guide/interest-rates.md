@@ -352,8 +352,8 @@ print(f"사이클 범위: {peak_value - trough_value}%p")
 
 ### 지원 기준
 
-- `신규취급액` - 신규 예금에 적용되는 금리 (기본값)
-- `잔액` - 기존 예금 잔액 전체의 평균 금리
+- `"new"` - 신규 예금에 적용되는 금리 (기본값)
+- `"outstanding"` - 기존 예금 잔액 전체의 평균 금리
 
 ### 기본 사용법
 
@@ -361,11 +361,11 @@ print(f"사이클 범위: {peak_value - trough_value}%p")
 import ecos
 
 # 신규취급액 기준 수신금리
-df = ecos.get_bank_deposit_rate(basis="신규취급액")
+df = ecos.get_bank_deposit_rate(basis="new")
 print(df.tail())
 
 # 잔액 기준 수신금리
-df = ecos.get_bank_deposit_rate(basis="잔액")
+df = ecos.get_bank_deposit_rate(basis="outstanding")
 print(df.tail())
 ```
 
@@ -374,7 +374,7 @@ print(df.tail())
 ```python
 # 2024년 데이터
 df = ecos.get_bank_deposit_rate(
-    basis="신규취급액",
+    basis="new",
     start_date="202401",
     end_date="202412"
 )
@@ -399,8 +399,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 두 기준 조회
-new_rate = ecos.get_bank_deposit_rate(basis="신규취급액", start_date="202001")
-balance_rate = ecos.get_bank_deposit_rate(basis="잔액", start_date="202001")
+new_rate = ecos.get_bank_deposit_rate(basis="new", start_date="202001")
+balance_rate = ecos.get_bank_deposit_rate(basis="outstanding", start_date="202001")
 
 # 데이터 병합
 merged = pd.merge(
@@ -446,8 +446,8 @@ print(f"평균 금리차: {merged['spread'].mean():.3f}%p")
 
 ### 지원 기준
 
-- `신규취급액` - 신규 대출에 적용되는 금리 (기본값)
-- `잔액` - 기존 대출 잔액 전체의 평균 금리
+- `"new"` - 신규 대출에 적용되는 금리 (기본값)
+- `"outstanding"` - 기존 대출 잔액 전체의 평균 금리
 
 ### 기본 사용법
 
@@ -455,11 +455,11 @@ print(f"평균 금리차: {merged['spread'].mean():.3f}%p")
 import ecos
 
 # 신규취급액 기준 대출금리
-df = ecos.get_bank_lending_rate(basis="신규취급액")
+df = ecos.get_bank_lending_rate(basis="new")
 print(df.tail())
 
 # 잔액 기준 대출금리
-df = ecos.get_bank_lending_rate(basis="잔액")
+df = ecos.get_bank_lending_rate(basis="outstanding")
 print(df.tail())
 ```
 
@@ -468,7 +468,7 @@ print(df.tail())
 ```python
 # 2024년 데이터
 df = ecos.get_bank_lending_rate(
-    basis="신규취급액",
+    basis="new",
     start_date="202401",
     end_date="202412"
 )
@@ -490,8 +490,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 예금금리와 대출금리 조회
-deposit = ecos.get_bank_deposit_rate(basis="신규취급액", start_date="202001")
-lending = ecos.get_bank_lending_rate(basis="신규취급액", start_date="202001")
+deposit = ecos.get_bank_deposit_rate(basis="new", start_date="202001")
+lending = ecos.get_bank_lending_rate(basis="new", start_date="202001")
 
 # 데이터 병합
 merged = pd.merge(
@@ -546,7 +546,7 @@ import matplotlib.pyplot as plt
 
 # 데이터 조회
 base_rate = ecos.get_base_rate(start_date="202001")
-lending_rate = ecos.get_bank_lending_rate(basis="신규취급액", start_date="202001")
+lending_rate = ecos.get_bank_lending_rate(basis="new", start_date="202001")
 
 # 데이터 병합
 merged = pd.merge(

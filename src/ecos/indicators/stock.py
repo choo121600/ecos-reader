@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     INVESTOR_TRADING_ACTION_PREFIX,
@@ -30,7 +31,9 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition()
 def get_stock_index(
+    *,
     frequency: Literal["daily", "monthly"] = "daily",
     sub_category: str | None = None,
     start_date: str | None = None,
@@ -147,9 +150,11 @@ def get_stock_index(
     )
 
 
+@api_transition(legacy_values=("action", "metric"))
 def get_investor_trading(
-    action: Literal["순매수", "매수", "매도"] = "순매수",
-    metric: Literal["거래대금", "거래량"] = "거래대금",
+    *,
+    action: Literal["net_buy", "buy", "sell"] = "net_buy",
+    metric: Literal["value", "volume"] = "value",
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
@@ -167,13 +172,13 @@ def get_investor_trading(
     ----------
     action : str
         거래 행위
-        - '순매수': 순매수(매수-매도) (기본값)
-        - '매수': 매수
-        - '매도': 매도
+        - 'net_buy': 순매수(매수-매도) (기본값)
+        - 'buy': 매수
+        - 'sell': 매도
     metric : str
         측정 지표
-        - '거래대금': 금액 기준 (기본값)
-        - '거래량': 수량 기준
+        - 'value': 금액 기준 (기본값)
+        - 'volume': 수량 기준
     sub_category : str, optional
         특정 투자자(항목명 또는 item_code1)를 선택합니다. 지정 시 해당 투자자
         단일 시계열만 반환합니다. 미지정 시 전체 투자자를 long-format으로
@@ -224,7 +229,7 @@ def get_investor_trading(
     >>> df = ecos.get_investor_trading(sub_category="S22CC")
 
     >>> # 투자자별 매수 거래량
-    >>> df = ecos.get_investor_trading(action="매수", metric="거래량")
+    >>> df = ecos.get_investor_trading(action="buy", metric="volume")
 
     >>> # 연간 투자자별 순매수
     >>> df = ecos.get_investor_trading(frequency="annual")
