@@ -26,10 +26,10 @@ df = ecos.get_industrial_production(
 )
 
 # 계절조정 계열
-df = ecos.get_industrial_production(seasonal=True)
+df = ecos.get_industrial_production(seasonal_adj=True)
 ```
 
-`get_industrial_production(start_date=None, end_date=None, seasonal=False, frequency="monthly")` 의 `seasonal=True` 를 지정하면 원계열 대신 계절조정 계열을 조회합니다. `frequency` 로 월(`monthly`, 기본)·분기(`quarterly`)·연(`annual`) 주기를 선택합니다.
+`get_industrial_production(start_date=None, end_date=None, seasonal_adj=False, frequency="monthly")` 의 `seasonal_adj=True` 를 지정하면 원계열 대신 계절조정 계열을 조회합니다. `frequency` 로 월(`monthly`, 기본)·분기(`quarterly`)·연(`annual`) 주기를 선택합니다.
 
 ```python
 # 연간 주기
@@ -40,9 +40,9 @@ df = ecos.get_industrial_production(frequency="annual")
     `frequency` 가 `monthly` 이면 `YYYYMM`, `quarterly` 이면 `YYYYQn`, `annual` 이면 `YYYY` 형식을 사용합니다. 기간을 생략하면 주기별 기본 범위가 적용됩니다.
 
 !!! warning "계절조정 + 연간 조합 불가"
-    `seasonal=True` 와 `frequency="annual"` 을 함께 지정하면 `ValueError` 가 발생합니다.
+    `seasonal_adj=True` 와 `frequency="annual"` 을 함께 지정하면 `ValueError` 가 발생합니다.
     ECOS가 계절조정 연간 계열을 제공하지 않기 때문입니다(연간 데이터엔 계절성이 없음).
-    `seasonal=False` 또는 `frequency="monthly"`/`"quarterly"` 를 사용하세요.
+    `seasonal_adj=False` 또는 `frequency="monthly"`/`"quarterly"` 를 사용하세요.
 
 ### 반환 데이터 구조
 
@@ -72,17 +72,17 @@ print(df.tail())
 df = ecos.get_facility_investment(start_date="202001", end_date="202412")
 
 # 계절조정 계열
-df = ecos.get_facility_investment(seasonal=True)
+df = ecos.get_facility_investment(seasonal_adj=True)
 
 # 연간 주기
 df = ecos.get_facility_investment(frequency="annual")
 ```
 
-`get_facility_investment(start_date=None, end_date=None, seasonal=False, frequency="monthly")` 의 인자 구조는 전산업생산지수와 동일합니다. `frequency` 로 월(`monthly`, 기본)·분기(`quarterly`)·연(`annual`) 주기를 선택합니다.
+`get_facility_investment(start_date=None, end_date=None, seasonal_adj=False, frequency="monthly")` 의 인자 구조는 전산업생산지수와 동일합니다. `frequency` 로 월(`monthly`, 기본)·분기(`quarterly`)·연(`annual`) 주기를 선택합니다.
 
 !!! warning "계절조정 + 연간 조합 불가"
-    전산업생산지수와 동일하게 `seasonal=True` 와 `frequency="annual"` 조합은 `ValueError` 가
-    발생합니다. `seasonal=False` 또는 `frequency="monthly"`/`"quarterly"` 를 사용하세요.
+    전산업생산지수와 동일하게 `seasonal_adj=True` 와 `frequency="annual"` 조합은 `ValueError` 가
+    발생합니다. `seasonal_adj=False` 또는 `frequency="monthly"`/`"quarterly"` 를 사용하세요.
 
 ### 반환 데이터 구조
 
@@ -156,7 +156,7 @@ print(df.tail())
 df = ecos.get_retail_sales(sub_category="음식료품")
 
 # 경상지수, 음식료품, 연 주기 조합
-df = ecos.get_retail_sales("nominal", sub_category="음식료품", frequency="annual")
+df = ecos.get_retail_sales(index="nominal", sub_category="음식료품", frequency="annual")
 
 # 계절조정지수, 분기 주기
 df = ecos.get_retail_sales(index="seasonal", frequency="quarterly")

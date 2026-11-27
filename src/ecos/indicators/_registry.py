@@ -16,6 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     ITEM_BASE_RATE,
@@ -183,8 +184,10 @@ def list_indicators() -> list[IndicatorSpec]:
     return [INDICATORS[name] for name in sorted(INDICATORS)]
 
 
+@api_transition()
 def get_indicator(
     name: str,
+    *,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:

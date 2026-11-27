@@ -97,9 +97,9 @@ def test_unknown_sub_category_raises_with_available():
 
 def test_context_included_in_error_message():
     """context 가 ValueError 메시지에 포함된다."""
-    with pytest.raises(ValueError, match="loan_type='잔액'"):
+    with pytest.raises(ValueError, match="loan_type='outstanding'"):
         select_subcategory(
-            _axis_df(), prefix="C", sub_category="없는항목", context="loan_type='잔액'"
+            _axis_df(), prefix="C", sub_category="없는항목", context="loan_type='outstanding'"
         )
 
 

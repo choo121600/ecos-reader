@@ -102,7 +102,9 @@ class TestE2EPriceIndicators:
         """
         headline = ecos.get_cpi(start_date="202602", end_date="202602")
         core = ecos.get_core_cpi(start_date="202602", end_date="202602")
-        by_category = ecos.get_cpi_by_category("식품_에너지제외", "202602", "202602")
+        by_category = ecos.get_cpi_by_category(
+            category="ex_food_energy", start_date="202602", end_date="202602"
+        )
 
         assert not core.empty
         # 근원은 헤드라인과 다른 계열이어야 한다 (silent 데이터 오염 방지).
@@ -313,7 +315,7 @@ class TestE2EBondIndicators:
 
     def test_get_bond_yield_type(self):
         """채권 거래 (종류별) — 채권종류 long-format (#63)."""
-        df = ecos.get_bond_market(bond_type="종류별", start_date="202301", end_date="202312")
+        df = ecos.get_bond_market(bond_type="by_type", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
@@ -328,7 +330,7 @@ class TestE2EBondIndicators:
 
     def test_get_bond_yield_market(self):
         """채권 거래 (시장별) — 시장 long-format, 축이 종류별과 반대 (#63)."""
-        df = ecos.get_bond_market(bond_type="시장별", start_date="202301", end_date="202312")
+        df = ecos.get_bond_market(bond_type="by_market", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert list(df.columns) == ["date", "category_value", "value", "unit"]
@@ -340,7 +342,7 @@ class TestE2EBankRateIndicators:
 
     def test_get_bank_deposit_rate_new(self):
         """예금은행 수신금리 (신규취급액)"""
-        df = ecos.get_bank_deposit_rate(basis="신규취급액", start_date="202301", end_date="202312")
+        df = ecos.get_bank_deposit_rate(basis="new", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -350,7 +352,7 @@ class TestE2EBankRateIndicators:
 
     def test_get_bank_deposit_rate_balance(self):
         """예금은행 수신금리 (잔액)"""
-        df = ecos.get_bank_deposit_rate(basis="잔액", start_date="202301", end_date="202312")
+        df = ecos.get_bank_deposit_rate(basis="outstanding", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -359,7 +361,7 @@ class TestE2EBankRateIndicators:
 
     def test_get_bank_lending_rate_new(self):
         """예금은행 대출금리 (신규취급액)"""
-        df = ecos.get_bank_lending_rate(basis="신규취급액", start_date="202301", end_date="202312")
+        df = ecos.get_bank_lending_rate(basis="new", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -369,7 +371,7 @@ class TestE2EBankRateIndicators:
 
     def test_get_bank_lending_rate_balance(self):
         """예금은행 대출금리 (잔액)"""
-        df = ecos.get_bank_lending_rate(basis="잔액", start_date="202301", end_date="202312")
+        df = ecos.get_bank_lending_rate(basis="outstanding", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -382,7 +384,7 @@ class TestE2EMoneyVariantsIndicators:
 
     def test_get_m1_variants_avg_seasonal(self):
         """M1 세부 데이터 조회 (평잔_계절조정)"""
-        df = ecos.get_m1_variants(variant="평잔_계절조정", start_date="202301", end_date="202312")
+        df = ecos.get_m1_variants(variant="average_sa", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -392,7 +394,7 @@ class TestE2EMoneyVariantsIndicators:
 
     def test_get_m1_variants_avg_raw(self):
         """M1 세부 데이터 조회 (평잔_원계열)"""
-        df = ecos.get_m1_variants(variant="평잔_원계열", start_date="202301", end_date="202312")
+        df = ecos.get_m1_variants(variant="average_nsa", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -401,7 +403,7 @@ class TestE2EMoneyVariantsIndicators:
 
     def test_get_m1_variants_end_seasonal(self):
         """M1 세부 데이터 조회 (말잔_계절조정)"""
-        df = ecos.get_m1_variants(variant="말잔_계절조정", start_date="202301", end_date="202312")
+        df = ecos.get_m1_variants(variant="end_sa", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -410,7 +412,7 @@ class TestE2EMoneyVariantsIndicators:
 
     def test_get_m2_variants_avg_seasonal(self):
         """M2 세부 데이터 조회 (평잔_계절조정)"""
-        df = ecos.get_m2_variants(variant="평잔_계절조정", start_date="202301", end_date="202312")
+        df = ecos.get_m2_variants(variant="average_sa", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -420,7 +422,7 @@ class TestE2EMoneyVariantsIndicators:
 
     def test_get_m2_variants_avg_raw(self):
         """M2 세부 데이터 조회 (평잔_원계열)"""
-        df = ecos.get_m2_variants(variant="평잔_원계열", start_date="202301", end_date="202312")
+        df = ecos.get_m2_variants(variant="average_nsa", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -429,7 +431,7 @@ class TestE2EMoneyVariantsIndicators:
 
     def test_get_m2_variants_end_seasonal(self):
         """M2 세부 데이터 조회 (말잔_계절조정)"""
-        df = ecos.get_m2_variants(variant="말잔_계절조정", start_date="202301", end_date="202312")
+        df = ecos.get_m2_variants(variant="end_sa", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -438,7 +440,7 @@ class TestE2EMoneyVariantsIndicators:
 
     def test_get_m2_by_holder_avg_seasonal(self):
         """M2 경제주체별 조회 (평잔_계절조정)"""
-        df = ecos.get_m2_by_holder(variant="평잔_계절조정", start_date="202301", end_date="202312")
+        df = ecos.get_m2_by_holder(variant="average_sa", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -448,7 +450,7 @@ class TestE2EMoneyVariantsIndicators:
 
     def test_get_m2_by_holder_avg_raw(self):
         """M2 경제주체별 조회 (평잔_원계열)"""
-        df = ecos.get_m2_by_holder(variant="평잔_원계열", start_date="202301", end_date="202312")
+        df = ecos.get_m2_by_holder(variant="average_nsa", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -461,7 +463,7 @@ class TestE2EHouseholdFinanceIndicators:
 
     def test_get_household_credit_sector(self):
         """가계신용 조회 (업권별)"""
-        df = ecos.get_household_credit(category="업권별", start_date="2023Q1", end_date="2023Q4")
+        df = ecos.get_household_credit(category="by_lender", start_date="2023Q1", end_date="2023Q4")
 
         assert not df.empty
         assert "date" in df.columns
@@ -471,7 +473,9 @@ class TestE2EHouseholdFinanceIndicators:
 
     def test_get_household_credit_purpose(self):
         """가계신용 조회 (용도별)"""
-        df = ecos.get_household_credit(category="용도별", start_date="2023Q1", end_date="2023Q4")
+        df = ecos.get_household_credit(
+            category="by_purpose", start_date="2023Q1", end_date="2023Q4"
+        )
 
         assert not df.empty
         assert "date" in df.columns
@@ -497,7 +501,7 @@ class TestE2EHouseholdFinanceIndicators:
 
     def test_get_borrower_loan_new(self):
         """차주별 가계대출 (신규)"""
-        df = ecos.get_borrower_loan(loan_type="신규", start_date="2023Q1", end_date="2023Q4")
+        df = ecos.get_borrower_loan(loan_type="new", start_date="2023Q1", end_date="2023Q4")
 
         assert not df.empty
         assert "date" in df.columns
@@ -507,7 +511,7 @@ class TestE2EHouseholdFinanceIndicators:
 
     def test_get_borrower_loan_balance(self):
         """차주별 가계대출 (잔액)"""
-        df = ecos.get_borrower_loan(loan_type="잔액", start_date="2023Q1", end_date="2023Q4")
+        df = ecos.get_borrower_loan(loan_type="outstanding", start_date="2023Q1", end_date="2023Q4")
 
         assert not df.empty
         assert "date" in df.columns
@@ -658,7 +662,7 @@ class TestE2EPriceDetailIndicators:
     @pytest.mark.skip(reason="stat_code 901Y002가 ECOS API에 존재하지 않음")
     def test_get_cpi_by_category_goods(self):
         """CPI 세부 항목 - 상품 (존재하지 않는 통계)"""
-        df = ecos.get_cpi_by_category(category="상품", start_date="202301", end_date="202312")
+        df = ecos.get_cpi_by_category(category="goods", start_date="202301", end_date="202312")
 
         assert not df.empty
         assert "date" in df.columns
@@ -708,7 +712,7 @@ class TestE2EIntegrationWorkflow:
         assert not stock.empty
 
         # 채권
-        bond = ecos.get_bond_market(bond_type="종류별", start_date="202301", end_date="202312")
+        bond = ecos.get_bond_market(bond_type="by_type", start_date="202301", end_date="202312")
         assert not bond.empty
 
         # 모든 데이터가 정상적으로 조회됨
@@ -721,7 +725,7 @@ class TestE2EIntegrationWorkflow:
 
         # 가계신용
         credit = ecos.get_household_credit(
-            category="업권별", start_date="2023Q1", end_date="2023Q4"
+            category="by_lender", start_date="2023Q1", end_date="2023Q4"
         )
         assert not credit.empty
 
@@ -730,7 +734,9 @@ class TestE2EIntegrationWorkflow:
         assert not lending.empty
 
         # 차주별 대출
-        borrower = ecos.get_borrower_loan(loan_type="잔액", start_date="2023Q1", end_date="2023Q4")
+        borrower = ecos.get_borrower_loan(
+            loan_type="outstanding", start_date="2023Q1", end_date="2023Q4"
+        )
         assert not borrower.empty
 
         # 모든 데이터가 정상적으로 조회됨
@@ -775,7 +781,7 @@ class TestE2EIntegrationNewIndicators:
         assert not stock.empty
 
         # 채권
-        bond = ecos.get_bond_market(bond_type="종류별", start_date="202301", end_date="202312")
+        bond = ecos.get_bond_market(bond_type="by_type", start_date="202301", end_date="202312")
         assert not bond.empty
 
         # 모든 데이터가 정상적으로 조회됨
@@ -788,7 +794,7 @@ class TestE2EIntegrationNewIndicators:
 
         # 가계신용
         credit = ecos.get_household_credit(
-            category="업권별", start_date="2023Q1", end_date="2023Q4"
+            category="by_lender", start_date="2023Q1", end_date="2023Q4"
         )
         assert not credit.empty
 
@@ -797,7 +803,9 @@ class TestE2EIntegrationNewIndicators:
         assert not lending.empty
 
         # 차주별 대출
-        borrower = ecos.get_borrower_loan(loan_type="잔액", start_date="2023Q1", end_date="2023Q4")
+        borrower = ecos.get_borrower_loan(
+            loan_type="outstanding", start_date="2023Q1", end_date="2023Q4"
+        )
         assert not borrower.empty
 
         # 모든 데이터가 정상적으로 조회됨
@@ -886,7 +894,7 @@ class TestE2ERegressionV016:
 
     # ---- M2 보유주체별 말잔 (#28) ----
 
-    @pytest.mark.parametrize("variant", ["말잔_계절조정", "말잔_원계열"])
+    @pytest.mark.parametrize("variant", ["end_sa", "end_nsa"])
     def test_m2_by_holder_eop_variants(self, variant):
         """말잔_계절조정(BBGS00)/말잔_원계열(BBGA00) 모두 데이터를 반환해야 함."""
         df = ecos.get_m2_by_holder(variant=variant, start_date="202301", end_date="202312")
@@ -910,7 +918,7 @@ class TestE2ERegressionV016:
 
     # ---- 채권 수익률 월별 1행 (#28) ----
 
-    @pytest.mark.parametrize("bond_type", ["종류별", "시장별"])
+    @pytest.mark.parametrize("bond_type", ["by_type", "by_market"])
     def test_bond_yield_single_measure_per_category_month(self, bond_type):
         """혼합 measure 버그 회귀 (#63 재설계 반영).
 
@@ -927,10 +935,10 @@ class TestE2ERegressionV016:
             f"(rows={len(df)}, unique_keys={len(set(key))})"
         )
 
-    @pytest.mark.parametrize("bond_type", ["종류별", "시장별"])
+    @pytest.mark.parametrize("bond_type", ["by_type", "by_market"])
     def test_bond_yield_sub_category_one_row_per_month(self, bond_type):
         """단일 sub_category 선택 시에는 월별 1행이어야 한다 (#63)."""
-        sub = "국채" if bond_type == "종류별" else "0202"
+        sub = "국채" if bond_type == "by_type" else "0202"
         df = ecos.get_bond_market(
             bond_type=bond_type, sub_category=sub, start_date="202301", end_date="202312"
         )
@@ -943,13 +951,13 @@ class TestE2ERegressionV016:
     # v0.1.6에서 stat_code 매핑이 ECOS와 일치하지 않아 ValueError로 차단했던 7개 조합.
     # #29 재설계(181Y001/181Y002 + item_code prefix 필터)로 이제 정상 데이터를 반환한다.
     _PREVIOUSLY_BROKEN_BORROWER_COMBINATIONS: ClassVar = [
-        ("신규", "연령별"),
-        ("신규", "지역별"),
-        ("신규", "담보유형별"),
-        ("신규", "업권별"),
-        ("잔액", "연령별"),
-        ("잔액", "지역별"),
-        ("잔액", "업권별"),
+        ("new", "by_age"),
+        ("new", "by_region"),
+        ("new", "by_collateral"),
+        ("new", "by_lender"),
+        ("outstanding", "by_age"),
+        ("outstanding", "by_region"),
+        ("outstanding", "by_lender"),
     ]
 
     @pytest.mark.parametrize(("loan_type", "category"), _PREVIOUSLY_BROKEN_BORROWER_COMBINATIONS)
@@ -975,7 +983,7 @@ class TestE2EForexIndicators:
     @pytest.mark.parametrize("currency", ["USD", "JPY", "EUR", "CNY"])
     def test_get_exchange_rate(self, currency):
         """원/외화 환율 조회 — 731Y001 일별 매매기준율."""
-        df = ecos.get_exchange_rate(currency, start_date="20240101", end_date="20240131")
+        df = ecos.get_exchange_rate(currency=currency, start_date="20240101", end_date="20240131")
 
         assert not df.empty, f"{currency} returned empty"
         assert df.columns.tolist() == ["date", "value", "unit"]
@@ -991,7 +999,7 @@ class TestE2EBalanceOfPaymentsIndicators:
     def test_get_balance_of_payments_monthly(self, account):
         """월별 국제수지 계정 조회 — 301Y013."""
         df = ecos.get_balance_of_payments(
-            account, start_date="202301", end_date="202312", frequency="monthly"
+            account=account, start_date="202301", end_date="202312", frequency="monthly"
         )
         assert not df.empty, f"{account} returned empty"
         assert df.columns.tolist() == ["date", "value", "unit"]
@@ -1000,7 +1008,7 @@ class TestE2EBalanceOfPaymentsIndicators:
     def test_get_balance_of_payments_annual(self):
         """연별 경상수지 조회."""
         df = ecos.get_balance_of_payments(
-            "current", start_date="2018", end_date="2023", frequency="annual"
+            account="current", start_date="2018", end_date="2023", frequency="annual"
         )
         assert not df.empty
         assert len(df) >= 5
@@ -1012,7 +1020,7 @@ class TestE2ESentimentIndicators:
     @pytest.mark.parametrize("sector", ["manufacturing", "non_manufacturing", "all"])
     def test_get_business_sentiment(self, sector):
         """업황전망BSI 조회 — 512Y014, 업종별 단일 시계열."""
-        df = ecos.get_business_sentiment(sector, start_date="202301", end_date="202312")
+        df = ecos.get_business_sentiment(sector=sector, start_date="202301", end_date="202312")
         assert not df.empty, f"{sector} returned empty"
         assert "date" in df.columns
         assert "value" in df.columns
@@ -1052,7 +1060,7 @@ class TestE2ERealEconomyIndicators:
     @pytest.mark.parametrize("index", ["leading", "coincident", "lagging"])
     def test_get_composite_index(self, index):
         """경기종합지수 — 901Y067, 선행/동행/후행."""
-        df = ecos.get_composite_index(index, start_date="202301", end_date="202312")
+        df = ecos.get_composite_index(index=index, start_date="202301", end_date="202312")
         assert not df.empty
         assert df.columns.tolist() == ["date", "value", "unit"]
         assert len(df) == df["date"].nunique()
@@ -1061,14 +1069,14 @@ class TestE2ERealEconomyIndicators:
     def test_get_retail_sales(self, index):
         """소매판매액지수 — 901Y100, 경상/불변/계절조정. (#150) 기본 long-format(상품군별)."""
         # 미지정: 전체 상품군 long-format
-        df = ecos.get_retail_sales(index, start_date="202301", end_date="202312")
+        df = ecos.get_retail_sales(index=index, start_date="202301", end_date="202312")
         assert not df.empty, f"{index} returned empty"
         assert df.columns.tolist() == ["date", "category_value", "value", "unit"]
         assert {"총지수", "내구재", "비내구재"} <= set(df["category_value"]), index
         assert df["unit"].iloc[0] == "2020=100"
         # 지정: 단일 상품군 시계열
         total = ecos.get_retail_sales(
-            index, sub_category="총지수", start_date="202301", end_date="202312"
+            index=index, sub_category="총지수", start_date="202301", end_date="202312"
         )
         assert total.columns.tolist() == ["date", "value", "unit"]
         assert len(total) == total["date"].nunique()
@@ -1080,13 +1088,13 @@ class TestE2ETradeIndicators:
     @pytest.mark.parametrize("flow", ["export", "import"])
     def test_get_trade_monthly(self, flow):
         """수출입 금액(월별) — 901Y118."""
-        df = ecos.get_trade(flow, start_date="202301", end_date="202312")
+        df = ecos.get_trade(flow=flow, start_date="202301", end_date="202312")
         assert not df.empty, f"{flow} returned empty"
         assert df.columns.tolist() == ["date", "value", "unit"]
         assert (df["value"] > 0).all()
 
     def test_get_trade_annual(self):
         """연별 수출금액."""
-        df = ecos.get_trade("export", start_date="2018", end_date="2023", frequency="annual")
+        df = ecos.get_trade(flow="export", start_date="2018", end_date="2023", frequency="annual")
         assert not df.empty
         assert len(df) >= 5

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import PERIOD_ANNUAL, PERIOD_MONTHLY, STAT_TRADE, TRADE_FLOW_ITEMS
 from ..parser import normalize_stat_result, parse_response
@@ -19,7 +20,9 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition()
 def get_trade(
+    *,
     flow: Literal["export", "import"] = "export",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -57,8 +60,8 @@ def get_trade(
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_trade("export")                       # 월별 수출금액
-    >>> df = ecos.get_trade("import", frequency="annual")   # 연별 수입금액
+    >>> df = ecos.get_trade(flow="export")                       # 월별 수출금액
+    >>> df = ecos.get_trade(flow="import", frequency="annual")   # 연별 수입금액
     """
     if flow not in TRADE_FLOW_ITEMS:
         allowed = ", ".join(repr(f) for f in TRADE_FLOW_ITEMS)

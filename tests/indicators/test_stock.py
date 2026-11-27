@@ -169,7 +169,7 @@ class TestGetInvestorTrading:
         """action=매수, metric=거래량은 매수 거래량 투자자별 시리즈를 반환한다."""
         self._add_mock()
         df = get_investor_trading(
-            action="매수", metric="거래량", start_date="202401", end_date="202401"
+            action="buy", metric="volume", start_date="202401", end_date="202401"
         )
         assert set(df["category_value"]) == {"기관투자자(매수)", "개인(매수)"}
 

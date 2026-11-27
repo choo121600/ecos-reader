@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     CPI_CATEGORY_CODES,
@@ -60,7 +61,9 @@ def _price_measure(
     return df
 
 
+@api_transition()
 def get_cpi(
+    *,
     start_date: str | None = None,
     end_date: str | None = None,
     measure: Literal["index", "yoy", "mom"] = "index",
@@ -104,7 +107,9 @@ def get_cpi(
     return _price_measure("cpi", measure, start_date, end_date)
 
 
+@api_transition()
 def get_core_cpi(
+    *,
     start_date: str | None = None,
     end_date: str | None = None,
     measure: Literal["index", "yoy", "mom"] = "index",
@@ -149,7 +154,9 @@ def get_core_cpi(
     return _price_measure("core_cpi", measure, start_date, end_date)
 
 
+@api_transition()
 def get_ppi(
+    *,
     start_date: str | None = None,
     end_date: str | None = None,
     measure: Literal["index", "yoy", "mom"] = "index",
@@ -193,7 +200,9 @@ def get_ppi(
     return _price_measure("ppi", measure, start_date, end_date)
 
 
+@api_transition()
 def get_cpi_monthly(
+    *,
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
@@ -275,17 +284,19 @@ def get_cpi_monthly(
     return select_subcategory(df, prefix="", sub_category=sub_category, context="get_cpi_monthly")
 
 
+@api_transition(legacy_values=("category",))
 def get_cpi_by_category(
+    *,
     category: Literal[
-        "전체",
-        "상품",
-        "서비스",
-        "식품_에너지제외",
-        "농산물_석유제외",
-        "식료품_비주류음료",
-        "주거_수도_전기",
-        "교통",
-    ] = "전체",
+        "all",
+        "goods",
+        "services",
+        "ex_food_energy",
+        "ex_agri_oil",
+        "food_beverages",
+        "housing_utilities",
+        "transport",
+    ] = "all",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -298,14 +309,14 @@ def get_cpi_by_category(
     ----------
     category : str
         CPI 세부 항목
-        - '전체': 소비자물가지수 (기본값)
-        - '상품': 상품 물가지수
-        - '서비스': 서비스 물가지수
-        - '식품_에너지제외': 식품 및 에너지 제외 지수
-        - '농산물_석유제외': 농산물 및 석유류 제외 지수
-        - '식료품_비주류음료': 식료품 및 비주류음료
-        - '주거_수도_전기': 주거, 수도, 전기 및 연료
-        - '교통': 교통
+        - 'all': 소비자물가지수 (기본값)
+        - 'goods': 상품 물가지수
+        - 'services': 서비스 물가지수
+        - 'ex_food_energy': 식품 및 에너지 제외 지수
+        - 'ex_agri_oil': 농산물 및 석유류 제외 지수
+        - 'food_beverages': 식료품 및 비주류음료
+        - 'housing_utilities': 주거, 수도, 전기 및 연료
+        - 'transport': 교통
     start_date : str, optional
         조회 시작일 (YYYYMM 형식), 기본값: 2년 전
     end_date : str, optional
@@ -322,7 +333,7 @@ def get_cpi_by_category(
     Notes
     -----
     - 각 카테고리별로 물가 변동을 세부적으로 파악 가능
-    - '식품_에너지제외'는 근원 물가와 유사한 개념
+    - 'ex_food_energy'는 근원 물가와 유사한 개념
     - 상품과 서비스 물가의 괴리는 수요 구조 변화를 반영
     - 특수분류(전체/상품/서비스/제외 시리즈)는 stat_code 901Y010,
       COICOP 1단계(식료품/주거/교통 등)는 stat_code 901Y009를 사용
@@ -330,12 +341,12 @@ def get_cpi_by_category(
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_cpi_by_category(category="식품_에너지제외")
+    >>> df = ecos.get_cpi_by_category(category="ex_food_energy")
     >>> df.head()
             date   value  unit
     0 2023-01-01  103.50  지수
 
-    >>> df = ecos.get_cpi_by_category(category="교통")
+    >>> df = ecos.get_cpi_by_category(category="transport")
     >>> df.head()
     """
     if category not in CPI_CATEGORY_CODES:

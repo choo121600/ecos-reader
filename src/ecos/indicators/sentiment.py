@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     BSI_SECTOR_ITEMS,
@@ -29,7 +30,9 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition()
 def get_business_sentiment(
+    *,
     sector: Literal[
         "all",
         "manufacturing",
@@ -84,7 +87,7 @@ def get_business_sentiment(
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_business_sentiment("manufacturing")
+    >>> df = ecos.get_business_sentiment(sector="manufacturing")
     """
     if sector not in BSI_SECTOR_ITEMS:
         allowed = ", ".join(repr(s) for s in BSI_SECTOR_ITEMS)
@@ -112,7 +115,9 @@ def get_business_sentiment(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_consumer_sentiment(
+    *,
     start_date: str | None = None,
     end_date: str | None = None,
     sub_category: str | None = None,

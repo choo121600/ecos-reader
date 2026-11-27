@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     BOND_MARKET_MEASURE_CODE,
@@ -26,9 +27,11 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition(legacy_values=("bond_type", "measure"))
 def get_bond_market(
-    bond_type: Literal["종류별", "시장별"] = "종류별",
-    measure: Literal["거래대금", "거래량", "상장잔액", "상장종목수"] = "거래대금",
+    *,
+    bond_type: Literal["by_type", "by_market"] = "by_type",
+    measure: Literal["value", "volume", "listed_balance", "listed_count"] = "value",
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
@@ -50,12 +53,12 @@ def get_bond_market(
     ----------
     bond_type : str
         채권 분류 기준
-        - '종류별': 합계/국채/지방채/특수채/회사채/외국채 (기본값, 901Y015)
-        - '시장별': 합계/국채전문/일반채권/소액채권/신고매매 (901Y120)
+        - 'by_type': 합계/국채/지방채/특수채/회사채/외국채 (기본값, 901Y015)
+        - 'by_market': 합계/국채전문/일반채권/소액채권/신고매매 (901Y120)
     measure : str
         측정 지표 (한 차원을 이 값으로 고정한 뒤 분류축을 분류합니다)
-        - '거래대금' (기본값), '거래량'
-        - '상장잔액', '상장종목수' (``bond_type='종류별'`` 에서만 지원)
+        - 'value' (기본값), 'volume'
+        - 'listed_balance', 'listed_count' (``bond_type='by_type'`` 에서만 지원)
     sub_category : str, optional
         세부 분류(분류명 또는 item_code). 지정 시 해당 분류 단일 시계열만
         반환합니다. 미지정 시 전체 분류를 long-format으로 반환합니다.
@@ -103,13 +106,13 @@ def get_bond_market(
     >>> df = ecos.get_bond_market(sub_category="국채")
 
     >>> # 시장별 거래량
-    >>> df = ecos.get_bond_market(bond_type="시장별", measure="거래량")
+    >>> df = ecos.get_bond_market(bond_type="by_market", measure="volume")
 
     >>> # 연간 종류별 거래대금
     >>> df = ecos.get_bond_market(frequency="annual")
     """
-    if bond_type not in ("종류별", "시장별"):
-        raise ValueError("bond_type은 '종류별' 또는 '시장별' 중 하나여야 합니다.")
+    if bond_type not in ("by_type", "by_market"):
+        raise ValueError("bond_type은 'by_type' 또는 'by_market' 중 하나여야 합니다.")
 
     frequency = normalize_frequency(  # type: ignore[assignment]
         frequency,
@@ -122,14 +125,16 @@ def get_bond_market(
     # 두 통계표는 measure가 놓인 축이 다르다:
     #   종류별(901Y015): measure=item_code2, 분류축=item_code1(채권종류)
     #   시장별(901Y120): measure=item_code1, 분류축=item_code2(시장)
-    if bond_type == "종류별":
+    if bond_type == "by_type":
         stat_code = STAT_BOND_YIELD_TYPE
         measure_map = BOND_YIELD_TYPE_MEASURE_CODE
     else:
         stat_code = STAT_BOND_MARKET
         measure_map = BOND_MARKET_MEASURE_CODE
     if measure not in measure_map:
-        raise ValueError(f"{bond_type} measure는 {list(measure_map.keys())} 중 하나여야 합니다.")
+        raise ValueError(
+            f"bond_type={bond_type!r}의 measure는 {list(measure_map.keys())} 중 하나여야 합니다."
+        )
     measure_code = measure_map[measure]
 
     # 기본 날짜 설정
@@ -151,7 +156,7 @@ def get_bond_market(
     df = parse_response(response)
 
     # measure로 한 차원을 고정한 뒤 분류축(category_value)을 select_subcategory로 분류한다.
-    if bond_type == "종류별":
+    if bond_type == "by_type":
         if "item_code2" in df.columns:
             df = df[df["item_code2"] == measure_code]
     else:  # 시장별: measure로 item_code1을 고정한 뒤 시장 축(item_code2)을 item_code1로 승격.

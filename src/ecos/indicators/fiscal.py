@@ -8,13 +8,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from .._compat import api_transition
 from ._registry import get_indicator
 
 if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition()
 def get_fiscal_balance(
+    *,
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:

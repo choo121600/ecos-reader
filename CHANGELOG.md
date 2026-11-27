@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ecos.EcosDeprecationWarning`: 제거 예정 공개 API 사용 시 발생하는 경고 (`FutureWarning` 상속).
 - 하위호환·사용 중단 정책 문서(`docs/development/deprecation-policy.md`): 공개 API 범위,
   버전 규칙, 제거 전 최소 한 Minor 릴리스·3개월 경고 유예 기간을 정의.
+- v0.9.0 마이그레이션 가이드(`docs/user-guide/migration-v0.9.0.md`).
+
+### Deprecated
+아래 경로는 모두 `EcosDeprecationWarning`을 내며 계속 동작하고, **1.0.0에서 제거**된다.
+- 지표 함수에 인자를 **위치로 전달**하는 호출. 모든 지표 함수 인자가 키워드 전용이 되었다
+  (`get_indicator()`의 `name`만 예외). 1.0.0부터 `TypeError`.
+- **한글 선택값**: `action`, `metric`, `bond_type`, `measure`, `basis`, `loan_type`,
+  `variant`, `category`의 한글 값(예: `action="순매수"`)은 영문 값(`action="net_buy"`)으로
+  변환된다. 전체 대응표는 마이그레이션 가이드 참고.
+- `get_industrial_production()` / `get_facility_investment()`의 `seasonal` 인자 →
+  `seasonal_adj`.
 
 ### Changed
 - 버전의 단일 출처를 git 태그로 일원화. `pyproject.toml`의 정적 버전을 제거하고
@@ -18,6 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `importlib.metadata`로 설치 메타데이터를 읽는다 (공개 API 변화 없음).
 - 배포 워크플로가 빌드 산출물 버전과 태그가 일치하는지 검증한다.
 - 누락된 과거 릴리스 태그(`v0.1.0`, `v0.1.1`)를 보충하고 하단 버전 비교 링크를 전체 버전으로 정비.
+- 지표 함수의 선택값 `Literal` 타입 힌트·기본값·docstring을 영문 값으로 변경. 대응하는
+  `ecos.constants` 매핑(`INVESTOR_TRADING_*`, `BOND_*_MEASURE_CODE`, `M1_*`/`M2_*`,
+  `BORROWER_LOAN_*`, `CPI_CATEGORY_CODES`)의 키도 영문으로 바뀌었다.
+- `get_bond_market()`의 잘못된 `bond_type`/`measure` 조합 오류 메시지가 영문 값을 표시한다.
+- 하위호환 정책에 `INDICATORS`, `RateLimiter`의 `clock=`/`sleep=` 훅, `parse_response`,
+  `normalize_stat_result`의 구조·시그니처는 보장 대상이 아님을 명시.
 
 ## [0.8.0] - 2026-11-25
 

@@ -42,7 +42,7 @@ class TestGetExchangeRate:
     @responses.activate
     def test_success_normalized_columns(self):
         responses.add(responses.GET, re.compile(r".*"), json=_forex_response(), status=200)
-        df = get_exchange_rate("USD", start_date="20240101", end_date="20240110")
+        df = get_exchange_rate(currency="USD", start_date="20240101", end_date="20240110")
         assert not df.empty
         assert df.columns.tolist() == ["date", "value", "unit"]
         assert df["value"].iloc[0] == 1289.4
@@ -65,18 +65,18 @@ class TestGetExchangeRate:
     )
     def test_currency_maps_to_item_code(self, currency, item_code):
         responses.add(responses.GET, re.compile(r".*"), json=_forex_response(item_code), status=200)
-        get_exchange_rate(currency, start_date="20240101", end_date="20240110")
+        get_exchange_rate(currency=currency, start_date="20240101", end_date="20240110")
         assert item_code in responses.calls[0].request.url
 
     @responses.activate
     def test_default_dates_applied(self):
         responses.add(responses.GET, re.compile(r".*"), json=_forex_response(), status=200)
-        df = get_exchange_rate("USD")  # 날짜 미지정 → 기본 1년
+        df = get_exchange_rate(currency="USD")  # 날짜 미지정 → 기본 1년
         assert not df.empty
 
     def test_invalid_currency_raises(self):
         with pytest.raises(ValueError, match="currency"):
-            get_exchange_rate("GBP", start_date="20240101", end_date="20240110")
+            get_exchange_rate(currency="GBP", start_date="20240101", end_date="20240110")
 
     def test_public_export(self):
         import ecos

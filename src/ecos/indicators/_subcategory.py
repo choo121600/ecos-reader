@@ -90,7 +90,7 @@ def select_subcategory(
         시계열만, 미지정 시 분류축 전체 long-format 을 반환합니다.
     context : str, optional
         ``ValueError`` 메시지에 포함할 호출 맥락 설명
-        (예: ``"loan_type='잔액', category='연령별'"``).
+        (예: ``"loan_type='outstanding', category='by_age'"``).
 
     Returns
     -------

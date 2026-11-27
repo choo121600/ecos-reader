@@ -10,6 +10,7 @@ from typing import Literal
 
 import pandas as pd
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     ITEM_BASE_RATE,
@@ -29,7 +30,9 @@ from ._frequency import normalize_frequency
 from ._registry import get_indicator
 
 
+@api_transition()
 def get_base_rate(
+    *,
     start_date: str | None = None,
     end_date: str | None = None,
     frequency: Literal["daily", "monthly"] = "monthly",
@@ -100,7 +103,9 @@ def get_base_rate(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_treasury_yield(
+    *,
     maturity: Literal["1Y", "3Y", "5Y", "10Y", "20Y", "30Y"] = "3Y",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -163,7 +168,9 @@ def get_treasury_yield(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_yield_spread(
+    *,
     long_maturity: Literal["10Y", "20Y", "30Y"] = "10Y",
     short_maturity: Literal["1Y", "3Y", "5Y"] = "3Y",
     start_date: str | None = None,
@@ -233,8 +240,10 @@ def get_yield_spread(
     return merged.sort_values("date").reset_index(drop=True)
 
 
+@api_transition(legacy_values=("basis",))
 def get_bank_deposit_rate(
-    basis: Literal["신규취급액", "잔액"] = "신규취급액",
+    *,
+    basis: Literal["new", "outstanding"] = "new",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -247,8 +256,8 @@ def get_bank_deposit_rate(
     ----------
     basis : str
         금리 산정 기준
-        - '신규취급액': 신규취급액 기준 (기본값)
-        - '잔액': 잔액 기준
+        - 'new': 신규취급액 기준 (기본값)
+        - 'outstanding': 잔액 기준
     start_date : str, optional
         조회 시작일 (YYYYMM 형식), 기본값: 1년 전
     end_date : str, optional
@@ -279,10 +288,10 @@ def get_bank_deposit_rate(
             date  value unit
     0 2024-01-01   3.20    %
 
-    >>> df = ecos.get_bank_deposit_rate(basis="잔액")
+    >>> df = ecos.get_bank_deposit_rate(basis="outstanding")
     """
-    if basis not in ["신규취급액", "잔액"]:
-        raise ValueError("basis는 '신규취급액' 또는 '잔액' 중 하나여야 합니다.")
+    if basis not in ["new", "outstanding"]:
+        raise ValueError("basis는 'new' 또는 'outstanding' 중 하나여야 합니다.")
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
@@ -291,7 +300,7 @@ def get_bank_deposit_rate(
         end_date = end_date or default_end
 
     # basis에 따른 stat_code 및 item_code 선택
-    if basis == "신규취급액":
+    if basis == "new":
         stat_code = STAT_DEPOSIT_RATE_NEW
         item_code = "BEABAA2"  # 저축성수신
     else:  # 잔액
@@ -311,8 +320,10 @@ def get_bank_deposit_rate(
     return normalize_stat_result(df)
 
 
+@api_transition(legacy_values=("basis",))
 def get_bank_lending_rate(
-    basis: Literal["신규취급액", "잔액"] = "신규취급액",
+    *,
+    basis: Literal["new", "outstanding"] = "new",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -325,8 +336,8 @@ def get_bank_lending_rate(
     ----------
     basis : str
         금리 산정 기준
-        - '신규취급액': 신규취급액 기준 (기본값)
-        - '잔액': 잔액 기준
+        - 'new': 신규취급액 기준 (기본값)
+        - 'outstanding': 잔액 기준
     start_date : str, optional
         조회 시작일 (YYYYMM 형식), 기본값: 1년 전
     end_date : str, optional
@@ -357,10 +368,10 @@ def get_bank_lending_rate(
             date  value unit
     0 2024-01-01   4.50    %
 
-    >>> df = ecos.get_bank_lending_rate(basis="잔액")
+    >>> df = ecos.get_bank_lending_rate(basis="outstanding")
     """
-    if basis not in ["신규취급액", "잔액"]:
-        raise ValueError("basis는 '신규취급액' 또는 '잔액' 중 하나여야 합니다.")
+    if basis not in ["new", "outstanding"]:
+        raise ValueError("basis는 'new' 또는 'outstanding' 중 하나여야 합니다.")
 
     # 기본 날짜 설정
     if start_date is None or end_date is None:
@@ -369,7 +380,7 @@ def get_bank_lending_rate(
         end_date = end_date or default_end
 
     # basis에 따른 stat_code 및 item_code 선택
-    if basis == "신규취급액":
+    if basis == "new":
         stat_code = STAT_LENDING_RATE_NEW
         item_code = "BECBLA01"  # 대출평균
     else:  # 잔액

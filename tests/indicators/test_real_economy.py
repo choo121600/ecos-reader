@@ -61,7 +61,7 @@ class TestGetIndustrialProduction:
     @responses.activate
     def test_seasonal_series_axis(self):
         responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y033"), status=200)
-        get_industrial_production(start_date="202401", end_date="202402", seasonal=True)
+        get_industrial_production(start_date="202401", end_date="202402", seasonal_adj=True)
         # 계절조정(item_code2='2')
         assert responses.calls[0].request.url.rstrip("/").endswith("/2")
 
@@ -87,7 +87,7 @@ class TestGetIndustrialProduction:
     def test_seasonal_annual_raises(self):
         """계절조정+연간은 ECOS 미제공 → 빈 응답 대신 명확한 ValueError (#150 후속)."""
         with pytest.raises(ValueError, match="계절조정"):
-            get_industrial_production(seasonal=True, frequency="annual")
+            get_industrial_production(seasonal_adj=True, frequency="annual")
 
 
 @pytest.mark.usefixtures("set_api_key")
@@ -107,7 +107,7 @@ class TestGetFacilityInvestment:
     @responses.activate
     def test_seasonal_item(self):
         responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y066"), status=200)
-        get_facility_investment(start_date="202401", end_date="202402", seasonal=True)
+        get_facility_investment(start_date="202401", end_date="202402", seasonal_adj=True)
         assert "I15B" in responses.calls[0].request.url  # 계절조정지수
 
     @responses.activate
@@ -126,7 +126,7 @@ class TestGetFacilityInvestment:
 
     def test_seasonal_annual_raises(self):
         with pytest.raises(ValueError, match="계절조정"):
-            get_facility_investment(seasonal=True, frequency="annual")
+            get_facility_investment(seasonal_adj=True, frequency="annual")
 
 
 @pytest.mark.usefixtures("set_api_key")
@@ -134,7 +134,7 @@ class TestGetCompositeIndex:
     @responses.activate
     def test_success_columns(self):
         responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y067"), status=200)
-        df = get_composite_index("coincident", start_date="202401", end_date="202402")
+        df = get_composite_index(index="coincident", start_date="202401", end_date="202402")
         assert df.columns.tolist() == ["date", "value", "unit"]
 
     @responses.activate
@@ -144,7 +144,7 @@ class TestGetCompositeIndex:
     )
     def test_index_maps_to_item(self, index, item_code):
         responses.add(responses.GET, re.compile(r".*"), json=_index_response("901Y067"), status=200)
-        get_composite_index(index, start_date="202401", end_date="202402")
+        get_composite_index(index=index, start_date="202401", end_date="202402")
         url = responses.calls[0].request.url
         assert "901Y067" in url
         assert item_code in url
@@ -157,7 +157,7 @@ class TestGetCompositeIndex:
 
     def test_invalid_index_raises(self):
         with pytest.raises(ValueError, match="index"):
-            get_composite_index("trailing", start_date="202401", end_date="202402")
+            get_composite_index(index="trailing", start_date="202401", end_date="202402")
 
 
 def _retail_mock() -> dict:
@@ -209,7 +209,7 @@ class TestGetRetailSales:
         """index(계열)는 item_code2로 client-side 필터; 경상(T1, base100)."""
         self._add_mock()
         df = get_retail_sales(
-            "nominal", sub_category="총지수", start_date="202401", end_date="202402"
+            index="nominal", sub_category="총지수", start_date="202401", end_date="202402"
         )
         assert (df["value"] == 100).all()  # G0(0) + T1(100)
 
@@ -234,12 +234,12 @@ class TestGetRetailSales:
 
     def test_invalid_index_raises(self):
         with pytest.raises(ValueError, match="index"):
-            get_retail_sales("constant", start_date="202401", end_date="202402")
+            get_retail_sales(index="constant", start_date="202401", end_date="202402")
 
     def test_seasonal_annual_raises(self):
         """계절조정지수는 연간 미제공 → 명확한 ValueError (#150 후속)."""
         with pytest.raises(ValueError, match="계절조정"):
-            get_retail_sales("seasonal", frequency="annual")
+            get_retail_sales(index="seasonal", frequency="annual")
 
 
 def test_public_exports():

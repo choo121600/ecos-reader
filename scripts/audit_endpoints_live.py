@@ -49,7 +49,7 @@ def build_specs():
             )
         )
     s.append(spec("yield_spread", "rates", lambda: ecos.get_yield_spread(), "%p", (-5, 5)))
-    for b in ["신규취급액", "잔액"]:
+    for b in ["new", "outstanding"]:
         s.append(
             spec(
                 f"bank_deposit_rate[{b}]",
@@ -76,14 +76,14 @@ def build_specs():
         s.append(spec(f"{name}[yoy]", "prices", lambda fn=fn: fn(measure="yoy"), "%", (-10, 20)))
         s.append(spec(f"{name}[mom]", "prices", lambda fn=fn: fn(measure="mom"), "%", (-10, 20)))
     for cat in [
-        "전체",
-        "상품",
-        "서비스",
-        "식품_에너지제외",
-        "농산물_석유제외",
-        "식료품_비주류음료",
-        "주거_수도_전기",
-        "교통",
+        "all",
+        "goods",
+        "services",
+        "ex_food_energy",
+        "ex_agri_oil",
+        "food_beverages",
+        "housing_utilities",
+        "transport",
     ]:
         s.append(
             spec(
@@ -167,7 +167,7 @@ def build_specs():
                 "money_supply",
             )
         )
-    for v in ["평잔_계절조정", "평잔_원계열", "말잔_계절조정"]:
+    for v in ["average_sa", "average_nsa", "end_sa"]:
         s.append(
             spec(
                 f"m1_variants[{v}]",
@@ -200,7 +200,7 @@ def build_specs():
                 "bank_lending",
             )
         )
-    for cat in ["업권별", "용도별"]:
+    for cat in ["by_lender", "by_purpose"]:
         s.append(
             spec(
                 f"household_credit[{cat}]",
@@ -232,7 +232,7 @@ def build_specs():
                 "stock",
             )
         )
-    for act in ["순매수", "매수", "매도"]:
+    for act in ["net_buy", "buy", "sell"]:
         s.append(
             spec(
                 f"investor_trading[{act}]",
@@ -244,12 +244,12 @@ def build_specs():
             )
         )
     for bt, meas in [
-        ("종류별", "거래대금"),
-        ("종류별", "거래량"),
-        ("종류별", "상장잔액"),
-        ("종류별", "상장종목수"),
-        ("시장별", "거래대금"),
-        ("시장별", "거래량"),
+        ("by_type", "value"),
+        ("by_type", "volume"),
+        ("by_type", "listed_balance"),
+        ("by_type", "listed_count"),
+        ("by_market", "value"),
+        ("by_market", "volume"),
     ]:
         s.append(
             spec(

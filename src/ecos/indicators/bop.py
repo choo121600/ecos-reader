@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     BOP_ACCOUNT_ITEMS,
@@ -26,7 +27,9 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition()
 def get_balance_of_payments(
+    *,
     account: Literal["current", "capital", "financial"] = "current",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -69,8 +72,8 @@ def get_balance_of_payments(
     Examples
     --------
     >>> import ecos
-    >>> df = ecos.get_balance_of_payments("current")  # 월별 경상수지
-    >>> df = ecos.get_balance_of_payments("financial", frequency="annual")
+    >>> df = ecos.get_balance_of_payments(account="current")  # 월별 경상수지
+    >>> df = ecos.get_balance_of_payments(account="financial", frequency="annual")
     """
     if account not in BOP_ACCOUNT_ITEMS:
         allowed = ", ".join(repr(a) for a in BOP_ACCOUNT_ITEMS)

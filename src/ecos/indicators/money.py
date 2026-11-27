@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from .._compat import api_transition
 from ..client import get_client
 from ..constants import (
     BANK_LENDING_ITEMS,
@@ -38,7 +39,9 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
+@api_transition()
 def get_money_supply(
+    *,
     indicator: Literal["M1", "M2", "Lf"] = "M2",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -134,7 +137,9 @@ def get_money_supply(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_bank_lending(
+    *,
     sector: Literal["household", "all"] = "all",
     start_date: str | None = None,
     end_date: str | None = None,
@@ -229,8 +234,10 @@ def get_bank_lending(
     return normalize_stat_result(df)
 
 
+@api_transition(legacy_values=("variant",))
 def get_m1_variants(
-    variant: Literal["평잔_계절조정", "평잔_원계열", "말잔_계절조정"] = "말잔_계절조정",
+    *,
+    variant: Literal["average_sa", "average_nsa", "end_sa"] = "end_sa",
     start_date: str | None = None,
     end_date: str | None = None,
     frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
@@ -244,9 +251,9 @@ def get_m1_variants(
     ----------
     variant : str
         M1 변형 종류
-        - '평잔_계절조정': 평잔 계절조정 계열
-        - '평잔_원계열': 평잔 원계열
-        - '말잔_계절조정': 말잔 계절조정 계열 (기본값)
+        - 'average_sa': 평잔 계절조정 계열
+        - 'average_nsa': 평잔 원계열
+        - 'end_sa': 말잔 계절조정 계열 (기본값)
     start_date : str, optional
         조회 시작 시점. ``frequency`` 에 맞는 형식
         (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
@@ -280,7 +287,7 @@ def get_m1_variants(
     >>> df = ecos.get_m1_variants()
     >>> df.head()
 
-    >>> df = ecos.get_m1_variants(variant="평잔_원계열")
+    >>> df = ecos.get_m1_variants(variant="average_nsa")
     >>> df = ecos.get_m1_variants(frequency="annual")
     """
     if variant not in M1_VARIANTS:
@@ -324,8 +331,10 @@ def get_m1_variants(
     return normalize_stat_result(df)
 
 
+@api_transition(legacy_values=("variant",))
 def get_m2_variants(
-    variant: Literal["평잔_계절조정", "평잔_원계열", "말잔_계절조정"] = "말잔_계절조정",
+    *,
+    variant: Literal["average_sa", "average_nsa", "end_sa"] = "end_sa",
     start_date: str | None = None,
     end_date: str | None = None,
     frequency: Literal["monthly", "quarterly", "annual"] = "monthly",
@@ -339,9 +348,9 @@ def get_m2_variants(
     ----------
     variant : str
         M2 변형 종류
-        - '평잔_계절조정': 평잔 계절조정 계열
-        - '평잔_원계열': 평잔 원계열
-        - '말잔_계절조정': 말잔 계절조정 계열 (기본값)
+        - 'average_sa': 평잔 계절조정 계열
+        - 'average_nsa': 평잔 원계열
+        - 'end_sa': 말잔 계절조정 계열 (기본값)
     start_date : str, optional
         조회 시작 시점. ``frequency`` 에 맞는 형식
         (월 ``YYYYMM`` / 분기 ``YYYYQn`` / 연 ``YYYY``). 기본값: 주기별 기본 범위.
@@ -377,7 +386,7 @@ def get_m2_variants(
     >>> df = ecos.get_m2_variants()
     >>> df.head()
 
-    >>> df = ecos.get_m2_variants(variant="평잔_원계열")
+    >>> df = ecos.get_m2_variants(variant="average_nsa")
     >>> df = ecos.get_m2_variants(frequency="annual")
     """
     if variant not in M2_VARIANTS:
@@ -421,10 +430,10 @@ def get_m2_variants(
     return normalize_stat_result(df)
 
 
+@api_transition(legacy_values=("variant",))
 def get_m2_by_holder(
-    variant: Literal[
-        "평잔_계절조정", "평잔_원계열", "말잔_계절조정", "말잔_원계열"
-    ] = "말잔_원계열",
+    *,
+    variant: Literal["average_sa", "average_nsa", "end_sa", "end_nsa"] = "end_nsa",
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
@@ -442,10 +451,10 @@ def get_m2_by_holder(
     ----------
     variant : str
         M2 변형 종류
-        - '평잔_계절조정': 평잔 계절조정 계열
-        - '평잔_원계열': 평잔 원계열
-        - '말잔_계절조정': 말잔 계절조정 계열
-        - '말잔_원계열': 말잔 원계열 (기본값)
+        - 'average_sa': 평잔 계절조정 계열
+        - 'average_nsa': 평잔 원계열
+        - 'end_sa': 말잔 계절조정 계열
+        - 'end_nsa': 말잔 원계열 (기본값)
     sub_category : str, optional
         경제주체(항목명 또는 item_code1). 지정 시 해당 주체 단일 시계열만,
         미지정 시 전체 주체를 long-format으로 반환합니다.
@@ -483,7 +492,7 @@ def get_m2_by_holder(
     >>> import ecos
     >>> df = ecos.get_m2_by_holder()  # 전체 주체 long-format
     >>> df = ecos.get_m2_by_holder(sub_category="가계 및 비영리단체")  # 단일 주체
-    >>> df = ecos.get_m2_by_holder(variant="평잔_계절조정")
+    >>> df = ecos.get_m2_by_holder(variant="average_sa")
     >>> df = ecos.get_m2_by_holder(frequency="annual")
     """
     if variant not in M2_HOLDER_VARIANTS:
@@ -527,8 +536,10 @@ def get_m2_by_holder(
     return select_subcategory(df, prefix="", sub_category=sub_category, context="get_m2_by_holder")
 
 
+@api_transition(legacy_values=("category",))
 def get_household_credit(
-    category: Literal["업권별", "용도별"] = "업권별",
+    *,
+    category: Literal["by_lender", "by_purpose"] = "by_lender",
     start_date: str | None = None,
     end_date: str | None = None,
 ) -> pd.DataFrame:
@@ -541,8 +552,8 @@ def get_household_credit(
     ----------
     category : str
         가계신용 분류
-        - '업권별': 은행, 비은행 등 업권별 (기본값)
-        - '용도별': 주택담보대출, 기타대출 등 용도별
+        - 'by_lender': 은행, 비은행 등 업권별 (기본값)
+        - 'by_purpose': 주택담보대출, 기타대출 등 용도별
     start_date : str, optional
         조회 시작일 (YYYYQN 형식, 예: 2024Q1), 기본값: 5년 전
     end_date : str, optional
@@ -569,10 +580,10 @@ def get_household_credit(
     >>> df = ecos.get_household_credit()
     >>> df.head()
 
-    >>> df = ecos.get_household_credit(category="용도별")
+    >>> df = ecos.get_household_credit(category="by_purpose")
     """
-    if category not in ["업권별", "용도별"]:
-        raise ValueError("category는 '업권별' 또는 '용도별' 중 하나여야 합니다.")
+    if category not in ["by_lender", "by_purpose"]:
+        raise ValueError("category는 'by_lender' 또는 'by_purpose' 중 하나여야 합니다.")
 
     # 기본 날짜 설정 (분기)
     if start_date is None or end_date is None:
@@ -581,7 +592,7 @@ def get_household_credit(
         end_date = end_date or default_end
 
     # 카테고리에 따른 stat_code 및 item_code 선택
-    if category == "업권별":
+    if category == "by_lender":
         stat_code = STAT_HOUSEHOLD_CREDIT_SECTOR
         item_code = "1110000"  # 예금취급기관
     else:  # 용도별
@@ -601,7 +612,9 @@ def get_household_credit(
     return normalize_stat_result(df)
 
 
+@api_transition()
 def get_household_lending_detail(
+    *,
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
@@ -683,11 +696,13 @@ def get_household_lending_detail(
     )
 
 
+@api_transition(legacy_values=("loan_type", "category"))
 def get_borrower_loan(
-    loan_type: Literal["신규", "잔액"] = "잔액",
+    *,
+    loan_type: Literal["new", "outstanding"] = "outstanding",
     category: Literal[
-        "전체", "성별", "연령별", "지역별", "업권별", "담보유형별", "다중대출별"
-    ] = "전체",
+        "all", "by_gender", "by_age", "by_region", "by_lender", "by_collateral", "by_loan_count"
+    ] = "all",
     sub_category: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
@@ -709,17 +724,17 @@ def get_borrower_loan(
     ----------
     loan_type : str
         대출 유형
-        - '신규': 신규취급액
-        - '잔액': 잔액 (기본값)
+        - 'new': 신규취급액
+        - 'outstanding': 잔액 (기본값)
     category : str
         분류축
-        - '전체': 차주 전체 (기본값, item_code `0000`)
-        - '성별': 성별 (남성/여성, prefix B)
-        - '연령별': 연령대별 (prefix C)
-        - '지역별': 지역별 (prefix D)
-        - '업권별': 업권별 (은행/비은행, prefix E)
-        - '담보유형별': 담보 유형별 (주담대/신용/전세 등, prefix F)
-        - '다중대출별': 다중대출 건수별 (prefix G)
+        - 'all': 차주 전체 (기본값, item_code `0000`)
+        - 'by_gender': 성별 (남성/여성, prefix B)
+        - 'by_age': 연령대별 (prefix C)
+        - 'by_region': 지역별 (prefix D)
+        - 'by_lender': 업권별 (은행/비은행, prefix E)
+        - 'by_collateral': 담보 유형별 (주담대/신용/전세 등, prefix F)
+        - 'by_loan_count': 다중대출 건수별 (prefix G)
     sub_category : str, optional
         세부 항목. 지정 시 해당 항목 단일 시계열만 반환합니다.
         세부 항목명(`category_value`) 또는 item_code 둘 다 허용합니다.
@@ -754,13 +769,13 @@ def get_borrower_loan(
     --------
     >>> import ecos
     >>> # 연령별 잔액 전체 (long-format)
-    >>> df = ecos.get_borrower_loan(loan_type="잔액", category="연령별")
+    >>> df = ecos.get_borrower_loan(loan_type="outstanding", category="by_age")
     >>> df.head()
             date category_value      value unit
 
     >>> # 연령별 중 30대 단일 시계열
     >>> df = ecos.get_borrower_loan(
-    ...     loan_type="잔액", category="연령별", sub_category="30대"
+    ...     loan_type="outstanding", category="by_age", sub_category="30대"
     ... )
     """
     if loan_type not in BORROWER_LOAN_STAT_CODES:
@@ -792,11 +807,11 @@ def get_borrower_loan(
 
     df = parse_response(response)
     # partial-coverage 재설계 공통 규약(#58) — _subcategory.select_subcategory 참고.
-    # "전체"는 단일 코드 정확 일치, 나머지 분류축은 prefix 매칭.
+    # "all"은 단일 코드 정확 일치, 나머지 분류축은 prefix 매칭.
     return select_subcategory(
         df,
         prefix=prefix,
-        exact=(category == "전체"),
+        exact=(category == "all"),
         sub_category=sub_category,
         context=f"loan_type='{loan_type}', category='{category}'",
     )

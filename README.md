@@ -268,7 +268,7 @@ import ecos
 
 # 주요 금융시장 지표 수집
 stock = ecos.get_stock_index(frequency="daily", start_date="20240101", end_date="20241231")
-bond = ecos.get_bond_market(bond_type="종류별", start_date="202401", end_date="202412")
+bond = ecos.get_bond_market(bond_type="by_type", start_date="202401", end_date="202412")
 investor = ecos.get_investor_trading(start_date="202401", end_date="202412")
 
 print("주식시장:", len(stock), "rows")
@@ -282,12 +282,12 @@ print("투자자거래:", len(investor), "rows")
 import ecos
 
 # 가계신용 및 대출 추이
-credit = ecos.get_household_credit(category="업권별", start_date="2020Q1", end_date="2024Q4")
+credit = ecos.get_household_credit(category="by_lender", start_date="2020Q1", end_date="2024Q4")
 lending = ecos.get_household_lending_detail(start_date="202001", end_date="202412")
-borrower = ecos.get_borrower_loan(loan_type="잔액", start_date="2023Q1", end_date="2024Q4")
+borrower = ecos.get_borrower_loan(loan_type="outstanding", start_date="2023Q1", end_date="2024Q4")
 
 # 가계대출 금리
-rate = ecos.get_bank_lending_rate(basis="신규취급액", start_date="202301", end_date="202412")
+rate = ecos.get_bank_lending_rate(basis="new", start_date="202301", end_date="202412")
 ```
 
 ### 캐시 관리

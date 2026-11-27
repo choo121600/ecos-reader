@@ -151,8 +151,8 @@ def build():
             lambda lo=lo, sh=sh: _spread_raw(lo, sh),
         )
     for b, st, it in (
-        ("신규취급액", c.STAT_DEPOSIT_RATE_NEW, "BEABAA2"),
-        ("잔액", c.STAT_DEPOSIT_RATE_BALANCE, "BEABAB2"),
+        ("new", c.STAT_DEPOSIT_RATE_NEW, "BEABAA2"),
+        ("outstanding", c.STAT_DEPOSIT_RATE_BALANCE, "BEABAB2"),
     ):
         add_single(
             f"deposit_rate[{b}]",
@@ -161,8 +161,8 @@ def build():
             lambda st=st, it=it: _single(_raw(st, "M", it)),
         )
     for b, st, it in (
-        ("신규취급액", c.STAT_LENDING_RATE_NEW, "BECBLA01"),
-        ("잔액", c.STAT_LENDING_RATE_BALANCE, "BECBLB01"),
+        ("new", c.STAT_LENDING_RATE_NEW, "BECBLA01"),
+        ("outstanding", c.STAT_LENDING_RATE_BALANCE, "BECBLB01"),
     ):
         add_single(
             f"lending_rate[{b}]",
@@ -199,7 +199,7 @@ def build():
             f"gdp_deflator_by_industry[{fr}]",
             "growth",
             lambda fr=fr, p=p: _multiset(
-                ecos.get_gdp_deflator_by_industry(fr, start_date=_rng(p)[0], end_date=_rng(p)[1])
+                ecos.get_gdp_deflator_by_industry(frequency=fr, start_date=_rng(p)[0], end_date=_rng(p)[1])
             ),
             lambda p=p: _multiset(_raw(c.STAT_GDP_DEFLATOR_BY_INDUSTRY, p, None)),
         )
@@ -216,7 +216,7 @@ def build():
             f"gdp_by_industry[{ba},sa={sa},{fr}]",
             "growth",
             lambda ba=ba, sa=sa, fr=fr, p=p: _multiset(
-                ecos.get_gdp_by_industry(ba, sa, fr, start_date=_rng(p)[0], end_date=_rng(p)[1])
+                ecos.get_gdp_by_industry(basis=ba, seasonal_adj=sa, frequency=fr, start_date=_rng(p)[0], end_date=_rng(p)[1])
             ),
             lambda stat=stat, p=p: _multiset(_raw(stat, p, None)),
         )
@@ -230,7 +230,7 @@ def build():
             f"gdp_by_expenditure[{ba},{fr}]",
             "growth",
             lambda ba=ba, fr=fr, p=p: _multiset(
-                ecos.get_gdp_by_expenditure(ba, fr, start_date=_rng(p)[0], end_date=_rng(p)[1])
+                ecos.get_gdp_by_expenditure(basis=ba, frequency=fr, start_date=_rng(p)[0], end_date=_rng(p)[1])
             ),
             lambda stat=stat, p=p: _multiset(_raw(stat, p, None)),
         )
@@ -252,7 +252,7 @@ def build():
             f"m1_variants[{v},{fr}]",
             "money",
             lambda v=v, fr=fr, p=p: _single(
-                ecos.get_m1_variants(v, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr)
+                ecos.get_m1_variants(variant=v, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr)
             ),
             lambda v=v, p=p: _single(_raw(c.M1_VARIANTS[v], p, c.M1_ITEMS[v])),
         )
@@ -262,7 +262,7 @@ def build():
             f"m2_variants[{v},{fr}]",
             "money",
             lambda v=v, fr=fr, p=p: _single(
-                ecos.get_m2_variants(v, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr)
+                ecos.get_m2_variants(variant=v, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr)
             ),
             lambda v=v, p=p: _single(_raw(c.M2_VARIANTS[v], p, c.M2_ITEMS[v])),
         )
@@ -272,7 +272,7 @@ def build():
             f"m2_by_holder[{v},{fr}]",
             "money",
             lambda v=v, fr=fr, p=p: _multiset(
-                ecos.get_m2_by_holder(v, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr)
+                ecos.get_m2_by_holder(variant=v, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr)
             ),
             lambda v=v, p=p: _multiset(_raw(c.M2_HOLDER_VARIANTS[v], p, None)),
         )
@@ -287,8 +287,8 @@ def build():
             lambda stat=stat, it=it, p=p: _single(_raw(stat, p, it)),
         )
     for cat, st, it in (
-        ("업권별", c.STAT_HOUSEHOLD_CREDIT_SECTOR, "1110000"),
-        ("용도별", c.STAT_HOUSEHOLD_CREDIT_PURPOSE, "1000000"),
+        ("by_lender", c.STAT_HOUSEHOLD_CREDIT_SECTOR, "1110000"),
+        ("by_purpose", c.STAT_HOUSEHOLD_CREDIT_PURPOSE, "1000000"),
     ):
         add_single(
             f"household_credit[{cat}]",
@@ -304,15 +304,15 @@ def build():
         ),
         lambda: _multiset(_raw(c.STAT_HOUSEHOLD_LENDING_PURPOSE, "M", None)),
     )
-    for lt, cat in itertools.product(("잔액", "신규"), c.BORROWER_LOAN_CATEGORY_PREFIX):
+    for lt, cat in itertools.product(("outstanding", "new"), c.BORROWER_LOAN_CATEGORY_PREFIX):
         pre = c.BORROWER_LOAN_CATEGORY_PREFIX[cat]
         stat = c.BORROWER_LOAN_STAT_CODES[lt]
-        exact = cat == "전체"
+        exact = cat == "all"
         add_long(
             f"borrower_loan[{lt},{cat}]",
             "money",
             lambda lt=lt, cat=cat: _multiset(
-                ecos.get_borrower_loan(lt, cat, start_date=_rng("Q")[0], end_date=_rng("Q")[1])
+                ecos.get_borrower_loan(loan_type=lt, category=cat, start_date=_rng("Q")[0], end_date=_rng("Q")[1])
             ),
             lambda stat=stat, pre=pre, exact=exact: _multiset(
                 _raw(stat, "Q", None, fix1=pre) if exact else _raw(stat, "Q", None, prefix=pre)
@@ -356,12 +356,12 @@ def build():
             f"stock[{fr}]",
             "markets",
             lambda fr=fr, p=p: _single(
-                ecos.get_stock_index(fr, start_date=_rng(p)[0], end_date=_rng(p)[1])
+                ecos.get_stock_index(frequency=fr, start_date=_rng(p)[0], end_date=_rng(p)[1])
             ),
             lambda stat=stat, it=it, p=p: _single(_raw(stat, p, it)),
         )
     for act, metric, fr in itertools.product(
-        ("순매수", "매수", "매도"), ("거래대금", "거래량"), ("monthly", "annual")
+        ("net_buy", "buy", "sell"), ("value", "volume"), ("monthly", "annual")
     ):
         p = PMAP[fr]
         pre = c.INVESTOR_TRADING_ACTION_PREFIX[act]
@@ -371,7 +371,7 @@ def build():
             "markets",
             lambda act=act, metric=metric, fr=fr, p=p: _multiset(
                 ecos.get_investor_trading(
-                    act, metric, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr
+                    action=act, metric=metric, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr
                 )
             ),
             lambda pre=pre, mc=mc, p=p: _multiset(
@@ -379,19 +379,19 @@ def build():
             ),
         )
     for bt, meas, fr in itertools.product(
-        ("종류별", "시장별"),
-        ("거래대금", "거래량", "상장잔액", "상장종목수"),
+        ("by_type", "by_market"),
+        ("value", "volume", "listed_balance", "listed_count"),
         ("monthly", "annual"),
     ):
         p = PMAP[fr]
-        if bt == "종류별":
+        if bt == "by_type":
             mc = c.BOND_YIELD_TYPE_MEASURE_CODE[meas]
             add_long(
                 f"bond_market[{bt},{meas},{fr}]",
                 "markets",
                 lambda bt=bt, meas=meas, fr=fr, p=p: _multiset(
                     ecos.get_bond_market(
-                        bt, meas, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr
+                        bond_type=bt, measure=meas, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr
                     )
                 ),
                 lambda mc=mc, p=p: _multiset(_raw(c.STAT_BOND_YIELD_TYPE, p, None, fix2=mc)),
@@ -403,7 +403,7 @@ def build():
                 "markets",
                 lambda bt=bt, meas=meas, fr=fr, p=p: _multiset(
                     ecos.get_bond_market(
-                        bt, meas, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr
+                        bond_type=bt, measure=meas, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr
                     )
                 ),
                 lambda mc=mc, p=p: _multiset(_raw(c.STAT_BOND_MARKET, p, None, fix1=mc)),
@@ -441,7 +441,7 @@ def build():
             f"retail[{ix},{fr}]",
             "sentiment",
             lambda ix=ix, fr=fr, p=p: _multiset(
-                ecos.get_retail_sales(ix, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr)
+                ecos.get_retail_sales(index=ix, start_date=_rng(p)[0], end_date=_rng(p)[1], frequency=fr)
             ),
             lambda t2=t2, p=p: _multiset(_raw(c.STAT_RETAIL_SALES, p, None, fix2=t2)),
         )

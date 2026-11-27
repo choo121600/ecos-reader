@@ -218,15 +218,15 @@ plt.show()
 
 ### 매개변수
 
-- `category`: CPI 세부 항목 (기본값: `"전체"`)
-    - `"전체"` - 소비자물가지수 전체
-    - `"상품"` - 상품 물가지수
-    - `"서비스"` - 서비스 물가지수
-    - `"식품_에너지제외"` - 식품 및 에너지 제외 지수 (근원 물가와 유사)
-    - `"농산물_석유제외"` - 농산물 및 석유류 제외 지수
-    - `"식료품_비주류음료"` - 식료품 및 비주류음료
-    - `"주거_수도_전기"` - 주거, 수도, 전기 및 연료
-    - `"교통"` - 교통
+- `category`: CPI 세부 항목 (기본값: `"all"`)
+    - `"all"` - 소비자물가지수 전체
+    - `"goods"` - 상품 물가지수
+    - `"services"` - 서비스 물가지수
+    - `"ex_food_energy"` - 식품 및 에너지 제외 지수 (근원 물가와 유사)
+    - `"ex_agri_oil"` - 농산물 및 석유류 제외 지수
+    - `"food_beverages"` - 식료품 및 비주류음료
+    - `"housing_utilities"` - 주거, 수도, 전기 및 연료
+    - `"transport"` - 교통
 
 ### 기본 사용법
 
@@ -234,15 +234,15 @@ plt.show()
 import ecos
 
 # 전체 소비자물가지수
-df = ecos.get_cpi_by_category(category="전체")
+df = ecos.get_cpi_by_category(category="all")
 print(df.tail())
 
 # 식품 및 에너지 제외 (근원 물가 유사)
-df = ecos.get_cpi_by_category(category="식품_에너지제외")
+df = ecos.get_cpi_by_category(category="ex_food_energy")
 print(df.tail())
 
 # 서비스 물가
-df = ecos.get_cpi_by_category(category="서비스")
+df = ecos.get_cpi_by_category(category="services")
 print(df.tail())
 ```
 
@@ -250,7 +250,7 @@ print(df.tail())
 
 ```python
 df = ecos.get_cpi_by_category(
-    category="상품",
+    category="goods",
     start_date="202301",
     end_date="202412"
 )
@@ -275,9 +275,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 상품·서비스·근원 물가 조회
-goods = ecos.get_cpi_by_category(category="상품", start_date="202001")
-services = ecos.get_cpi_by_category(category="서비스", start_date="202001")
-core = ecos.get_cpi_by_category(category="식품_에너지제외", start_date="202001")
+goods = ecos.get_cpi_by_category(category="goods", start_date="202001")
+services = ecos.get_cpi_by_category(category="services", start_date="202001")
+core = ecos.get_cpi_by_category(category="ex_food_energy", start_date="202001")
 
 # 데이터 병합
 merged = pd.merge(

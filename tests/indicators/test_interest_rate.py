@@ -218,7 +218,7 @@ class TestGetBankDepositRate:
             status=200,
         )
 
-        df = get_bank_deposit_rate(basis="신규취급액", start_date="202401", end_date="202401")
+        df = get_bank_deposit_rate(basis="new", start_date="202401", end_date="202401")
 
         assert not df.empty
         assert "date" in df.columns
@@ -249,7 +249,7 @@ class TestGetBankDepositRate:
             status=200,
         )
 
-        df = get_bank_deposit_rate(basis="잔액", start_date="202401", end_date="202401")
+        df = get_bank_deposit_rate(basis="outstanding", start_date="202401", end_date="202401")
 
         assert not df.empty
         assert "date" in df.columns
@@ -290,7 +290,7 @@ class TestGetBankLendingRate:
             status=200,
         )
 
-        df = get_bank_lending_rate(basis="신규취급액", start_date="202401", end_date="202401")
+        df = get_bank_lending_rate(basis="new", start_date="202401", end_date="202401")
 
         assert not df.empty
         assert "date" in df.columns
@@ -321,7 +321,7 @@ class TestGetBankLendingRate:
             status=200,
         )
 
-        df = get_bank_lending_rate(basis="잔액", start_date="202401", end_date="202401")
+        df = get_bank_lending_rate(basis="outstanding", start_date="202401", end_date="202401")
 
         assert not df.empty
         assert "date" in df.columns
